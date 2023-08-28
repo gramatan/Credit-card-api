@@ -1,16 +1,17 @@
-"""Модуль для работы с токеном."""
-from datetime import datetime, timedelta
+from datetime import timedelta, datetime
 
 import jwt
 
-from config.config import ALGORITHM, SECRET_KEY, TOKEN_TTL
+from config.config import TOKEN_TTL, ALGORITHM, SECRET_KEY
 
 
 class TokenRepository:
+    """Репозиторий для работы с токенами."""
+
     def create_access_token(
-        self,
-        token_data: dict,
-        expires_delta: timedelta | None = None,
+            self,
+            token_data: dict,
+            expires_delta: timedelta | None = None,
     ):
         """
         Создание токена.

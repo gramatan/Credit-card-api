@@ -1,3 +1,11 @@
+from datetime import timedelta
+
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordRequestForm
+
+from config.config import TOKEN_TTL
+from src.repositories.token import TokenRepository
+from src.schemas.token_schemas import TokenData
 
 
 class TokenService:
@@ -5,6 +13,7 @@ class TokenService:
 
     def __init__(
         self,
+        token_repository: TokenRepository = Depends(),
     ):
         """
         Инициализация сервиса.
@@ -12,7 +21,7 @@ class TokenService:
         Args:
             db (Session): Сессия БД.
         """
-        self.db = db
+        self.token_repo = token_repository
 
     def get_token(
         self,
@@ -27,14 +36,10 @@ class TokenService:
         Returns:
             TokenData: Токен.
         """
-        user = get_user_by_username(self.db, form_data.username)
-        if not user:
-            raise_unauthorized_exception('Incorrect username or password')
-        if not verify_password(form_data.password, user.hashed_password):
-            raise_unauthorized_exception('Incorrect username or password')
+        user = form_data.username
 
         access_token_expires = timedelta(minutes=TOKEN_TTL)
-        access_token = create_access_token(
+        access_token = self.token_repo.create_access_token(
             token_data={'sub': user.username},
             expires_delta=access_token_expires,
         )
