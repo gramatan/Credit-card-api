@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "credit-card"
+version = "0.1.0"
+description = "credit card api"
+authors = ["Andrey <megagran.work@gmail.com>"]
+readme = "README.md"
+packages = [{include = "credit_card"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.103.0"
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+wemake-python-styleguide = "^0.18.0"
+mypy = "^1.5.1"
+pre-commit = "^3.3.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
