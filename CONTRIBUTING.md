@@ -38,16 +38,12 @@ poetry shell
 ## Структура проекта - TBU
 
 - `src` : Основной код проекта.
-  - [database](src%2Fdatabase) : Файлы для работы с базой данных.
-    - [database.py](src%2Fdatabase%2Fdatabase.py) : Файл с описанием структуры таблицы `users` и функций для работы с базой данных.
-    - [models.py](src%2Fdatabase%2Fmodels.py) : Модели данных для таблиц.
-    - [schemas.py](src%2Fdatabase%2Fschemas.py) : Схемы данных.
- 
-  - `auth/` : Сервис авторизации с использованием JWT токенов.
-
-  - `services` : Файлы с сервисами для работы с приложением.
-
+  - [database](src%2Fdatabase) : Файлы для работы с базой данных.  - TBU
+  - `models/` : Модели данных.
+  - `repositories/` : Файлы с репозиториями для работы с базой данных.
   - `routers/` : Файлы с описанием эндпоинтов.
+  - `schemas/` : Схемы данных.
+  - `services` : Файлы с сервисами для работы с приложением.
   - [main.py](src%2Fcredit_card%2Fmain.py) : Файл с описанием приложения.
 
 - `config/`[config.py](config%2Fconfig.py) : Файл с конфигурацией приложения.

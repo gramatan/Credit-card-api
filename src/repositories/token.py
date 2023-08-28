@@ -1,8 +1,9 @@
-from datetime import timedelta, datetime
+"""Репозиторий для работы с токенами."""
+from datetime import datetime, timedelta
 
 import jwt
 
-from config.config import TOKEN_TTL, ALGORITHM, SECRET_KEY
+from config.config import ALGORITHM, SECRET_KEY, TOKEN_TTL
 
 
 class TokenRepository:

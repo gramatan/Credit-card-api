@@ -1,3 +1,4 @@
+"""Роутер для работы с токенами."""
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 

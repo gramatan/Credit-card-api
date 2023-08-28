@@ -1,3 +1,4 @@
+"""Сервис для работы с токенами."""
 from datetime import timedelta
 
 from fastapi import Depends
@@ -19,7 +20,7 @@ class TokenService:
         Инициализация сервиса.
 
         Args:
-            db (Session): Сессия БД.
+            token_repository (TokenRepository): Репо токенов.
         """
         self.token_repo = token_repository
 
@@ -36,11 +37,9 @@ class TokenService:
         Returns:
             TokenData: Токен.
         """
-        user = form_data.username
-
         access_token_expires = timedelta(minutes=TOKEN_TTL)
         access_token = self.token_repo.create_access_token(
-            token_data={'sub': user.username},
+            token_data={'sub': form_data.username},
             expires_delta=access_token_expires,
         )
 
