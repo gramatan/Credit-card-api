@@ -1,0 +1,34 @@
+default:
+  image: python:3.10-slim
+  before_script:
+    - apt-get update && apt-get install -y curl
+    - curl -sSL https://install.python-poetry.org | python3 -
+    - export PATH="/root/.local/bin:$PATH"
+    - poetry install
+
+stages:
+  - linters
+  - tests
+
+Tests:
+  stage: tests
+  script:
+    - poetry run pytest
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "week2_task1"
+      changes:
+        - "**/*.py"
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "week2_task1"
+      when: manual
+
+Linters:
+  stage: linters
+  script:
+    - poetry run flake8
+    - poetry run mypy .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "week2_task1"
+      changes:
+        - "**/*.py"
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "week2_task1"
+      when: manual
