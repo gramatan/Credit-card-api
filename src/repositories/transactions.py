@@ -3,9 +3,9 @@ from datetime import datetime
 from decimal import Decimal
 
 from config.config import (
+    AMOUNT_ERROR,
     USER_BALANCE_LIMIT_ERROR,
     USER_NOT_FOUND_ERROR,
-    AMOUNT_ERROR,
 )
 from src.models.logs import BalanceLog, CommonLog
 from src.repositories.log_storage import LogStorage
@@ -80,8 +80,34 @@ class Transactions:     # noqa: WPS214
             raise ValueError(AMOUNT_ERROR)
         return self._change_balance(card_number, amount)
 
-    def update_info(self, card_number: str, info: dict) -> None:
-        pass
+    def update_info(self, card_number: str, user_info: dict) -> None:
+        """
+        Обновление информации о пользователе.
+
+        Args:
+            card_number (str): Номер карты.
+            user_info (dict): Информация для обновления.
+
+        Raises:
+            ValueError: Если пользователь не найден.
+        """
+        user = self.user_storage.get_user(card_number)
+        if not user:
+            raise ValueError(USER_NOT_FOUND_ERROR)
+
+        for key, info_item in user_info.items():
+            setattr(user, key, info_item)
+
+        self.user_storage.update_user(user)
+
+        log = CommonLog(
+            card_number=card_number,
+            before=user.limit,
+            after=user.limit,
+            changes=Decimal(0),
+            _datetime_utc=datetime.utcnow(),
+        )
+        self.history.save(log)
 
     def change_limit(self, card_number: str, new_limit: Decimal) -> None:
         """
@@ -107,7 +133,7 @@ class Transactions:     # noqa: WPS214
             before=old_limit,
             after=new_limit,
             changes=new_limit - old_limit,
-            _datetime_utc=datetime.utcnow()
+            _datetime_utc=datetime.utcnow(),
         )
         self.history.save(log)
 
@@ -143,7 +169,7 @@ class Transactions:     # noqa: WPS214
             before=old_balance,
             after=user.balance,
             changes=amount,
-            _datetime_utc=datetime.utcnow()
+            _datetime_utc=datetime.utcnow(),
         ))
 
         self.user_storage.update_user(user)
