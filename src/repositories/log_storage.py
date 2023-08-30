@@ -52,8 +52,16 @@ class LogStorage:
         logs = self._balance_logs.get(card_number, [])
 
         if logs:
-            start_date = bisect_left(logs, from_date, key=self._get_datetime_from_log)
-            end_date = bisect_right(logs, to_date, key=self._get_datetime_from_log)
+            start_date = bisect_left(
+                logs,
+                from_date,
+                key=self._get_datetime_from_log,
+            )
+            end_date = bisect_right(
+                logs,
+                to_date,
+                key=self._get_datetime_from_log,
+            )
 
             return logs[start_date:end_date]
         return []
