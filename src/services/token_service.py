@@ -5,7 +5,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from config.config import TOKEN_TTL
-from src.repositories.token import TokenRepository
+from src.repositories.token_repository import TokenRepository
 from src.schemas.token_schemas import TokenData
 
 
