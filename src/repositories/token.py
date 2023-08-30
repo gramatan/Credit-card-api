@@ -10,9 +10,9 @@ class TokenRepository:
     """Репозиторий для работы с токенами."""
 
     def create_access_token(
-            self,
-            token_data: dict,
-            expires_delta: timedelta | None = None,
+        self,
+        token_data: dict,
+        expires_delta: timedelta | None = None,
     ):
         """
         Создание токена.
