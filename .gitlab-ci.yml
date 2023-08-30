@@ -1,5 +1,5 @@
 default:
-  image: python:3.10-slim
+  image: python:3.11-slim
   before_script:
     - apt-get update && apt-get install -y curl
     - curl -sSL https://install.python-poetry.org | python3 -
