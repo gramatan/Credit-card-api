@@ -40,7 +40,12 @@ poetry shell
 - `src` : Основной код проекта.
   - [database](src%2Fdatabase) : Файлы для работы с базой данных.  - TBU
   - `models/` : Модели данных.
+    - [user.py](src%2Fmodels%2Fuser.py) : Модель пользователя.
+    - [logs.py](src%2Fmodels%2Flogs.py) : Модель логов.
   - `repositories/` : Файлы с репозиториями для работы с базой данных.
+    - [user_storage.py](src%2Frepositories%2Fuser_storage.py) : Репозиторий для работы с хранилищем пользователей.
+    - [log_storage.py](src%2Frepositories%2Flog_storage.py) : Репозиторий для работы с хранилищем логов.
+    - [transactions.py](src%2Frepositories%2Ftransactions.py) : Репозиторий для работы транзакциями.
   - `routers/` : Файлы с описанием эндпоинтов.
   - `schemas/` : Схемы данных.
   - `services` : Файлы с сервисами для работы с приложением.
