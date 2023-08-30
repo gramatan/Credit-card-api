@@ -23,8 +23,8 @@ class Transactions:     # noqa: WPS214
             user_storage (UserStorage): Репо пользователей.
             history (LogStorage): Репо логов.
         """
-        self.user_storage = user_storage
-        self.history = history
+        self._user_storage = user_storage
+        self._history = history
 
     def get_balance(self, card_number: str) -> Decimal:
         """
@@ -39,7 +39,7 @@ class Transactions:     # noqa: WPS214
         Returns:
             Decimal: Баланс.
         """
-        user = self.user_storage.get_user(card_number)
+        user = self._user_storage.get_user(card_number)
         if user:
             return user.balance
         raise ValueError(USER_NOT_FOUND_ERROR)
@@ -91,14 +91,14 @@ class Transactions:     # noqa: WPS214
         Raises:
             ValueError: Если пользователь не найден.
         """
-        user = self.user_storage.get_user(card_number)
+        user = self._user_storage.get_user(card_number)
         if not user:
             raise ValueError(USER_NOT_FOUND_ERROR)
 
         for key, info_item in user_info.items():
             setattr(user, key, info_item)
 
-        self.user_storage.update_user(user)
+        self._user_storage.update_user(user)
 
         log = CommonLog(
             card_number=card_number,
@@ -107,7 +107,7 @@ class Transactions:     # noqa: WPS214
             changes=Decimal(0),
             _datetime_utc=datetime.utcnow(),
         )
-        self.history.save(log)
+        self._history.save(log)
 
     def change_limit(self, card_number: str, new_limit: Decimal) -> None:
         """
@@ -120,13 +120,13 @@ class Transactions:     # noqa: WPS214
         Raises:
             ValueError: Если пользователь не найден.
         """
-        user = self.user_storage.get_user(card_number)
+        user = self._user_storage.get_user(card_number)
         if not user:
             raise ValueError(USER_NOT_FOUND_ERROR)
 
         old_limit = user.limit
         user.limit = new_limit
-        self.user_storage.update_user(user)
+        self._user_storage.update_user(user)
 
         log = CommonLog(
             card_number=card_number,
@@ -135,7 +135,7 @@ class Transactions:     # noqa: WPS214
             changes=new_limit - old_limit,
             _datetime_utc=datetime.utcnow(),
         )
-        self.history.save(log)
+        self._history.save(log)
 
     def _change_balance(self, card_number: str, amount: Decimal) -> Decimal:
         """
@@ -152,7 +152,7 @@ class Transactions:     # noqa: WPS214
         Returns:
             Decimal: Новый баланс.
         """
-        user = self.user_storage.get_user(card_number)
+        user = self._user_storage.get_user(card_number)
         if not user:
             raise ValueError(USER_NOT_FOUND_ERROR)
 
@@ -164,7 +164,7 @@ class Transactions:     # noqa: WPS214
         old_balance = user.balance
         user.balance = new_balance
 
-        self.history.save(BalanceLog(
+        self._history.save(BalanceLog(
             card_number=card_number,
             before=old_balance,
             after=user.balance,
@@ -172,7 +172,7 @@ class Transactions:     # noqa: WPS214
             _datetime_utc=datetime.utcnow(),
         ))
 
-        self.user_storage.update_user(user)
+        self._user_storage.update_user(user)
         return user.balance
 
     def _check_amount(self, amount: Decimal) -> bool:

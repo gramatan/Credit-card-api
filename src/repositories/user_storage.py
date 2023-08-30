@@ -10,8 +10,8 @@ class UserStorage:
 
     def __init__(self):
         """Инициализация репозитория."""
-        self.active: dict[str, User] = {}   # type: ignore
-        self.closed: list[User] = []        # type: ignore
+        self._active: dict[str, User] = {}   # type: ignore
+        self._closed: list[User] = []        # type: ignore
 
     def add(self, card_number: str, user_info: dict) -> None:
         """
@@ -32,7 +32,7 @@ class UserStorage:
             info=user_info,
             _balance=Decimal(0),
         )
-        self.active[card_number] = user
+        self._active[card_number] = user
 
     def get_user(self, card_number: str) -> User | None:
         """
@@ -44,7 +44,7 @@ class UserStorage:
         Returns:
             User | None: Пользователь.
         """
-        return self.active.get(card_number)
+        return self._active.get(card_number)
 
     def update_user(self, user: User) -> User:
         """
@@ -65,7 +65,7 @@ class UserStorage:
             in_closed=False,
         ):
             raise ValueError(USER_NOT_FOUND_ERROR)
-        self.active[user.card_number] = user
+        self._active[user.card_number] = user
         return user
 
     def close(self, card_number: str) -> bool:
@@ -87,8 +87,8 @@ class UserStorage:
             in_closed=False,
         ):
             raise ValueError(USER_NOT_FOUND_ERROR)
-        self.closed.append(self.active.pop(card_number))
-        return card_number not in self.active
+        self._closed.append(self._active.pop(card_number))
+        return card_number not in self._active
 
     def _is_exist_user(
         self,
@@ -107,9 +107,9 @@ class UserStorage:
         Returns:
             bool: True, если пользователь существует.
         """
-        in_active_condition = in_active and card_number in self.active
+        in_active_condition = in_active and card_number in self._active
         in_closed_condition = in_closed and any(
-            user for user in self.closed if user.card_number == card_number
+            user for user in self._closed if user.card_number == card_number
         )
 
         return in_active_condition or in_closed_condition
