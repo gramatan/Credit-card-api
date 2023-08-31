@@ -94,8 +94,7 @@ class Transactions:     # noqa: WPS214
         if not user:
             raise ValueError(USER_NOT_FOUND_ERROR)
 
-        for key, info_item in user_info.items():
-            setattr(user, key, info_item)
+        user.info.update(user_info)
 
         self._user_storage.update_user(user)
 
@@ -118,6 +117,9 @@ class Transactions:     # noqa: WPS214
         Raises:
             ValueError: Если пользователь не найден.
         """
+        if not self._check_amount(new_limit):
+            raise ValueError(AMOUNT_ERROR)
+
         user = self._user_storage.get_user(card_number)
         if not user:
             raise ValueError(USER_NOT_FOUND_ERROR)

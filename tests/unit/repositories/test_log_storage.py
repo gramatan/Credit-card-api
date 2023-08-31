@@ -76,10 +76,10 @@ def test_get_balance_history(
 
 
 @pytest.mark.parametrize('log_type, logs_count, expected_length', [
-    ('balance_logs', 3, 3),
-    ('balance_logs', 5, 5),
-    ('common_logs', 2, 2),
-    ('common_logs', 3, 3),
+    pytest.param('balance_logs', 3, 3, id='Balance logs_3'),
+    pytest.param('balance_logs', 5, 5, id='Balance logs_5'),
+    pytest.param('common_logs', 2, 2, id='Common logs_2'),
+    pytest.param('common_logs', 3, 3, id='Common logs_3'),
 ])
 def test_save_logs(
     logs_collection,

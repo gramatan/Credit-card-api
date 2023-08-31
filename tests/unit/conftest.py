@@ -5,7 +5,9 @@ from decimal import Decimal
 import pytest
 
 from src.models.logs import BalanceLog, CommonLog
+from src.models.user import User
 from src.repositories.log_storage import LogStorage
+from src.repositories.transactions import Transactions
 from src.repositories.user_storage import UserStorage
 
 CARD_ID = '1234567890'
@@ -21,7 +23,16 @@ def not_empty_storage():
     """
     storage = UserStorage()
     user_info = {'name': 'John'}
-    storage.add(CARD_ID, user_info)
+    storage.add(
+        card_number=CARD_ID,
+        user_info=user_info,
+    )
+    storage.update_user(User(
+        CARD_ID,
+        _balance=Decimal(0),
+        limit=Decimal(1000),
+        info=user_info,
+    ))
     yield storage
 
 
@@ -81,3 +92,17 @@ def logs_collection():
         'balance_logs': balance_logs,
         'common_logs': common_logs,
     }
+
+
+@pytest.fixture
+def transactions_fixture(not_empty_storage):    # noqa: WPS442
+    """
+    Фикстура для создания транзакций.
+
+    Args:
+        not_empty_storage (UserStorage): Хранилище с готовым пользователем.
+
+    Yields:
+        Transactions: Объект транзакций.
+    """
+    yield Transactions(not_empty_storage, LogStorage())
