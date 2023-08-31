@@ -1,3 +1,15 @@
+## Написать классы компонентов истории и транзакций в соответствии со схемами.
+
+Добавлены классы компонентов истории и транзакций в соответствии со схемами.
+  - `models/`
+    - [user.py](src%2Fmodels%2Fuser.py) : Модель пользователя.
+    - [logs.py](src%2Fmodels%2Flogs.py) : Модель логов.
+  - `repositories/`
+    - [user_storage.py](src%2Frepositories%2Fuser_storage.py) : Репозиторий для работы с хранилищем пользователей.
+    - [log_storage.py](src%2Frepositories%2Flog_storage.py) : Репозиторий для работы с хранилищем логов.
+    - [transactions.py](src%2Frepositories%2Ftransactions.py) : Репозиторий для работы транзакциями.
+
+
 ## Credit card api.
 
 

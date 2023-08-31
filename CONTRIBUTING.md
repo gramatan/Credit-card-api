@@ -30,12 +30,12 @@ poetry shell
 
     Запуск в докере: - TBU
 
-    Запуск без докера:
+    Запуск без докера: - TBU
     ```
     uvicorn src.credit_card.main:app --reload
     ```
 
-## Структура проекта - TBU
+## Структура проекта
 
 - `src` : Основной код проекта.
   - [database](src%2Fdatabase) : Файлы для работы с базой данных.  - TBU
