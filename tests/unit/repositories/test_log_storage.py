@@ -1,6 +1,7 @@
+"""Тесты хранилища логов."""
+from datetime import datetime
 
 import pytest
-from datetime import datetime, timedelta
 
 from src.repositories.log_storage import LogStorage
 
@@ -32,22 +33,45 @@ from src.repositories.log_storage import LogStorage
         datetime(year=2024, month=2, day=26),
         datetime(year=2024, month=2, day=28),
         3,
-        id='Part of logs'),
+        id='Part of logs',
+    ),
     pytest.param(
         '1234567890',
         datetime(year=2024, month=2, day=25),
         datetime(year=2024, month=3, day=5),
         10,
-        id='All logs'),
+        id='All logs',
+    ),
     pytest.param(
         '3453',
         datetime(year=2024, month=2, day=26),
         datetime(year=2024, month=2, day=28),
         0,
-        id='No logs'),
+        id='No logs',
+    ),
 ])
-def test_get_balance_history(card_id, from_date, to_date, expected_length, log_storage_with_history):
-    history = log_storage_with_history.get_balance_history(card_id, from_date, to_date)
+def test_get_balance_history(
+    card_id,
+    from_date,
+    to_date,
+    expected_length,
+    log_storage_with_history,
+):
+    """
+    Тест получения истории изменения баланса.
+
+    Args:
+        card_id (str): Номер карты.
+        from_date (datetime): Начальная дата.
+        to_date (datetime): Конечная дата.
+        expected_length (int): Ожидаемая длина.
+        log_storage_with_history (LogStorage): Хранилище с историей.
+    """
+    history = log_storage_with_history.get_balance_history(
+        card_id,
+        from_date,
+        to_date,
+    )
     assert len(history) == expected_length
 
 
@@ -55,9 +79,23 @@ def test_get_balance_history(card_id, from_date, to_date, expected_length, log_s
     ('balance_logs', 3, 3),
     ('balance_logs', 5, 5),
     ('common_logs', 2, 2),
-    ('common_logs', 3, 3)
+    ('common_logs', 3, 3),
 ])
-def test_save_logs(logs_collection, log_type, logs_count, expected_length):
+def test_save_logs(
+    logs_collection,
+    log_type,
+    logs_count,
+    expected_length,
+):
+    """
+    Тест сохранения логов.
+
+    Args:
+        logs_collection (dict): Коллекция логов.
+        log_type (str): Тип логов.
+        logs_count (int): Количество логов.
+        expected_length (int): Ожидаемая длина.
+    """
     storage = LogStorage()
     for log in logs_collection[log_type][:logs_count]:
         storage.save(log)
