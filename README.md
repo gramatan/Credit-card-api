@@ -1,3 +1,16 @@
+## Тесты для компонентов истории и транзакций.
+
+Добавлены тесты для компонентов истории и транзакций.
+  - `tests/`
+    - `unit/` : Юнит тесты разбиты по файлам в соответствии со структурой проекта.
+    - [test_log_storage.py](tests%2Funit%2Frepositories%2Ftest_log_storage.py)
+    - [test_user_storage.py](tests%2Funit%2Frepositories%2Ftest_user_storage.py)
+    - [test_transactions.py](tests%2Funit%2Frepositories%2Ftest_transactions.py)
+  - `tests/`
+    - `integration/` : Сценарий интеграционных тестов из задания в одном файле. 
+    - [test_main_scenario.py](tests%2Fintegration%2Ftest_main_scenario.py)\
+    
+
 ## Написать классы компонентов истории и транзакций в соответствии со схемами.
 
 Добавлены классы компонентов истории и транзакций в соответствии со схемами.
