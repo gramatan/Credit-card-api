@@ -15,5 +15,5 @@
 - Версионность в CHANGELOG.md.
 - Установка в CONTRIBUTING.md.
 ### Изменено
-- 
+-
 [Ссылка на версию.](https://gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/-/commit/6b8add54724a337b8618409bc906e3901b6b207e)
