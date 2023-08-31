@@ -12,7 +12,7 @@ class CommonLog:
     before: Decimal
     after: Decimal
     changes: Decimal
-    _datetime_utc: datetime
+    _datetime_utc: datetime = datetime.utcnow()
 
     @property
     def datetime_utc(self):
@@ -22,15 +22,6 @@ class CommonLog:
             datetime: Время в UTC.
         """
         return self._datetime_utc
-
-    @datetime_utc.setter
-    def datetime_utc(self, new_datetime: datetime):
-        """Сеттер для времени в UTC.
-
-        Args:
-            new_datetime (datetime): Новое время в UTC.
-        """
-        self._datetime_utc = new_datetime
 
 
 @dataclass

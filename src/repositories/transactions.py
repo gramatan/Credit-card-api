@@ -1,5 +1,4 @@
 """Репо для работы с транзакциями."""
-from datetime import datetime
 from decimal import Decimal
 
 from config.config import (
@@ -105,7 +104,6 @@ class Transactions:     # noqa: WPS214
             before=user.limit,
             after=user.limit,
             changes=Decimal(0),
-            _datetime_utc=datetime.utcnow(),
         )
         self._history.save(log)
 
@@ -133,7 +131,6 @@ class Transactions:     # noqa: WPS214
             before=old_limit,
             after=new_limit,
             changes=new_limit - old_limit,
-            _datetime_utc=datetime.utcnow(),
         )
         self._history.save(log)
 
@@ -169,7 +166,6 @@ class Transactions:     # noqa: WPS214
             before=old_balance,
             after=user.balance,
             changes=amount,
-            _datetime_utc=datetime.utcnow(),
         ))
 
         self._user_storage.update_user(user)
