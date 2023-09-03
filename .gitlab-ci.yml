@@ -25,7 +25,7 @@ Tests:
 Linters:
   stage: linters
   before_script:
-    - poetry install --no-root
+    - poetry install --only dev
   script:
     - poetry run flake8
     - poetry run mypy .
