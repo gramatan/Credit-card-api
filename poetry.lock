@@ -1256,10 +1256,7 @@ pygments = ">=2.4,<3.0"
 setuptools = "*"
 typing_extensions = ">=4.0,<5.0"
 
-[extras]
-linters = ["mypy", "wemake-python-styleguide"]
-
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "6d943cef142e5bd28bb7c6c73a16f9bddd22d8a21ae5770253665f6decb91af8"
+content-hash = "b7a540f8495db69908265abc60b5e05c875914e47854e3d0d8ec6a1dc66adbe6"
