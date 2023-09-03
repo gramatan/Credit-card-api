@@ -18,8 +18,9 @@ uvicorn = "^0.23.2"
 pyjwt = "^2.8.0"
 python-multipart = "^0.0.6"
 
-[tool.poetry.extras]
-linters = ["mypy", "wemake-python-styleguide"]
+[tool.poetry.dev-dependencies]
+mypy = "^1.5.1"
+wemake-python-styleguide = "^0.18.0"
 
 [build-system]
 requires = ["poetry-core"]
