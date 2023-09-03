@@ -4,7 +4,6 @@ default:
     - apt-get update && apt-get install -y curl
     - curl -sSL https://install.python-poetry.org | python3 -
     - export PATH="/root/.local/bin:$PATH"
-    - poetry install
 
 stages:
   - linters
@@ -12,6 +11,8 @@ stages:
 
 Tests:
   stage: tests
+  before_script:
+    - poetry install
   script:
     - poetry run pytest
   rules:
@@ -23,6 +24,8 @@ Tests:
 
 Linters:
   stage: linters
+  before_script:
+    - poetry install -E linters
   script:
     - poetry run flake8
     - poetry run mypy .
