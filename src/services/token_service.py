@@ -24,7 +24,7 @@ class TokenService:
         """
         self.token_repo = token_repository
 
-    def get_token(
+    async def get_token(
         self,
         form_data: OAuth2PasswordRequestForm = Depends(),
     ) -> TokenData:

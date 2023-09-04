@@ -1,3 +1,6 @@
+## Интегрировать логику бэкенда кредитной карты в приложение.
+Дбавлены схемы pydantic, Эндпоинты согласно описанию. TBU
+
 ## Тесты для компонентов истории и транзакций.
 
 Добавлены тесты для компонентов истории и транзакций.
@@ -7,9 +10,9 @@
     - [test_user_storage.py](tests%2Funit%2Frepositories%2Ftest_user_storage.py)
     - [test_transactions.py](tests%2Funit%2Frepositories%2Ftest_transactions.py)
   - `tests/`
-    - `integration/` : Сценарий интеграционных тестов из задания в одном файле. 
+    - `integration/` : Сценарий интеграционных тестов из задания в одном файле.
     - [test_main_scenario.py](tests%2Fintegration%2Ftest_main_scenario.py)\
-    
+
 
 ## Написать классы компонентов истории и транзакций в соответствии со схемами.
 

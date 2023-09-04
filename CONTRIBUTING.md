@@ -59,7 +59,7 @@ poetry shell
     - [test_user_storage.py](tests%2Funit%2Frepositories%2Ftest_user_storage.py)
     - [test_transactions.py](tests%2Funit%2Frepositories%2Ftest_transactions.py)
     - [test_token_repository.py](tests%2Funit%2Frepositories%2Ftest_token_repository.py)
-  - `integration`: Сценарий интеграционных тестов из задания в одном файле. 
+  - `integration`: Сценарий интеграционных тестов из задания в одном файле.
     - [test_main_scenario.py](tests%2Fintegration%2Ftest_main_scenario.py)
 
 - [CHANGELOG.md](CHANGELOG.md) : История изменений проекта.
