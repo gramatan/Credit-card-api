@@ -5,7 +5,9 @@ from fastapi.security import OAuth2PasswordBearer
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='api/auth')
 
 
-def raise_unauthorized_exception(detail: str) -> None:
+def raise_unauthorized_exception(
+        detail: str = 'Invalid or expired token',
+) -> None:
     """
     Возвращает 401 ошибку с сообщением об ошибке.
 

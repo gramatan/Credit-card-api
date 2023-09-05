@@ -8,6 +8,7 @@ from src.repositories.user_storage import UserStorage
 user_storage = UserStorage()
 history = LogStorage()
 db = Transactions(user_storage=user_storage, history=history)
+user_storage.add('123', {'name': 'test'})
 
 
 def get_db():
@@ -17,7 +18,6 @@ def get_db():
     Returns:
         Transactions: "База данных".
     """
-    user_storage.add('123', {'name': 'test'})
     return db
 
 

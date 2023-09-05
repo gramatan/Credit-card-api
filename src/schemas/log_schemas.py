@@ -18,4 +18,4 @@ class LogBase(BaseModel):
 class BalanceLogModel(LogBase):
     """Класс для логов баланса."""
 
-    pass
+    pass    # noqa: WPS420, WPS604, WPS30

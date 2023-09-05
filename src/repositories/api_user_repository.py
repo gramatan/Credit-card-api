@@ -1,9 +1,12 @@
+"""Репозиторий для работы с пользователем API."""
 from fastapi import HTTPException, status
 
 from src.database.database import api_user, pwd_context
 
 
 class ApiUserRepository:
+    """Репозиторий для работы с пользователем API."""
+
     def check_user(self, username: str, password: str) -> bool:
         """
         Проверка пользователя.
