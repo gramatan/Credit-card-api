@@ -5,6 +5,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from config.config import TOKEN_TTL
+from src.repositories.api_user_repository import ApiUserRepository
 from src.repositories.token_repository import TokenRepository
 from src.schemas.token_schemas import TokenData
 
@@ -23,6 +24,7 @@ class TokenService:
             token_repository (TokenRepository): Репо токенов.
         """
         self.token_repo = token_repository
+        self.api_user_repo = ApiUserRepository()
 
     async def get_token(
         self,
@@ -37,6 +39,7 @@ class TokenService:
         Returns:
             TokenData: Токен.
         """
+        self.api_user_repo.check_user(form_data.username, form_data.password)
         access_token_expires = timedelta(minutes=TOKEN_TTL)
         access_token = self.token_repo.create_access_token(
             token_data={'sub': form_data.username},
