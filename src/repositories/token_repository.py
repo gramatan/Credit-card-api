@@ -43,7 +43,7 @@ class TokenRepository:
         """
         try:
             return jwt.decode(
-                token,
+                token.encode(),
                 SECRET_KEY,
                 algorithms=[ALGORITHM],
             ).get('sub') is not None

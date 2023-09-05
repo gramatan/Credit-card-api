@@ -10,7 +10,7 @@ from src.services.handler_utils import oauth2_scheme
 router = APIRouter()
 
 
-@router.get('/balance/{card_number}', response_model=BalanceResponse)
+@router.get('/balance/', response_model=BalanceResponse)
 async def read_balance(
     card_number: str,
     token: str = Depends(oauth2_scheme),
@@ -27,4 +27,4 @@ async def read_balance(
     """
     transactions = get_db()
     balance_service = BalanceService(transactions)
-    return await balance_service.get_balance(card_number)
+    return await balance_service.get_balance(card_number, token)

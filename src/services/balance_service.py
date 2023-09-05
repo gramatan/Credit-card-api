@@ -13,7 +13,7 @@ class BalanceService:
     def __init__(
         self,
         transactions: Transactions,
-        token_repository: TokenRepository,
+        token_repository: TokenRepository = TokenRepository(),
     ):
         """
         Инициализация сервиса.
@@ -28,7 +28,7 @@ class BalanceService:
     async def get_balance(
         self,
         card_number: str,
-        token: str = Depends(oauth2_scheme)
+        token: str,
     ) -> BalanceResponse:
         """
         Получение баланса.
@@ -44,3 +44,13 @@ class BalanceService:
             raise_unauthorized_exception('Invalid or expired token')
         user_balance = self.transactions.get_balance(card_number)
         return BalanceResponse(balance=user_balance)
+
+    # async def get_balance_story(
+    #         self,
+    #         card_number: str,
+    #         token: str = Depends(oauth2_scheme),
+    # ) -> BalanceResponse:
+    #     if not self.token_repo.verify_token(token):
+    #         raise_unauthorized_exception('Invalid or expired token')
+    #     user_balance_story = self.transactions.get_balance_story(card_number)
+    #     return user_balance_story
