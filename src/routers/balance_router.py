@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 
 from src.database.database import get_db
 from src.schemas.balance_schemas import BalanceResponse
+from src.schemas.log_schemas import BalanceLogModel
 from src.services.balance_service import BalanceService
 from src.services.handler_utils import oauth2_scheme
 
@@ -31,13 +32,13 @@ async def read_balance(
     return await balance_service.get_balance(card_number, token)
 
 
-@router.get('/balance/history', response_model=list[BalanceResponse])
+@router.get('/balance/history', response_model=list[BalanceLogModel])
 async def read_balance_history(
     card_number: str,
     from_date: datetime,
     to_date: datetime,
     token: str = Depends(oauth2_scheme),
-) -> list[BalanceResponse]:
+) -> list[BalanceLogModel]:
     """
     Получение истории баланса.
 
@@ -48,7 +49,7 @@ async def read_balance_history(
         token (str): Токен.
 
     Returns:
-        list[BalanceResponse]: История баланса.
+        list[BalanceLogModel]: История баланса.
     """
     transactions = get_db()
     balance_service = BalanceService(transactions)

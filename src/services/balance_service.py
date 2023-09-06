@@ -77,4 +77,10 @@ class BalanceService:
             from_date,
             to_date,
         )
-        return [BalanceLogModel(log) for log in balance_history]    # todo: here is an issue
+        return [BalanceLogModel(
+            card_number=log.card_number,
+            before=log.before,
+            after=log.after,
+            changes=log.changes,
+            datetime_utc=log.datetime_utc
+        ) for log in balance_history]

@@ -12,10 +12,13 @@ class LogBase(BaseModel):
     before: Decimal
     after: Decimal
     changes: Decimal
-    datetime_utc: datetime = datetime.utcnow()
+    datetime_utc: datetime
 
 
 class BalanceLogModel(LogBase):
-    """Класс для логов баланса."""
+    """
+    Класс для логов баланса.
+    Может быть изменен в дальнейшем.
+    """
 
     pass    # noqa: WPS420, WPS604, WPS30

@@ -75,4 +75,4 @@ async def verify(
     """
     transactions = get_db()
     transactions_service = TransactionsService(transactions)
-    return await transactions_service.verify(card_number, selfie, document, token)
+    return await transactions_service.verify(card_number, token, selfie, document)
