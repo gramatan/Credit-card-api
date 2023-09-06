@@ -1,5 +1,5 @@
 default:
-  image: python:3.11-slim
+  image: python:3.10-slim
 
 
 stages:

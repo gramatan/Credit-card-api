@@ -18,6 +18,7 @@ class LogBase(BaseModel):
 class BalanceLogModel(LogBase):
     """
     Класс для логов баланса.
+
     Может быть изменен в дальнейшем.
     """
 

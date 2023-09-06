@@ -10,3 +10,6 @@ USER_LIMIT_ERROR = 'Нельзя установить лимит меньше н
 USER_BALANCE_ERROR = 'Нельзя установить баланс меньше нуля'
 USER_BALANCE_LIMIT_ERROR = 'Нельзя установить баланс меньше лимита'
 AMOUNT_ERROR = 'Некореектная сумма операции'
+
+VERIFIED_BALANCE = 100000
+UNVERIFIED_BALANCE = 20000

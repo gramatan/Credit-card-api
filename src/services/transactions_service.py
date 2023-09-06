@@ -1,27 +1,35 @@
+"""Сервис для транзакций."""
 from decimal import Decimal
 
 from deepface import DeepFace
 from fastapi import File, UploadFile
 
+from config.config import UNVERIFIED_BALANCE, VERIFIED_BALANCE
+from src.repositories.log_storage import LogStorage
 from src.repositories.token_repository import TokenRepository
 from src.repositories.transactions import Transactions
+from src.repositories.user_storage import UserStorage
 from src.services.handler_utils import raise_unauthorized_exception
 
 
 class TransactionsService:
+    """Сервиис для работы с транзакциями."""
+
     def __init__(
         self,
-        transactions: Transactions,
+        storages: tuple[Transactions, UserStorage, LogStorage],
         token_repository: TokenRepository = TokenRepository(),
     ):
         """
         Инициализация сервиса.
 
         Args:
-            transactions (Transactions): Репо транзакций.
+            storages (Transactions, UserStorage, LogStorage): Репо и хранилища.
             token_repository (TokenRepository): Репо токенов.
         """
-        self.transactions = transactions
+        self.transactions = storages[0]
+        self.user_storage = storages[1]
+        self.history = storages[2]
         self.token_repo = token_repository
 
     async def deposit(
@@ -37,6 +45,9 @@ class TransactionsService:
             card_number (str): Номер карты.
             amount (Decimal): Сумма.
             token (str): Токен.
+
+        Returns:
+            Decimal: Новый баланс.
         """
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
@@ -55,12 +66,15 @@ class TransactionsService:
             card_number (str): Номер карты.
             amount (Decimal): Сумма.
             token (str): Токен.
+
+        Returns:
+            Decimal: Новый баланс.
         """
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
         return self.transactions.withdraw(card_number, amount)
 
-    async def verify(
+    async def verify(   # noqa: WPS210
         self,
         card_number: str,
         token: str,
@@ -82,23 +96,30 @@ class TransactionsService:
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
 
-        selfie_path = "selfie_tmp.jpg"
-        document_path = "document_tmp.jpg"
-    
-        with open(selfie_path, "wb") as buffer:
-            buffer.write(selfie.file.read())
+        selfie_path = f'{card_number}_selfie_tmp.jpg'
+        document_path = f'{card_number}_document_tmp.jpg'
 
-        with open(document_path, "wb") as buffer:
-            buffer.write(document.file.read())
+        with open(selfie_path, 'wb') as selfie_buffer:
+            selfie_buffer.write(selfie.file.read())
 
-        result = DeepFace.verify(img1_path=selfie_path, img2_path=document_path)
+        with open(document_path, 'wb') as doc_buffer:
+            doc_buffer.write(document.file.read())
 
-        new_limit = 20000
+        verification = DeepFace.verify(
+            img1_path=selfie_path,
+            img2_path=document_path,
+        )
 
-        if result['verified'] == True:
-            new_limit = 100000
+        verification_result = verification['verified']
 
-        self.transactions.change_limit(card_number=card_number, new_limit=new_limit)
+        if verification['verified']:
+            new_limit = Decimal(VERIFIED_BALANCE)
+        else:
+            new_limit = Decimal(UNVERIFIED_BALANCE)
 
-        return result["verified"]
-    
+        self.transactions.change_limit(
+            card_number=card_number,
+            new_limit=new_limit,
+        )
+
+        return verification_result

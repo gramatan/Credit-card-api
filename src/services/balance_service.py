@@ -1,16 +1,13 @@
 """Сервиис для работы с балансом пользователя."""
 from datetime import datetime
 
-from fastapi import Depends
-
+from src.repositories.log_storage import LogStorage
 from src.repositories.token_repository import TokenRepository
 from src.repositories.transactions import Transactions
+from src.repositories.user_storage import UserStorage
 from src.schemas.balance_schemas import BalanceResponse
 from src.schemas.log_schemas import BalanceLogModel
-from src.services.handler_utils import (
-    oauth2_scheme,
-    raise_unauthorized_exception,
-)
+from src.services.handler_utils import raise_unauthorized_exception
 
 
 class BalanceService:
@@ -18,17 +15,19 @@ class BalanceService:
 
     def __init__(
         self,
-        transactions: Transactions,
+        storages: tuple[Transactions, UserStorage, LogStorage],
         token_repository: TokenRepository = TokenRepository(),
     ):
         """
         Инициализация сервиса.
 
         Args:
-            transactions (Transactions): Репо транзакций.
+            storages (Transactions, UserStorage, LogStorage): Репо и хранилища.
             token_repository (TokenRepository): Репо токенов.
         """
-        self.transactions = transactions
+        self.transactions = storages[0]
+        self.user_storage = storages[1]
+        self.history = storages[2]
         self.token_repo = token_repository
 
     async def get_balance(
@@ -51,7 +50,7 @@ class BalanceService:
         user_balance = self.transactions.get_balance(card_number)
         return BalanceResponse(balance=user_balance)
 
-    async def get_balance_history(
+    async def get_balance_story(
         self,
         card_number: str,
         from_date: datetime,
@@ -72,15 +71,23 @@ class BalanceService:
         """
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
-        balance_history = self.transactions._history.get_balance_history(
+        balance_history = self.history.get_balance_history(
             card_number,
             from_date,
             to_date,
         )
-        return [BalanceLogModel(
-            card_number=log.card_number,
-            before=log.before,
-            after=log.after,
-            changes=log.changes,
-            datetime_utc=log.datetime_utc
-        ) for log in balance_history]
+        response: list[BalanceLogModel] = []
+
+        if not balance_history:
+            return response
+
+        for log in balance_history:
+            response.append(BalanceLogModel(
+                card_number=log.card_number,
+                before=log.before,
+                after=log.after,
+                changes=log.changes,
+                datetime_utc=log.datetime_utc,
+            ))
+
+        return response

@@ -9,7 +9,7 @@ class UserBase(BaseModel):
 
     card_number: str
     limit: Decimal
-    info: dict[str, str]
+    user_info: dict[str, str]
 
 
 class UserBalance(UserBase):

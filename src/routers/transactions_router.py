@@ -27,8 +27,8 @@ async def withdrawal(
     Returns:
         Decimal: Новый баланс.
     """
-    transactions = get_db()
-    transactions_service = TransactionsService(transactions)
+    storages = get_db()
+    transactions_service = TransactionsService(storages)
     return await transactions_service.withdrawal(card_number, amount, token)
 
 
@@ -49,8 +49,8 @@ async def deposit(
     Returns:
         Decimal: Новый баланс.
     """
-    transactions = get_db()
-    transactions_service = TransactionsService(transactions)
+    storages = get_db()
+    transactions_service = TransactionsService(storages)
     return await transactions_service.deposit(card_number, amount, token)
 
 
@@ -73,6 +73,11 @@ async def verify(
     Returns:
         bool: Результат верификации.
     """
-    transactions = get_db()
-    transactions_service = TransactionsService(transactions)
-    return await transactions_service.verify(card_number, token, selfie, document)
+    storages = get_db()
+    transactions_service = TransactionsService(storages)
+    return await transactions_service.verify(
+        card_number,
+        token,
+        selfie,
+        document,
+    )

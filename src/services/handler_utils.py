@@ -6,7 +6,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='api/auth')
 
 
 def raise_unauthorized_exception(
-        detail: str = 'Invalid or expired token',
+    detail: str = 'Invalid or expired token',
 ) -> None:
     """
     Возвращает 401 ошибку с сообщением об ошибке.

@@ -76,6 +76,7 @@ def logs_collection():
             before=Decimal(index * 100),
             after=Decimal((index + 1) * 100),
             changes=Decimal(100),
+            _datetime_utc=datetime.utcnow(),
         )
         for index in range(5)
     ]
@@ -86,6 +87,7 @@ def logs_collection():
             before=Decimal(index * 100),
             after=Decimal((index + 1) * 100),
             changes=Decimal(100),
+            _datetime_utc=datetime.utcnow(),
         )
         for index in range(3)
     ]

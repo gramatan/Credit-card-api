@@ -1,4 +1,5 @@
 """Конфтест для сценария интеграционных тестов."""
+from datetime import datetime
 from decimal import Decimal
 
 import pytest
@@ -57,11 +58,13 @@ def user_data():
                 before=Decimal('0'),
                 after=Decimal('100'),
                 changes=Decimal('100'),
+                _datetime_utc=datetime.utcnow(),
             ), BalanceLog(
                 card_number='8675309321679911',
                 before=Decimal('100'),
                 after=Decimal('-20'),
                 changes=Decimal('-120'),
+                _datetime_utc=datetime.utcnow(),
             )],
         },
     }
