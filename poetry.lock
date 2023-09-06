@@ -2651,10 +2651,7 @@ files = [
     {file = "wrapt-1.15.0.tar.gz", hash = "sha256:d06730c6aed78cee4126234cf2d071e01b44b915e725a6cb439a879ec9754a3a"},
 ]
 
-[extras]
-ml = ["deepface", "h5py", "scipy", "tensorflow"]
-
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "ff2928954ca54169135204139895f069b43c8d07879abc875bab4cef12bfa3f5"
+content-hash = "fe81567f534a04b8cbe5a93f5e6d26fb4c88e99dc8e0ad2d620f705166ca0ca5"
