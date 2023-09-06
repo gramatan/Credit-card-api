@@ -27,8 +27,8 @@ async def read_balance(
     Returns:
         BalanceResponse: Баланс.
     """
-    transactions = get_db()
-    balance_service = BalanceService(transactions)
+    storages = get_db()
+    balance_service = BalanceService(storages)
     return await balance_service.get_balance(card_number, token)
 
 
@@ -51,9 +51,9 @@ async def read_balance_history(
     Returns:
         list[BalanceLogModel]: История баланса.
     """
-    transactions = get_db()
-    balance_service = BalanceService(transactions)
-    return await balance_service.get_balance_history(
+    storages = get_db()
+    balance_service = BalanceService(storages)
+    return await balance_service.get_balance_story(
         card_number,
         from_date,
         to_date,

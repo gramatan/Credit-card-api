@@ -1,5 +1,5 @@
 """База данных."""
-from passlib.context import CryptContext
+from passlib.context import CryptContext  # type: ignore
 
 from src.repositories.log_storage import LogStorage
 from src.repositories.transactions import Transactions
@@ -18,7 +18,7 @@ def get_db():
     Returns:
         Transactions: "База данных".
     """
-    return db
+    return db, user_storage, history
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
