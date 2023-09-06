@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "credit-card"
-version = "0.2.0"
+version = "0.2.3"
 description = "credit card api"
 authors = ["Andrey <megagran.work@gmail.com>"]
 readme = "README.md"
@@ -9,11 +9,6 @@ packages = []
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
 fastapi = "^0.103.0"
-pytest = "^7.4.0"
-pytest-cov = "^4.1.0"
-wemake-python-styleguide = "^0.18.0"
-mypy = "^1.5.1"
-pre-commit = "^3.3.3"
 uvicorn = "^0.23.2"
 pyjwt = "^2.8.0"
 python-multipart = "^0.0.6"
@@ -24,9 +19,14 @@ tensorflow = "^2.10"
 deepface = "^0.0.79"
 
 [tool.poetry.dev-dependencies]
+pre-commit = "^3.3.3"
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
 mypy = "^1.5.1"
 wemake-python-styleguide = "^0.18.0"
 
+[tool.poetry.extras]
+ml = ["h5py", "scipy", "tensorflow", "deepface"]
 
 [build-system]
 requires = ["poetry-core"]
