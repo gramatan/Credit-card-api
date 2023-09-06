@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from deepface import DeepFace
 from fastapi import File, UploadFile
 
 from src.repositories.token_repository import TokenRepository
@@ -81,4 +82,23 @@ class TransactionsService:
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
 
-        return True
+        selfie_path = "selfie_tmp.jpg"
+        document_path = "document_tmp.jpg"
+    
+        with open(selfie_path, "wb") as buffer:
+            buffer.write(selfie.file.read())
+
+        with open(document_path, "wb") as buffer:
+            buffer.write(document.file.read())
+
+        result = DeepFace.verify(img1_path=selfie_path, img2_path=document_path)
+
+        new_limit = 20000
+
+        if result['verified'] == True:
+            new_limit = 100000
+
+        self.transactions.change_limit(card_number=card_number, new_limit=new_limit)
+
+        return result["verified"]
+    
