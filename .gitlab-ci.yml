@@ -12,7 +12,7 @@ Tests:
     - apt-get update && apt-get install -y curl
     - curl -sSL https://install.python-poetry.org | python3 -
     - export PATH="/root/.local/bin:$PATH"
-    - poetry install --without ml
+    - poetry install
   script:
     - poetry run pytest
   rules:

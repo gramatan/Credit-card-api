@@ -4,6 +4,10 @@ from decimal import Decimal
 from fastapi import APIRouter, Depends, File, UploadFile
 
 from src.database.database import get_db
+from src.schemas.transactions_schemas import (
+    TransactionRequest,
+    VerificationRequest,
+)
 from src.services.handler_utils import oauth2_scheme
 from src.services.transactions_service import TransactionsService
 
@@ -15,7 +19,7 @@ async def withdrawal(
     card_number: str,
     amount: Decimal,
     token: str = Depends(oauth2_scheme),
-) -> Decimal:
+) -> TransactionRequest:
     """
     Эндпоинт для снятия денег с карты.
 
@@ -25,7 +29,7 @@ async def withdrawal(
         token (str): Токен.
 
     Returns:
-        Decimal: Новый баланс.
+        TransactionRequest: Новый баланс.
     """
     storages = get_db()
     transactions_service = TransactionsService(storages)
@@ -37,7 +41,7 @@ async def deposit(
     card_number: str,
     amount: Decimal,
     token: str = Depends(oauth2_scheme),
-) -> Decimal:
+) -> TransactionRequest:
     """
     Эндпоинт для пополнения карты.
 
@@ -47,7 +51,7 @@ async def deposit(
         token (str): Токен.
 
     Returns:
-        Decimal: Новый баланс.
+        TransactionRequest: Новый баланс.
     """
     storages = get_db()
     transactions_service = TransactionsService(storages)
@@ -60,7 +64,7 @@ async def verify(
     selfie: UploadFile = File(...),
     document: UploadFile = File(...),
     token: str = Depends(oauth2_scheme),
-) -> bool:
+) -> VerificationRequest:
     """
     Эндпоинт для верификации пользователя.
 
@@ -71,7 +75,7 @@ async def verify(
         token (str): Токен.
 
     Returns:
-        bool: Результат верификации.
+        VerificationRequest: Результат верификации.
     """
     storages = get_db()
     transactions_service = TransactionsService(storages)

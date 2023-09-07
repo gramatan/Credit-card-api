@@ -4,15 +4,7 @@ from decimal import Decimal
 from pydantic import BaseModel
 
 
-class UserBase(BaseModel):
-    """Базовый класс пользователей."""
-
-    card_number: str
-    limit: Decimal
-    user_info: dict[str, str]
-
-
-class UserBalance(UserBase):
-    """Модель с балансом."""
+class UserBalanceRequest(BaseModel):
+    """Balance response schema."""
 
     balance: Decimal

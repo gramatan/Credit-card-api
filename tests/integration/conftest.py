@@ -10,7 +10,7 @@ from src.repositories.transactions import Transactions
 from src.repositories.user_storage import UserStorage
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def transaction_repo():
     """
     Фикстура для создания репо с хранилищами на сессию.

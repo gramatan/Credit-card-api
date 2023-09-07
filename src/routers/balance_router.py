@@ -4,19 +4,19 @@ from datetime import datetime
 from fastapi import APIRouter, Depends
 
 from src.database.database import get_db
-from src.schemas.balance_schemas import BalanceResponse
 from src.schemas.log_schemas import BalanceLogModel
+from src.schemas.user_schemas import UserBalanceRequest
 from src.services.balance_service import BalanceService
 from src.services.handler_utils import oauth2_scheme
 
 router = APIRouter()
 
 
-@router.get('/balance', response_model=BalanceResponse)
+@router.get('/balance', response_model=UserBalanceRequest)
 async def read_balance(
     card_number: str,
     token: str = Depends(oauth2_scheme),
-) -> BalanceResponse:
+) -> UserBalanceRequest:
     """
     Получение баланса.
 
@@ -25,7 +25,7 @@ async def read_balance(
         token (str): Токен.
 
     Returns:
-        BalanceResponse: Баланс.
+        UserBalanceRequest: Баланс.
     """
     storages = get_db()
     balance_service = BalanceService(storages)

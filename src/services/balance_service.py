@@ -5,8 +5,8 @@ from src.repositories.log_storage import LogStorage
 from src.repositories.token_repository import TokenRepository
 from src.repositories.transactions import Transactions
 from src.repositories.user_storage import UserStorage
-from src.schemas.balance_schemas import BalanceResponse
 from src.schemas.log_schemas import BalanceLogModel
+from src.schemas.user_schemas import UserBalanceRequest
 from src.services.handler_utils import raise_unauthorized_exception
 
 
@@ -34,7 +34,7 @@ class BalanceService:
         self,
         card_number: str,
         token: str,
-    ) -> BalanceResponse:
+    ) -> UserBalanceRequest:
         """
         Получение баланса.
 
@@ -43,12 +43,12 @@ class BalanceService:
             token (str): Токен.
 
         Returns:
-            BalanceResponse: Баланс.
+            UserBalanceRequest: Баланс.
         """
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
         user_balance = self.transactions.get_balance(card_number)
-        return BalanceResponse(balance=user_balance)
+        return UserBalanceRequest(balance=user_balance)
 
     async def get_balance_story(
         self,
@@ -67,7 +67,7 @@ class BalanceService:
             token (str): Токен.
 
         Returns:
-            list[BalanceResponse]: История баланса.
+            list[UserBalanceRequest]: История баланса.
         """
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()

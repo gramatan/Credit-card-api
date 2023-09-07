@@ -9,6 +9,10 @@ from src.repositories.log_storage import LogStorage
 from src.repositories.token_repository import TokenRepository
 from src.repositories.transactions import Transactions
 from src.repositories.user_storage import UserStorage
+from src.schemas.transactions_schemas import (
+    TransactionRequest,
+    VerificationRequest,
+)
 from src.services.handler_utils import raise_unauthorized_exception
 
 
@@ -37,7 +41,7 @@ class TransactionsService:
         card_number: str,
         amount: Decimal,
         token: str,
-    ):
+    ) -> TransactionRequest:
         """
         Сервис для пополнения карты.
 
@@ -47,18 +51,23 @@ class TransactionsService:
             token (str): Токен.
 
         Returns:
-            Decimal: Новый баланс.
+            TransactionRequest: Новый баланс.
         """
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
-        return self.transactions.deposit(card_number, amount)
+        new_balance = self.transactions.deposit(card_number, amount)
+
+        return TransactionRequest(
+            card_number=card_number,
+            balance=new_balance,
+        )
 
     async def withdrawal(
         self,
         card_number: str,
         amount: Decimal,
         token: str,
-    ):
+    ) -> TransactionRequest:
         """
         Сервис для снятия денег с карты.
 
@@ -68,11 +77,16 @@ class TransactionsService:
             token (str): Токен.
 
         Returns:
-            Decimal: Новый баланс.
+            TransactionRequest: Новый баланс.
         """
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
-        return self.transactions.withdraw(card_number, amount)
+        new_balance = self.transactions.withdraw(card_number, amount)
+
+        return TransactionRequest(
+            card_number=card_number,
+            balance=new_balance,
+        )
 
     async def verify(   # noqa: WPS210
         self,
@@ -80,7 +94,7 @@ class TransactionsService:
         token: str,
         selfie: UploadFile = File(...),
         document: UploadFile = File(...),
-    ) -> bool:
+    ) -> VerificationRequest:
         """
         Сервис для верификации пользователя.
 
@@ -91,7 +105,7 @@ class TransactionsService:
             document (UploadFile): Документ пользователя.
 
         Returns:
-            bool: Результат верификации.
+            VerificationRequest: Результат верификации.
         """
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
@@ -110,16 +124,16 @@ class TransactionsService:
             img2_path=document_path,
         )
 
-        verification_result = verification['verified']
-
         if verification['verified']:
             new_limit = Decimal(VERIFIED_BALANCE)
+            verification_response = VerificationRequest(verified=True)
         else:
             new_limit = Decimal(UNVERIFIED_BALANCE)
+            verification_response = VerificationRequest(verified=False)
 
         self.transactions.change_limit(
             card_number=card_number,
             new_limit=new_limit,
         )
 
-        return verification_result
+        return verification_response

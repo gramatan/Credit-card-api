@@ -16,7 +16,7 @@ def get_db():
     Функция получения "базы данных".
 
     Returns:
-        Transactions: "База данных".
+        tuple[Transactions, UserStorage, LogStorage]: "База данных".
     """
     return db, user_storage, history
 
