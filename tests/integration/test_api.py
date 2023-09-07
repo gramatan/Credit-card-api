@@ -4,7 +4,6 @@ from fastapi.testclient import TestClient
 
 from src.main import app
 
-
 client = TestClient(app)
 
 
@@ -16,7 +15,7 @@ client = TestClient(app)
     pytest.param('api/verify', 'post', id='verify'),
 ])
 @pytest.mark.asyncio
-async def test_401(endpoint_url, req):
+async def test_four_o_one(endpoint_url, req):
     """
     Тест на 401.
 

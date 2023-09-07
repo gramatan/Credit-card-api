@@ -6,5 +6,6 @@ from pydantic import BaseModel
 
 class UserBalanceRequest(BaseModel):
     """Balance response schema."""
+
     card_number: str
     balance: Decimal
