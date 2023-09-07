@@ -8,7 +8,7 @@ from src.services.token_service import TokenService
 router = APIRouter()
 
 
-@router.post('/auth', response_model=TokenData)
+@router.post('/auth')
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     response: TokenService = Depends(),

@@ -48,7 +48,10 @@ class BalanceService:
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
         user_balance = self.transactions.get_balance(card_number)
-        return UserBalanceRequest(balance=user_balance)
+        return UserBalanceRequest(
+            card_number=card_number,
+            balance=user_balance,
+        )
 
     async def get_balance_story(
         self,
