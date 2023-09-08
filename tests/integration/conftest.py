@@ -98,6 +98,7 @@ def good_client_with_token():
     return client, token
 
 
+@pytest.fixture()
 def prepare_files():
     """
     Подготовка файлов для тестов.
