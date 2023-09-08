@@ -105,10 +105,10 @@ def prepare_files():
     Returns:
         tuple[io.BytesIO, io.BytesIO]: Подготовленные файлы.
     """
-    selfie_stream = io.BytesIO(b"Nothing here")
-    document_stream = io.BytesIO(b"Why do you read this?")
+    selfie_stream = io.BytesIO(b'Nothing here')
+    document_stream = io.BytesIO(b'Why do you read this?')
 
-    selfie_stream.name = "selfie.jpg"
-    document_stream.name = "document.jpg"
+    selfie_stream.name = 'selfie.jpg'
+    document_stream.name = 'document.jpg'
 
     return selfie_stream, document_stream
