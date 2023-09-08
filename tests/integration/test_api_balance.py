@@ -17,8 +17,7 @@ def test_balance(card_number, expected, good_client_with_token):
         expected (bool): Ожидаемый результат.
         good_client_with_token (tuple[TestClient, dict]): Клиент и токен.
     """
-    client = good_client_with_token[0]
-    token = good_client_with_token[1]
+    client, token = good_client_with_token
     response = client.get(
         url='api/balance',
         params={
@@ -52,8 +51,7 @@ def test_balance_story(
         withdrawals (int): Количество снятий.
         good_client_with_token (tuple[TestClient, dict]): Клиент и токен.
     """
-    client = good_client_with_token[0]
-    token = good_client_with_token[1]
+    client, token = good_client_with_token
 
     start_length = client.get(
         url='api/balance/history',

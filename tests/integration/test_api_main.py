@@ -71,8 +71,7 @@ def test_five_hundred_response(
         request_params (dict): Параметры запроса.
         good_client_with_token (tuple[TestClient, dict]): Клиент и токен.
     """
-    client = good_client_with_token[0]
-    token = good_client_with_token[1]
+    client, token = good_client_with_token
     with pytest.raises(ValueError):
         if req == 'get':
             client.get(

@@ -20,8 +20,7 @@ def test_deposit(deposit_sum, expected, good_client_with_token):
         expected (bool): Ожидаемый результат.
         good_client_with_token (tuple[TestClient, dict]): Клиент и токен.
     """
-    client = good_client_with_token[0]
-    token = good_client_with_token[1]
+    client, token = good_client_with_token
     if not expected:    # noqa: WPS504
         with pytest.raises(ValueError):
             client.post(
@@ -78,8 +77,7 @@ def test_withdrawal(withdraw_sum, expected, good_client_with_token):
         expected (bool): Ожидаемый результат.
         good_client_with_token (tuple[TestClient, dict]): Клиент и токен.
     """
-    client = good_client_with_token[0]
-    token = good_client_with_token[1]
+    client, token = good_client_with_token
 
     if not expected:    # noqa: WPS504
         with pytest.raises(ValueError):
