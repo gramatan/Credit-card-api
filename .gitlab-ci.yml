@@ -13,6 +13,7 @@ Tests:
     - curl -sSL https://install.python-poetry.org | python3 -
     - export PATH="/root/.local/bin:$PATH"
     - poetry install
+    - apt-get -y update && apt-get -y install libgl1
   script:
     - poetry run pytest
   rules:
