@@ -111,25 +111,9 @@ class TransactionsService:
         if not self.token_repo.verify_token(token):
             raise_unauthorized_exception()
 
-        selfie_path = f'{card_number}_selfie_tmp.jpg'
-        document_path = f'{card_number}_document_tmp.jpg'
+        verification_result = await self._verify(card_number, selfie, document)
 
-        with open(selfie_path, 'wb') as selfie_buffer:
-            selfie_buffer.write(selfie.file.read())
-
-        with open(document_path, 'wb') as doc_buffer:
-            doc_buffer.write(document.file.read())
-
-        from src.main import executor  # noqa: WPS433
-        loop = asyncio.get_running_loop()
-        verification_result = await loop.run_in_executor(
-            executor,
-            DeepFace.verify,
-            selfie_path,
-            document_path,
-        )
-
-        if verification_result['verified']:
+        if verification_result:
             new_limit = Decimal(VERIFIED_BALANCE)
             verification_response = VerificationRequest(verified=True)
         else:
@@ -142,3 +126,24 @@ class TransactionsService:
         )
 
         return verification_response
+
+    async def _verify(self, card_number, selfie, document):  # noqa: WPS210
+        from src.main import executor  # noqa: WPS433
+
+        selfie_path = f'{card_number}_selfie_tmp.jpg'
+        document_path = f'{card_number}_document_tmp.jpg'
+
+        with open(selfie_path, 'wb') as selfie_buffer:
+            selfie_buffer.write(selfie.file.read())
+
+        with open(document_path, 'wb') as doc_buffer:
+            doc_buffer.write(document.file.read())
+
+        loop = asyncio.get_running_loop()
+        verification_result = await loop.run_in_executor(
+            executor,
+            DeepFace.verify,
+            selfie_path,
+            document_path,
+        )
+        return verification_result['verified']
