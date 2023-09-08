@@ -1,4 +1,5 @@
 """Сервис для транзакций."""
+import asyncio
 from decimal import Decimal
 
 from deepface import DeepFace
@@ -119,12 +120,16 @@ class TransactionsService:
         with open(document_path, 'wb') as doc_buffer:
             doc_buffer.write(document.file.read())
 
-        verification = DeepFace.verify(
-            img1_path=selfie_path,
-            img2_path=document_path,
+        from src.main import executor  # noqa: WPS433
+        loop = asyncio.get_running_loop()
+        verification_result = await loop.run_in_executor(
+            executor,
+            DeepFace.verify,
+            selfie_path,
+            document_path,
         )
 
-        if verification['verified']:
+        if verification_result['verified']:
             new_limit = Decimal(VERIFIED_BALANCE)
             verification_response = VerificationRequest(verified=True)
         else:
