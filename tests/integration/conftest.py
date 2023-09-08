@@ -1,9 +1,12 @@
 """Конфтест для сценария интеграционных тестов."""
+import io
 from datetime import datetime
 from decimal import Decimal
 
 import pytest
+from starlette.testclient import TestClient
 
+from src.main import app
 from src.models.logs import BalanceLog
 from src.repositories.log_storage import LogStorage
 from src.repositories.transactions import Transactions
@@ -68,3 +71,44 @@ def user_data():
             )],
         },
     }
+
+
+@pytest.fixture()
+def good_client_with_token():
+    """
+    Фикстура получения хорошего токена.
+
+    Returns:
+        tuple[TestClient, dict]: Тестовый клиент и токен.
+    """
+    client = TestClient(app)
+    response = client.post(
+        url='api/auth',
+        data={
+            'username': 'test_user',
+            'password': 'test_password',
+        },
+    )
+
+    access_token = response.json()['access_token']
+    token = {
+        'Authorization': f'Bearer {access_token}',
+    }
+
+    return client, token
+
+
+def prepare_files():
+    """
+    Подготовка файлов для тестов.
+
+    Returns:
+        tuple[io.BytesIO, io.BytesIO]: Подготовленные файлы.
+    """
+    selfie_stream = io.BytesIO(b"Nothing here")
+    document_stream = io.BytesIO(b"Why do you read this?")
+
+    selfie_stream.name = "selfie.jpg"
+    document_stream.name = "document.jpg"
+
+    return selfie_stream, document_stream
