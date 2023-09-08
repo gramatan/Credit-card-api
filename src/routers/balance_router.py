@@ -12,7 +12,7 @@ from src.services.handler_utils import oauth2_scheme
 router = APIRouter()
 
 
-@router.get('/balance/{card_number}')
+@router.get('/balance')
 async def read_balance(
     card_number: str,
     token: str = Depends(oauth2_scheme),
@@ -32,7 +32,7 @@ async def read_balance(
     return await balance_service.get_balance(card_number, token)
 
 
-@router.get('/balance/history/{card_number}')
+@router.get('/balance/history')
 async def read_balance_history(
     card_number: str,
     from_date: datetime,
