@@ -1,29 +1,37 @@
 ## Интегрировать логику бэкенда кредитной карты в приложение.
-Дбавлены схемы pydantic, Эндпоинты согласно описанию. TBU
+Добавлены Эндпоинты согласно описанию.
 
-## Тесты для компонентов истории и транзакций.
+POST `/api/auth` - Авторизация пользователя. -> Возвращает токен.
 
-Добавлены тесты для компонентов истории и транзакций.
-  - `tests/`
-    - `unit/` : Юнит тесты разбиты по файлам в соответствии со структурой проекта.
-    - [test_log_storage.py](tests%2Funit%2Frepositories%2Ftest_log_storage.py)
-    - [test_user_storage.py](tests%2Funit%2Frepositories%2Ftest_user_storage.py)
-    - [test_transactions.py](tests%2Funit%2Frepositories%2Ftest_transactions.py)
-  - `tests/`
-    - `integration/` : Сценарий интеграционных тестов из задания в одном файле.
-    - [test_main_scenario.py](tests%2Fintegration%2Ftest_main_scenario.py)\
+POST `/api/verify` - Сверка фото. -> Bool результат.
 
+POST `/api/deposit` - Пополнение баланса. -> Возвращает номер карты и актуальный баланс
 
-## Написать классы компонентов истории и транзакций в соответствии со схемами.
+POST `/api/withdraw` - Снятие средств. -> Возвращает номер карты и актуальный баланс
 
-Добавлены классы компонентов истории и транзакций в соответствии со схемами.
-  - `models/`
-    - [user.py](src%2Fmodels%2Fuser.py) : Модель пользователя.
-    - [logs.py](src%2Fmodels%2Flogs.py) : Модель логов.
-  - `repositories/`
-    - [user_storage.py](src%2Frepositories%2Fuser_storage.py) : Репозиторий для работы с хранилищем пользователей.
-    - [log_storage.py](src%2Frepositories%2Flog_storage.py) : Репозиторий для работы с хранилищем логов.
-    - [transactions.py](src%2Frepositories%2Ftransactions.py) : Репозиторий для работы транзакциями.
+GET `/api/balance` - Получение баланса. -> Возвращает номер карты и актуальный баланс
+
+GET `/api/balance/history` - Получение списка транзакций по карте. -> Возвращает список транзакций по карте
+
+Константы для запуска:
+- `config/`[config.py](config%2Fconfig.py) : Файл с константами для приложения.
+  - APP_PORT : Порт, на котором будет запущено приложение.
+  - APP_HOST : Хост приложения.
+  - PRE_INSTALLED_CARD_NUMBER : Номер карты, который будет добавлен при первоначальной инициализации приложения для тестирования.
+  - PRE_INSTALLED_CARD_DATA: Данные карты^
+  - TEST_USER_LOGIN: Логин предустановленного пользователя.
+  - TEST_USER_PASSWORD: Пароль предустановленного пользователя.
+
+Порядок запуска приложения и полное описание структуры [CONTRIBUTING.md](CONTRIBUTING.md)
+
+Запуск приложения из оболочки poetry(poetry shell):
+```
+python main.py
+```
+
+Весь код покрыт тестами. Тесты эндпоинтов находятся в папке `tests/integration` с префиксом `test_api_`.
+
+![img.png](img.png)
 
 
 ## Credit card api.

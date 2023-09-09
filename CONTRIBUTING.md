@@ -21,23 +21,34 @@ cd credit_card
 poetry install
 ```
 
-4. Активация виртуального окружение для запуска flake8, mypy и pytest or just for fun:
+4. Активация виртуального окружение для запуска приложения или flake8, mypy и pytest:
 ```
 poetry shell
 ```
 
 5. Запуск приложения:
 
-    Запуск в докере: - TBU
+    Запуск без докера(приложение будет запущено на 24001 порту локальной машины):
+    ```
+    python main.py
+    ```
 
-    Запуск без докера: - TBU
-    ```
-    uvicorn src.credit_card.main:app --reload
-    ```
+   Запуск в докере: - TBU
+
 
 ## Структура проекта
 
-- `src` : Основной код проекта.
+- [main.py](main.py) : Основной файл приложения.
+- `config/`[config.py](config%2Fconfig.py) : Файл с константами для приложения.
+  - APP_PORT : Порт, на котором будет запущено приложение.
+  - APP_HOST : Хост приложения.
+  - PRE_INSTALLED_CARD_NUMBER : Номер карты, который будет добавлен при первоначальной инициализации приложения для тестирования.
+  - PRE_INSTALLED_CARD_DATA: Данные карты^
+  - TEST_USER_LOGIN: Логин предустановленного пользователя.
+  - TEST_USER_PASSWORD: Пароль предустановленного пользователя.
+
+
+- `src` : Исходный код проекта.
   - [database](src%2Fdatabase) : Файлы для работы с базой данных.  - TBU
   - `models/` : Модели данных.
     - [user.py](src%2Fmodels%2Fuser.py) : Модель пользователя.
@@ -49,9 +60,6 @@ poetry shell
   - `routers/` : Файлы с описанием эндпоинтов.
   - `schemas/` : Схемы данных.
   - `services` : Файлы с сервисами для работы с приложением.
-  - [main.py](src%2Fcredit_card%2Fmain.py) : Файл с описанием приложения.
-
-- `config/`[config.py](config%2Fconfig.py) : Файл с конфигурацией приложения.
 
 - `tests`: Тесты для проекта.
   - `unit`: Юнит тесты разбиты по файлам в соответствии со структурой проекта.
@@ -59,8 +67,12 @@ poetry shell
     - [test_user_storage.py](tests%2Funit%2Frepositories%2Ftest_user_storage.py)
     - [test_transactions.py](tests%2Funit%2Frepositories%2Ftest_transactions.py)
     - [test_token_repository.py](tests%2Funit%2Frepositories%2Ftest_token_repository.py)
-  - `integration`: Сценарий интеграционных тестов из задания в одном файле.
+  - `integration`: Сценарий интеграционных тестов из задания в одном файле + тесты API.
     - [test_main_scenario.py](tests%2Fintegration%2Ftest_main_scenario.py)
+    - [test_api_balance.py](tests%2Fintegration%2Ftest_api_balance.py)
+    - [test_api_main.py](tests%2Fintegration%2Ftest_api_main.py)
+    - [test_api_transactions.py](tests%2Fintegration%2Ftest_api_transactions.py)
+    - [test_api_verification.py](tests%2Fintegration%2Ftest_api_verification.py)
 
 - [CHANGELOG.md](CHANGELOG.md) : История изменений проекта.
 - `CONTRIBUTING.md` : Рекомендации для контрибьюторов (вы сейчас читаете его).
