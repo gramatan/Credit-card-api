@@ -13,3 +13,14 @@ AMOUNT_ERROR = 'Некореектная сумма операции'
 
 VERIFIED_BALANCE = 100000
 UNVERIFIED_BALANCE = 20000
+
+APP_PORT = 24001
+APP_HOST = '127.0.0.1'
+
+PRE_INSTALLED_CARD_NUMBER = '123'
+PRE_INSTALLED_CARD_DATA = {     # noqa: WPS407
+    'name': 'test',
+}
+
+TEST_USER_LOGIN = 'test_user'
+TEST_USER_PASSWORD = 'test_password'    # noqa: S105

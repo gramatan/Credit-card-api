@@ -128,7 +128,7 @@ class TransactionsService:
         return verification_response
 
     async def _verify(self, card_number, selfie, document):  # noqa: WPS210
-        from src.main import executor  # noqa: WPS433
+        from main import executor  # noqa: WPS433
 
         selfie_path = f'{card_number}_selfie_tmp.jpg'
         document_path = f'{card_number}_document_tmp.jpg'

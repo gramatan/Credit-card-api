@@ -6,7 +6,7 @@ import pytest
 from fastapi import UploadFile
 from fastapi.testclient import TestClient
 
-from src.main import app
+from main import app
 
 test_file_one = UploadFile(io.BytesIO(b'There is nothing here'))
 test_file_two = UploadFile(io.BytesIO(b'Here is nothing too'))

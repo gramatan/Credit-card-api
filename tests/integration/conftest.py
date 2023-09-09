@@ -6,7 +6,7 @@ from decimal import Decimal
 import pytest
 from starlette.testclient import TestClient
 
-from src.main import app
+from main import app
 from src.models.logs import BalanceLog
 from src.repositories.log_storage import LogStorage
 from src.repositories.transactions import Transactions
