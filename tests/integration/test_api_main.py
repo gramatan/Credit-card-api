@@ -17,6 +17,7 @@ test_file_two = UploadFile(io.BytesIO(b'Here is nothing too'))
     pytest.param('api/balance/history', 'get', id='balance_history'),
     pytest.param('api/withdrawal', 'post', id='withdrawal'),
     pytest.param('api/deposit', 'post', id='deposit'),
+    pytest.param('api/verify', 'post', id='verify'),
 ])
 def test_four_o_one_response(endpoint_url, req):
     """
