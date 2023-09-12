@@ -9,3 +9,9 @@ class TransactionRequest(BaseModel):
 
     card_number: str
     balance: Decimal
+
+
+class VerificationRequest(BaseModel):
+    """Схема для результата верификации."""
+
+    verified: bool

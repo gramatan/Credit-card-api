@@ -7,6 +7,7 @@ from credit_card_balance.src.database.database import get_db
 from credit_card_balance.src.schemas.log_schemas import BalanceLogModel
 from credit_card_balance.src.schemas.user_schemas import UserBalanceRequest
 from credit_card_balance.src.services.balance_service import BalanceService
+from credit_card_balance.src.services.handler_utils import oauth2_scheme
 
 router = APIRouter()
 
@@ -14,6 +15,7 @@ router = APIRouter()
 @router.get('/balance')
 async def read_balance(
     card_number: str,
+    token: str = Depends(oauth2_scheme),
 ) -> UserBalanceRequest:
     """
     Получение баланса.
@@ -27,7 +29,7 @@ async def read_balance(
     """
     storages = get_db()
     balance_service = BalanceService(storages)
-    return await balance_service.get_balance(card_number)
+    return await balance_service.get_balance(card_number, token)
 
 
 @router.get('/balance/history')
@@ -35,6 +37,7 @@ async def read_balance_history(
     card_number: str,
     from_date: datetime,
     to_date: datetime,
+    token: str = Depends(oauth2_scheme),
 ) -> list[BalanceLogModel]:
     """
     Получение истории баланса.
@@ -54,4 +57,5 @@ async def read_balance_history(
         card_number,
         from_date,
         to_date,
+        token,
     )

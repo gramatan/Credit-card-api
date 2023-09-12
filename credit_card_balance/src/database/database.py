@@ -28,9 +28,3 @@ def get_db():
         tuple[Transactions, UserStorage, LogStorage]: "База данных".
     """
     return db, user_storage, history
-
-
-pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
-
-hashed_password = pwd_context.hash(TEST_USER_PASSWORD)
-api_user = {'username': TEST_USER_LOGIN, 'password': hashed_password}

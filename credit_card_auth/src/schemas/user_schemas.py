@@ -4,8 +4,8 @@ from decimal import Decimal
 from pydantic import BaseModel
 
 
-class TransactionRequest(BaseModel):
-    """Схема для транзакций."""
+class UserBalanceRequest(BaseModel):
+    """Balance response schema."""
 
     card_number: str
     balance: Decimal
