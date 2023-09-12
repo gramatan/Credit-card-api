@@ -1,12 +1,12 @@
 """Роутер для получения баланса."""
 from datetime import datetime
 
-from fastapi import APIRouter, Depends
+import httpx
+from fastapi import APIRouter, Depends, HTTPException
 
-from credit_card_auth.src.database.database import get_db
+from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
 from credit_card_auth.src.schemas.log_schemas import BalanceLogModel
 from credit_card_auth.src.schemas.user_schemas import UserBalanceRequest
-from credit_card_auth.src.services.balance_service import BalanceService
 from credit_card_auth.src.services.handler_utils import oauth2_scheme
 
 router = APIRouter()
@@ -27,9 +27,18 @@ async def read_balance(
     Returns:
         UserBalanceRequest: Баланс.
     """
-    storages = get_db()
-    balance_service = BalanceService(storages)
-    return await balance_service.get_balance(card_number)
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/balance",
+            params={
+                "card_number": card_number,
+            }
+        )
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return response.json()
 
 
 @router.get('/balance/history')
@@ -51,11 +60,17 @@ async def read_balance_history(
     Returns:
         list[BalanceLogModel]: История баланса.
     """
-    storages = get_db()
-    balance_service = BalanceService(storages)
-    return await balance_service.get_balance_story(
-        card_number,
-        from_date,
-        to_date,
-        token,
-    )
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/balance/history",
+            params={
+                "card_number": card_number,
+                "from_date": from_date,
+                "to_date": to_date
+            }
+        )
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return response.json()

@@ -1,9 +1,10 @@
 """Роутер для работы с транзакциями."""
 from decimal import Decimal
 
-from fastapi import APIRouter, Depends, File, UploadFile
+import httpx
+from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 
-from credit_card_auth.src.database.database import get_db
+from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
 from credit_card_auth.src.schemas.transactions_schemas import (
     TransactionRequest,
     VerificationRequest,
@@ -33,10 +34,19 @@ async def withdrawal(
     Returns:
         TransactionRequest: Новый баланс.
     """
-    storages = get_db()
-    transactions_service = TransactionsService(storages)
-    return await transactions_service.withdrawal(card_number, amount, token)
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/withdrawal",
+            params={
+                "card_number": card_number,
+                "amount": amount,
+            }
+        )
 
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return response.json()
 
 @router.post('/deposit')
 async def deposit(
@@ -55,9 +65,20 @@ async def deposit(
     Returns:
         TransactionRequest: Новый баланс.
     """
-    storages = get_db()
-    transactions_service = TransactionsService(storages)
-    return await transactions_service.deposit(card_number, amount, token)
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/deposit",
+            params={
+                "card_number": card_number,
+                "amount": amount,
+            }
+        )
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return response.json()
+
 
 
 @router.post('/verify')
@@ -79,11 +100,23 @@ async def verify(
     Returns:
         VerificationRequest: Результат верификации.
     """
-    storages = get_db()
-    transactions_service = TransactionsService(storages)
-    return await transactions_service.verify(
-        card_number,
-        token,
-        selfie,
-        document,
-    )
+
+    # todo: Нам надо сохранить файлы в хранилище
+    selfie_path = ''
+    document_path = ''
+
+    # todo: А тут у нас будет кафка
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/deposit",
+            params={
+                "card_number": card_number,
+                "selfie": selfie_path,
+                "document": document_path,
+            }
+        )
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return response.json()
