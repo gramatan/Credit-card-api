@@ -100,8 +100,14 @@ async def verify(
     """
 
     # todo: Нам надо сохранить файлы в хранилище
-    selfie_path = ''
-    document_path = ''
+    selfie_path = f'{card_number}_selfie_tmp.jpg'
+    document_path = f'{card_number}_document_tmp.jpg'
+
+    with open(selfie_path, 'wb') as selfie_buffer:
+        selfie_buffer.write(selfie.file.read())
+
+    with open(document_path, 'wb') as doc_buffer:
+        doc_buffer.write(document.file.read())
 
     # todo: А тут у нас будет кафка
     async with httpx.AsyncClient() as client:
