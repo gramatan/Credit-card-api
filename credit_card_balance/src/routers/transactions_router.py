@@ -54,3 +54,20 @@ async def deposit(
     storages = get_db()
     transactions_service = TransactionsService(storages)
     return await transactions_service.deposit(card_number, amount)
+
+
+@router.post('/verify')
+async def verify(
+    card_number: str,
+    verified: bool,
+) -> None:
+    """
+    Эндпоинт для повышения лимита после верификации.
+
+    Args:
+        card_number (str): Номер карты.
+        verified (bool): Подтверждение верификации.
+    """
+    storages = get_db()
+    transactions_service = TransactionsService(storages)
+    await transactions_service.limit_change(card_number, verified)

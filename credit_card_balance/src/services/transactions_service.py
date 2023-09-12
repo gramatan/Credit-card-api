@@ -71,3 +71,22 @@ class TransactionsService:
             card_number=card_number,
             balance=new_balance,
         )
+
+    async def limit_change(
+        self,
+        card_number: str,
+        verified: bool,
+    ):
+        """
+        Сервис для изменения лимита.
+
+        Args:
+            card_number (str): Номер карты.
+            verified (bool): Подтверждение верификации.
+        """
+        if verified:
+            new_limit = Decimal(100000)
+        else:
+            new_limit = Decimal(20000)
+
+        self.transactions.change_limit(card_number, new_limit)
