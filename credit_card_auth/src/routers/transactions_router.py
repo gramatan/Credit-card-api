@@ -4,15 +4,13 @@ from decimal import Decimal
 import httpx
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 
-from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
+from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT, VERIFICATION_APP_HOST, VERIFICATION_APP_PORT
 from credit_card_auth.src.schemas.transactions_schemas import (
     TransactionRequest,
     VerificationRequest,
 )
 from credit_card_auth.src.services.handler_utils import oauth2_scheme
-from credit_card_auth.src.services.transactions_service import (
-    TransactionsService,
-)
+
 
 router = APIRouter()
 
@@ -36,7 +34,7 @@ async def withdrawal(
     """
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/withdrawal",
+            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/withdrawal",
             params={
                 "card_number": card_number,
                 "amount": amount,
@@ -67,7 +65,7 @@ async def deposit(
     """
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/deposit",
+            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/deposit",
             params={
                 "card_number": card_number,
                 "amount": amount,
@@ -108,7 +106,7 @@ async def verify(
     # todo: А тут у нас будет кафка
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/deposit",
+            f"http://{VERIFICATION_APP_HOST}:{VERIFICATION_APP_PORT}/api/verify",
             params={
                 "card_number": card_number,
                 "selfie": selfie_path,

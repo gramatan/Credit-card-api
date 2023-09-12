@@ -4,8 +4,6 @@ from passlib.context import CryptContext  # type: ignore
 from config.config import (
     PRE_INSTALLED_CARD_DATA,
     PRE_INSTALLED_CARD_NUMBER,
-    TEST_USER_LOGIN,
-    TEST_USER_PASSWORD,
 )
 from credit_card_balance.src.repositories.log_storage import LogStorage
 from credit_card_balance.src.repositories.transactions import Transactions

@@ -4,7 +4,7 @@ from concurrent.futures import ProcessPoolExecutor
 from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 
-from config.config import APP_HOST, BALANCE_APP_PORT
+from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
 from credit_card_balance.src.routers import (
     balance_router,
     transactions_router,
@@ -14,7 +14,7 @@ from credit_card_balance.src.routers import (
 class Settings(BaseSettings):
     """Конфигурация приложения."""
 
-    app_host: str = APP_HOST
+    app_host: str = BALANCE_APP_HOST
     app_port: int = BALANCE_APP_PORT
 
 

@@ -29,7 +29,7 @@ async def read_balance(
     """
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/balance",
+            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/balance",
             params={
                 "card_number": card_number,
             }
@@ -62,7 +62,7 @@ async def read_balance_history(
     """
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/balance/history",
+            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/balance/history",
             params={
                 "card_number": card_number,
                 "from_date": from_date,
