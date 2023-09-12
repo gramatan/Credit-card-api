@@ -3,7 +3,7 @@ from bisect import bisect_left, bisect_right
 from collections import defaultdict
 from datetime import datetime
 
-from credit_card_balance.src.models.logs import BalanceLog, CommonLog
+from credit_card_auth.src.models.logs import BalanceLog, CommonLog
 
 BalanceLogDict = dict[str, list[BalanceLog]]
 

@@ -2,8 +2,8 @@
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
-from credit_card_balance.src.schemas.token_schemas import TokenData
-from credit_card_balance.src.services.token_service import TokenService
+from credit_card_auth.src.schemas.token_schemas import TokenData
+from credit_card_auth.src.services.token_service import TokenService
 
 router = APIRouter()
 

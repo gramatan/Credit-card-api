@@ -3,13 +3,13 @@ from decimal import Decimal
 
 from fastapi import APIRouter, Depends, File, UploadFile
 
-from credit_card_balance.src.database.database import get_db
-from credit_card_balance.src.schemas.transactions_schemas import (
+from credit_card_auth.src.database.database import get_db
+from credit_card_auth.src.schemas.transactions_schemas import (
     TransactionRequest,
     VerificationRequest,
 )
-from credit_card_balance.src.services.handler_utils import oauth2_scheme
-from credit_card_balance.src.services.transactions_service import (
+from credit_card_auth.src.services.handler_utils import oauth2_scheme
+from credit_card_auth.src.services.transactions_service import (
     TransactionsService,
 )
 

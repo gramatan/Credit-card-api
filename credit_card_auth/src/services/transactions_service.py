@@ -6,17 +6,17 @@ from deepface import DeepFace
 from fastapi import File, UploadFile
 
 from config.config import UNVERIFIED_BALANCE, VERIFIED_BALANCE
-from credit_card_balance.src.repositories.log_storage import LogStorage
-from credit_card_balance.src.repositories.token_repository import (
+from credit_card_auth.src.repositories.log_storage import LogStorage
+from credit_card_auth.src.repositories.token_repository import (
     TokenRepository,
 )
-from credit_card_balance.src.repositories.transactions import Transactions
-from credit_card_balance.src.repositories.user_storage import UserStorage
-from credit_card_balance.src.schemas.transactions_schemas import (
+from credit_card_auth.src.repositories.transactions import Transactions
+from credit_card_auth.src.repositories.user_storage import UserStorage
+from credit_card_auth.src.schemas.transactions_schemas import (
     TransactionRequest,
     VerificationRequest,
 )
-from credit_card_balance.src.services.handler_utils import (
+from credit_card_auth.src.services.handler_utils import (
     raise_unauthorized_exception,
 )
 

@@ -5,13 +5,13 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from config.config import TOKEN_TTL
-from credit_card_balance.src.repositories.api_user_repository import (
+from credit_card_auth.src.repositories.api_user_repository import (
     ApiUserRepository,
 )
-from credit_card_balance.src.repositories.token_repository import (
+from credit_card_auth.src.repositories.token_repository import (
     TokenRepository,
 )
-from credit_card_balance.src.schemas.token_schemas import TokenData
+from credit_card_auth.src.schemas.token_schemas import TokenData
 
 
 class TokenService:

@@ -1,15 +1,15 @@
 """Сервиис для работы с балансом пользователя."""
 from datetime import datetime
 
-from credit_card_balance.src.repositories.log_storage import LogStorage
-from credit_card_balance.src.repositories.token_repository import (
+from credit_card_auth.src.repositories.log_storage import LogStorage
+from credit_card_auth.src.repositories.token_repository import (
     TokenRepository,
 )
-from credit_card_balance.src.repositories.transactions import Transactions
-from credit_card_balance.src.repositories.user_storage import UserStorage
-from credit_card_balance.src.schemas.log_schemas import BalanceLogModel
-from credit_card_balance.src.schemas.user_schemas import UserBalanceRequest
-from credit_card_balance.src.services.handler_utils import (
+from credit_card_auth.src.repositories.transactions import Transactions
+from credit_card_auth.src.repositories.user_storage import UserStorage
+from credit_card_auth.src.schemas.log_schemas import BalanceLogModel
+from credit_card_auth.src.schemas.user_schemas import UserBalanceRequest
+from credit_card_auth.src.services.handler_utils import (
     raise_unauthorized_exception,
 )
 

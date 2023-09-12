@@ -2,7 +2,7 @@
 from decimal import Decimal
 
 from config.config import USER_EXISTS_ERROR, USER_NOT_FOUND_ERROR
-from credit_card_balance.src.models.user import User
+from credit_card_auth.src.models.user import User
 
 
 class UserStorage:

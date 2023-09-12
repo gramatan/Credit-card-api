@@ -3,11 +3,11 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends
 
-from credit_card_balance.src.database.database import get_db
-from credit_card_balance.src.schemas.log_schemas import BalanceLogModel
-from credit_card_balance.src.schemas.user_schemas import UserBalanceRequest
-from credit_card_balance.src.services.balance_service import BalanceService
-from credit_card_balance.src.services.handler_utils import oauth2_scheme
+from credit_card_auth.src.database.database import get_db
+from credit_card_auth.src.schemas.log_schemas import BalanceLogModel
+from credit_card_auth.src.schemas.user_schemas import UserBalanceRequest
+from credit_card_auth.src.services.balance_service import BalanceService
+from credit_card_auth.src.services.handler_utils import oauth2_scheme
 
 router = APIRouter()
 
@@ -29,7 +29,7 @@ async def read_balance(
     """
     storages = get_db()
     balance_service = BalanceService(storages)
-    return await balance_service.get_balance(card_number, token)
+    return await balance_service.get_balance(card_number)
 
 
 @router.get('/balance/history')

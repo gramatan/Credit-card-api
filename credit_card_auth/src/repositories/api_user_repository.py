@@ -1,7 +1,7 @@
 """Репозиторий для работы с пользователем API."""
 from fastapi import HTTPException, status
 
-from credit_card_balance.src.database.database import api_user, pwd_context
+from credit_card_auth.src.database.database import api_user, pwd_context
 
 
 class ApiUserRepository:
