@@ -2,7 +2,7 @@
 from datetime import datetime
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
 from credit_card_auth.src.schemas.log_schemas import BalanceLogModel
@@ -24,19 +24,25 @@ async def read_balance(
         card_number (str): Номер карты.
         token (str): Токен.
 
+    Raises:
+        HTTPException: Если не удалось получить баланс.
+
     Returns:
         UserBalanceRequest: Баланс.
     """
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/balance",
+            f'http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/balance',
             params={
-                "card_number": card_number,
-            }
+                'card_number': card_number,
+            },
         )
 
-    if response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail=response.text)
+    if response.status_code != status.HTTP_200_OK:
+        raise HTTPException(
+            status_code=response.status_code,
+            detail=response.text,
+        )
 
     return response.json()
 
@@ -57,20 +63,26 @@ async def read_balance_history(
         to_date (datetime): Дата конца.
         token (str): Токен.
 
+    Raises:
+        HTTPException: Если не удалось получить историю баланса.
+
     Returns:
         list[BalanceLogModel]: История баланса.
     """
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/balance/history",
+            f'http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/balance/history',    # noqa: E501
             params={
-                "card_number": card_number,
-                "from_date": from_date,
-                "to_date": to_date
-            }
+                'card_number': card_number,
+                'from_date': from_date,   # type: ignore
+                'to_date': to_date,       # type: ignore
+            },
         )
 
-    if response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail=response.text)
+    if response.status_code != status.HTTP_200_OK:
+        raise HTTPException(
+            status_code=response.status_code,
+            detail=response.text,
+        )
 
     return response.json()

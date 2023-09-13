@@ -1,7 +1,7 @@
 """Роутер для получения баланса."""
 from datetime import datetime
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 from credit_card_balance.src.database.database import get_db
 from credit_card_balance.src.schemas.log_schemas import BalanceLogModel
@@ -20,7 +20,6 @@ async def read_balance(
 
     Args:
         card_number (str): Номер карты.
-        token (str): Токен.
 
     Returns:
         UserBalanceRequest: Баланс.
@@ -43,7 +42,6 @@ async def read_balance_history(
         card_number (str): Номер карты.
         from_date (datetime): Дата начала.
         to_date (datetime): Дата конца.
-        token (str): Токен.
 
     Returns:
         list[BalanceLogModel]: История баланса.

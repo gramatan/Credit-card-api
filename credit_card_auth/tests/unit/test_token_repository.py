@@ -1,14 +1,46 @@
 """Тесты репозитория токенов."""
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import jwt
 import pytest
 
 from config.config import ALGORITHM, SECRET_KEY
-from credit_card_balance.src.repositories.token_repository import (
-    TokenRepository,
-)
-from credit_card_balance.tests.unit.conftest import create_token
+from credit_card_auth.src.repositories.token_repository import TokenRepository
+
+
+@pytest.fixture
+def valid_token_data():
+    """
+    Валидные данные для токена.
+
+    Returns:
+        dict: Данные для токена.
+    """
+    return {'sub': 'test_user'}
+
+
+def create_token(token_data: dict, token_type: str):
+    """
+    Создание токена.
+
+    Args:
+        token_data (dict): Данные для токена.
+        token_type (str): Тип токена.
+
+    Returns:
+        str: Токен.
+    """
+    if token_type == 'expired':
+        exp = datetime.utcnow() - timedelta(minutes=1)
+        token_data = {**token_data, 'exp': exp}
+
+    if token_type == 'wrong_secret_key':
+        return jwt.encode(token_data, 'wrong_secret_key', algorithm=ALGORITHM)
+
+    if token_type == 'no_sub_field':
+        token_data = {'data': 'no_sub_field'}
+
+    return jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
 
 
 @pytest.mark.parametrize('test_data, expires_delta', [

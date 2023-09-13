@@ -1,7 +1,7 @@
 """База данных."""
 from passlib.context import CryptContext
 
-from config.config import TEST_USER_PASSWORD, TEST_USER_LOGIN
+from config.config import TEST_USER_LOGIN, TEST_USER_PASSWORD
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 

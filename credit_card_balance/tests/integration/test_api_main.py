@@ -5,6 +5,7 @@ from decimal import Decimal
 import pytest
 from fastapi import UploadFile
 from fastapi.testclient import TestClient
+
 from main_balance import app
 
 test_file_one = UploadFile(io.BytesIO(b'There is nothing here'))

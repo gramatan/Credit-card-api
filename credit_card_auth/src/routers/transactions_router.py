@@ -2,15 +2,19 @@
 from decimal import Decimal
 
 import httpx
-from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 
-from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT, VERIFICATION_APP_HOST, VERIFICATION_APP_PORT
+from config.config import (
+    BALANCE_APP_HOST,
+    BALANCE_APP_PORT,
+    VERIFICATION_HOST,
+    VERIFICATION_PORT,
+)
 from credit_card_auth.src.schemas.transactions_schemas import (
     TransactionRequest,
     VerificationRequest,
 )
 from credit_card_auth.src.services.handler_utils import oauth2_scheme
-
 
 router = APIRouter()
 
@@ -29,22 +33,29 @@ async def withdrawal(
         amount (Decimal): Сумма.
         token (str): Токен.
 
+    Raises:
+        HTTPException: Если не получили ответ 200.
+
     Returns:
         TransactionRequest: Новый баланс.
     """
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/withdrawal",
+            f'http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/withdrawal',
             params={
-                "card_number": card_number,
-                "amount": amount,
-            }
+                'card_number': card_number,
+                'amount': amount,   # type: ignore
+            },
         )
 
-    if response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail=response.text)
+    if response.status_code != status.HTTP_200_OK:
+        raise HTTPException(
+            status_code=response.status_code,
+            detail=response.text,
+        )
 
     return response.json()
+
 
 @router.post('/deposit')
 async def deposit(
@@ -60,27 +71,32 @@ async def deposit(
         amount (Decimal): Сумма.
         token (str): Токен.
 
+    Raises:
+        HTTPException: Если не получили ответ 200.
+
     Returns:
         TransactionRequest: Новый баланс.
     """
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/deposit",
+            f'http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/deposit',
             params={
-                "card_number": card_number,
-                "amount": amount,
-            }
+                'card_number': card_number,
+                'amount': amount,   # type: ignore
+            },
         )
 
-    if response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail=response.text)
+    if response.status_code != status.HTTP_200_OK:
+        raise HTTPException(
+            status_code=response.status_code,
+            detail=response.text,
+        )
 
     return response.json()
 
 
-
 @router.post('/verify')
-async def verify(
+async def verify(   # noqa: WPS210
     card_number: str,
     selfie: UploadFile = File(...),
     document: UploadFile = File(...),
@@ -95,10 +111,12 @@ async def verify(
         document (UploadFile): Документ пользователя.
         token (str): Токен.
 
+    Raises:
+        HTTPException: Если не получили ответ 200.
+
     Returns:
         VerificationRequest: Результат верификации.
     """
-
     # todo: Нам надо сохранить файлы в хранилище
     selfie_path = f'{card_number}_selfie_tmp.jpg'
     document_path = f'{card_number}_document_tmp.jpg'
@@ -112,15 +130,18 @@ async def verify(
     # todo: А тут у нас будет кафка
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"http://{VERIFICATION_APP_HOST}:{VERIFICATION_APP_PORT}/api/verify",
+            f'http://{VERIFICATION_HOST}:{VERIFICATION_PORT}/api/verify',
             params={
-                "card_number": card_number,
-                "selfie": selfie_path,
-                "document": document_path,
-            }
+                'card_number': card_number,
+                'selfie': selfie_path,
+                'document': document_path,
+            },
         )
 
-    if response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail=response.text)
+    if response.status_code != status.HTTP_200_OK:
+        raise HTTPException(
+            status_code=response.status_code,
+            detail=response.text,
+        )
 
     return response.json()

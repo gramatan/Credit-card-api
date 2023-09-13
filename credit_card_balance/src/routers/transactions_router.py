@@ -25,7 +25,6 @@ async def withdrawal(
     Args:
         card_number (str): Номер карты.
         amount (Decimal): Сумма.
-        token (str): Токен.
 
     Returns:
         TransactionRequest: Новый баланс.
@@ -46,7 +45,6 @@ async def deposit(
     Args:
         card_number (str): Номер карты.
         amount (Decimal): Сумма.
-        token (str): Токен.
 
     Returns:
         TransactionRequest: Новый баланс.

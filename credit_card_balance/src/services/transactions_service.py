@@ -1,6 +1,7 @@
 """Сервис для транзакций."""
 from decimal import Decimal
 
+from config.config import UNVERIFIED_BALANCE, VERIFIED_BALANCE
 from credit_card_balance.src.repositories.log_storage import LogStorage
 from credit_card_balance.src.repositories.transactions import Transactions
 from credit_card_balance.src.repositories.user_storage import UserStorage
@@ -21,7 +22,6 @@ class TransactionsService:
 
         Args:
             storages (Transactions, UserStorage, LogStorage): Репо и хранилища.
-            token_repository (TokenRepository): Репо токенов.
         """
         self.transactions = storages[0]
         self.user_storage = storages[1]
@@ -64,7 +64,6 @@ class TransactionsService:
         Returns:
             TransactionRequest: Новый баланс.
         """
-
         new_balance = self.transactions.withdraw(card_number, amount)
 
         return TransactionRequest(
@@ -85,8 +84,8 @@ class TransactionsService:
             verified (bool): Подтверждение верификации.
         """
         if verified:
-            new_limit = Decimal(100000)
+            new_limit = Decimal(VERIFIED_BALANCE)
         else:
-            new_limit = Decimal(20000)
+            new_limit = Decimal(UNVERIFIED_BALANCE)
 
         self.transactions.change_limit(card_number, new_limit)

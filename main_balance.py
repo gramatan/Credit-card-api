@@ -5,10 +5,7 @@ from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 
 from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
-from credit_card_balance.src.routers import (
-    balance_router,
-    transactions_router,
-)
+from credit_card_balance.src.routers import balance_router, transactions_router
 
 
 class Settings(BaseSettings):

@@ -1,10 +1,5 @@
 """База данных."""
-from passlib.context import CryptContext  # type: ignore
-
-from config.config import (
-    PRE_INSTALLED_CARD_DATA,
-    PRE_INSTALLED_CARD_NUMBER,
-)
+from config.config import PRE_INSTALLED_CARD_DATA, PRE_INSTALLED_CARD_NUMBER
 from credit_card_balance.src.repositories.log_storage import LogStorage
 from credit_card_balance.src.repositories.transactions import Transactions
 from credit_card_balance.src.repositories.user_storage import UserStorage

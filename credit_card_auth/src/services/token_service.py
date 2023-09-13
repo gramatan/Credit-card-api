@@ -8,9 +8,7 @@ from config.config import TOKEN_TTL
 from credit_card_auth.src.repositories.api_user_repository import (
     ApiUserRepository,
 )
-from credit_card_auth.src.repositories.token_repository import (
-    TokenRepository,
-)
+from credit_card_auth.src.repositories.token_repository import TokenRepository
 from credit_card_auth.src.schemas.token_schemas import TokenData
 
 

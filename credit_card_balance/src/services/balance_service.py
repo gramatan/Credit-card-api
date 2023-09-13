@@ -2,7 +2,6 @@
 from datetime import datetime
 
 from credit_card_balance.src.repositories.log_storage import LogStorage
-
 from credit_card_balance.src.repositories.transactions import Transactions
 from credit_card_balance.src.repositories.user_storage import UserStorage
 from credit_card_balance.src.schemas.log_schemas import BalanceLogModel

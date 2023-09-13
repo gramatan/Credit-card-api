@@ -4,7 +4,11 @@ from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 
 from config.config import AUTH_APP_HOST, AUTH_APP_PORT
-from credit_card_auth.src.routers import transactions_router, balance_router, token_router
+from credit_card_auth.src.routers import (
+    balance_router,
+    token_router,
+    transactions_router,
+)
 
 
 class Settings(BaseSettings):

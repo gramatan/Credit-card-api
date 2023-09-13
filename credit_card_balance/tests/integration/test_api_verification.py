@@ -28,7 +28,7 @@ def test_verify(
     file1, file2 = prepare_files
 
     mocker.patch(
-        'credit_card_balance.src.services.transactions_service.TransactionsService._verify',
+        'credit_card_balance.src.services.transactions_service.TransactionsService._verify',    # noqa: E501
         return_value=verification_result,
     )
 
