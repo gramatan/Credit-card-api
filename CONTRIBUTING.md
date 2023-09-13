@@ -28,9 +28,11 @@ poetry shell
 
 5. Запуск приложения:
 
-    Запуск без докера(приложение будет запущено на 24001 порту локальной машины):
+    Запуск без докера::
     ```
-    python main.py
+    python main_auth.py - для сервиса авторизации на 24001 (C HTTPS)
+    python main_balance.py - для сервиса баланса на 24101
+    python main_verify.py - для сервиса верификации на 24201
     ```
 
    Запуск в докере: - TBU
@@ -38,42 +40,67 @@ poetry shell
 
 ## Структура проекта
 
-- [main.py](main.py) : Основной файл приложения.
+Проект разделен на три микросервиса: авторизация (`credit_card_auth`), 
+баланс и транзакционные операции (`credit_card_balance`), 
+верификация (`credit_card_verify`).
+
+Единый для всех сервисов конфигурационный файл:
 - `config/`[config.py](config%2Fconfig.py) : Файл с константами для приложения.
-  - APP_PORT : Порт, на котором будет запущено приложение.
-  - APP_HOST : Хост приложения.
+  - AUTH_APP_PORT : Сервис авторизации. Порт, на котором будет запущено приложение.
+  - AUTH_APP_HOST : Сервис авторизации. Хост приложения.
+  - BALANCE_APP_PORT : Сервис Баланса. Порт, на котором будет запущено приложение.
+  - BALANCE_APP_HOST : Сервис Баланса. Хост приложения.
+  - VERIFICATION_PORT : Сервис Верификации. Порт, на котором будет запущено приложение.
+  - VERIFICATION_HOST : Сервис Верификации. Хост приложения.
+  - KAFKA_HOST : Хост Kafka.
   - PRE_INSTALLED_CARD_NUMBER : Номер карты, который будет добавлен при первоначальной инициализации приложения для тестирования.
   - PRE_INSTALLED_CARD_DATA: Данные карты^
   - TEST_USER_LOGIN: Логин предустановленного пользователя.
   - TEST_USER_PASSWORD: Пароль предустановленного пользователя.
 
+### Микросервис: credit_card_auth
+
+- [main_auth.py](main_auth.py) : Основной файл приложения.
 
 - `src` : Исходный код проекта.
   - [database](src%2Fdatabase) : Файлы для работы с базой данных.  - TBU
-  - `models/` : Модели данных.
-    - [user.py](src%2Fmodels%2Fuser.py) : Модель пользователя.
-    - [logs.py](src%2Fmodels%2Flogs.py) : Модель логов.
-  - `repositories/` : Файлы с репозиториями для работы с базой данных.
-    - [user_storage.py](src%2Frepositories%2Fuser_storage.py) : Репозиторий для работы с хранилищем пользователей.
-    - [log_storage.py](src%2Frepositories%2Flog_storage.py) : Репозиторий для работы с хранилищем логов.
-    - [transactions.py](src%2Frepositories%2Ftransactions.py) : Репозиторий для работы транзакциями.
-  - `routers/` : Файлы с описанием эндпоинтов.
-  - `schemas/` : Схемы данных.
-  - `services` : Файлы с сервисами для работы с приложением.
+  - [repositories](credit_card_auth%2Fsrc%2Frepositories) : Файлы с репозиториями для работы с базой данных.
+  - [routers](credit_card_auth%2Fsrc%2Frouters) : Файлы с описанием эндпоинтов.
+  - [schemas](credit_card_auth%2Fsrc%2Fschemas) : Схемы данных.
+  - [services](credit_card_auth%2Fsrc%2Fservices) : Файлы с сервисами для работы с приложением.
 
-- `tests`: Тесты для проекта.
+- `tests`: Тесты сервиса.
   - `unit`: Юнит тесты разбиты по файлам в соответствии со структурой проекта.
-    - [test_log_storage.py](tests%2Funit%2Frepositories%2Ftest_log_storage.py)
-    - [test_user_storage.py](tests%2Funit%2Frepositories%2Ftest_user_storage.py)
-    - [test_transactions.py](tests%2Funit%2Frepositories%2Ftest_transactions.py)
-    - [test_token_repository.py](tests%2Funit%2Frepositories%2Ftest_token_repository.py)
   - `integration`: Сценарий интеграционных тестов из задания в одном файле + тесты API.
-    - [test_main_scenario.py](tests%2Fintegration%2Ftest_main_scenario.py)
-    - [test_api_balance.py](tests%2Fintegration%2Ftest_api_balance.py)
-    - [test_api_main.py](tests%2Fintegration%2Ftest_api_main.py)
-    - [test_api_transactions.py](tests%2Fintegration%2Ftest_api_transactions.py)
-    - [test_api_verification.py](tests%2Fintegration%2Ftest_api_verification.py)
 
+
+### Микросервис: credit_card_balance
+- [main_balance.py](main_balance.py) : Основной файл приложения.
+
+- `src` : Исходный код проекта.
+  - [database](src%2Fdatabase) : Файлы для работы с базой данных.  - TBU
+  - [models](src%2Fmodels) : Модели данных.
+  - [repositories](credit_card_balance%2Fsrc%2Frepositories) : Файлы с репозиториями для работы с базой данных.
+  - [routers](credit_card_balance%2Fsrc%2Frouters) : Файлы с описанием эндпоинтов.
+  - [schemas](credit_card_balance%2Fsrc%2Fschemas) : Схемы данных.
+  - [services](credit_card_balance%2Fsrc%2Fservices) : Файлы с сервисами для работы с приложением.
+  
+- `tests`: Тесты сервиса.
+  - `unit`: Юнит тесты разбиты по файлам в соответствии со структурой проекта.
+  - `integration`: Сценарий интеграционных тестов из задания в одном файле + тесты API.
+
+### Микросервис: credit_card_verify
+- [main_verify.py](main_verify.py) : Основной файл приложения.
+
+- `src` : Исходный код проекта.
+  - [routers](credit_card_verify%2Fsrc%2Frouters) : Файлы с описанием эндпоинтов.
+  - [schemas](credit_card_verify%2Fsrc%2Fschemas) : Схемы данных.
+  - [services](credit_card_verify%2Fsrc%2Fservices) : Файлы с сервисами для работы с приложением.
+
+- `tests`: Тесты сервиса.
+  - `integration`: Сценарий интеграционных тестов из задания в одном файле + тесты API.
+
+### Общие файлы
 - [CHANGELOG.md](CHANGELOG.md) : История изменений проекта.
 - `CONTRIBUTING.md` : Рекомендации для контрибьюторов (вы сейчас читаете его).
 - [README.md](README.md) : Описание проекта.

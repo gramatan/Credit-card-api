@@ -23,7 +23,9 @@ Tests:
       changes:
         - "**/*.py"
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "week2_task1"
-      when: manual
+      changes:
+        - "**/*.py"
+#      when: manual
 
 Linters:
   stage: linters
