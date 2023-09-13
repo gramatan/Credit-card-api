@@ -3,27 +3,28 @@ from datetime import datetime
 from decimal import Decimal
 
 import pytest
+from fastapi.testclient import TestClient
+
+from main_balance import app
 
 
 @pytest.mark.parametrize('card_number, expected', [
     pytest.param('123', True, id='normal card number'),
 ])
-def test_balance(card_number, expected, good_client_with_token):
+def test_balance(card_number, expected):
     """
     Тест на баланс.
 
     Args:
         card_number (str): Номер карты.
         expected (bool): Ожидаемый результат.
-        good_client_with_token (tuple[TestClient, dict]): Клиент и токен.
     """
-    client, token = good_client_with_token
+    client = TestClient(app)
     response = client.get(
         url='api/balance',
         params={
             'card_number': card_number,
         },
-        headers=token,
     )
     assert response.status_code == 200
     assert response.json()['card_number'] == card_number
@@ -40,7 +41,6 @@ def test_balance_story(
     card_number,
     depos,
     withdrawals,
-    good_client_with_token,
 ):
     """
     Тест на историю баланса.
@@ -49,9 +49,8 @@ def test_balance_story(
         card_number (str): Номер карты.
         depos (int): Количество депозитов.
         withdrawals (int): Количество снятий.
-        good_client_with_token (tuple[TestClient, dict]): Клиент и токен.
     """
-    client, token = good_client_with_token
+    client = TestClient(app)
 
     start_length = client.get(
         url='api/balance/history',
@@ -60,7 +59,6 @@ def test_balance_story(
             'from_date': datetime(1970, 1, 1),
             'to_date': datetime(3000, 1, 1),
         },
-        headers=token,
     ).json()
 
     for _ in range(depos):
@@ -70,7 +68,6 @@ def test_balance_story(
                 'card_number': '123',
                 'amount': Decimal(100),
             },
-            headers=token,
         )
 
     for _ in range(withdrawals):
@@ -80,7 +77,6 @@ def test_balance_story(
                 'card_number': '123',
                 'amount': Decimal(100),
             },
-            headers=token,
         )
 
     response = client.get(
@@ -90,7 +86,6 @@ def test_balance_story(
             'from_date': datetime(1970, 1, 1),
             'to_date': datetime(3000, 1, 1),
         },
-        headers=token,
     )
     expected_length = depos + withdrawals + len(start_length)
     assert response.status_code == 200
