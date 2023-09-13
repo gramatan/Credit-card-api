@@ -35,4 +35,6 @@ if __name__ == '__main__':
         app,
         host=settings.app_host,
         port=settings.app_port,
+        ssl_keyfile="localhost.key",
+        ssl_certfile="localhost.crt",
     )
