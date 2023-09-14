@@ -25,7 +25,7 @@ async def read_balance(
         token (str): Токен.
 
     Raises:
-        HTTPException: Если не удалось получить баланс.
+        HTTPException: Если ответ от сервиса не 200.
 
     Returns:
         UserBalanceRequest: Баланс.
@@ -64,7 +64,7 @@ async def read_balance_history(
         token (str): Токен.
 
     Raises:
-        HTTPException: Если не удалось получить историю баланса.
+        HTTPException: Если ответ от сервиса не 200.
 
     Returns:
         list[BalanceLogModel]: История баланса.

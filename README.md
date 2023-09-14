@@ -4,6 +4,7 @@
 - Сервис баланса на 24101 - source code: `credit_card_balance`
 - Сервис верификации на 24201 - source code: `credit_card_verify`
 
+Документация к сервисам находится в папке `docs` в формате `service_name.yaml` и в папках с сервисами в формате JSON.
 
 Порядок запуска приложения и полное описание структуры [CONTRIBUTING.md](CONTRIBUTING.md)
 

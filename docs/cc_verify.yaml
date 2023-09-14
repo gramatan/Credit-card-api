@@ -1,0 +1,88 @@
+openapi: 3.1.0
+info:
+  title: FastAPI
+  version: 0.1.0
+paths:
+  /api/verify:
+    post:
+      tags:
+        - verify
+      summary: Verify
+      description: |-
+        Эндпоинт для верификации пользователя.
+
+        Args:
+            selfie (str): путь к Селфи пользователя.
+            document (str): путь к Документ пользователя.
+
+        Returns:
+            VerificationResponse: Результат верификации.
+      operationId: verify_api_verify_post
+      parameters:
+        - name: selfie
+          in: query
+          required: true
+          schema:
+            type: string
+            title: Selfie
+        - name: document
+          in: query
+          required: true
+          schema:
+            type: string
+            title: Document
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+    VerificationResponse:
+      properties:
+        verified:
+          type: boolean
+          title: Verified
+      type: object
+      required:
+        - verified
+      title: VerificationResponse
+      description: Схема для результата верификации.
