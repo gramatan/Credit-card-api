@@ -27,7 +27,7 @@ async def verify(   # noqa: WPS210
 
     Args:
         card_number (str): Номер карты.
-        request (Request): Сам запрос из состояния приложения которого мы получаем продюсера.
+        request (Request): Сам запрос для состояний.
         selfie (UploadFile): Селфи пользователя.
         document (UploadFile): Документ пользователя.
         token (str): Токен.

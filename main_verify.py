@@ -45,17 +45,16 @@ async def kafka_listener(app: FastAPI):
     async for message in consumer:
         message_data = json.loads(message.value.decode('utf-8'))
 
-        request_id = message_data["request_id"]
-        selfie_path = message_data["selfie_path"]
-        document_path = message_data["document_path"]
-
         verification_service = VerifyService()
-        result = await verification_service.verify(selfie_path, document_path)
+        verify_result = await verification_service.verify(
+            card_number=message_data["card_number"],
+            selfie_path=message_data["selfie_path"],
+            document_path=message_data["document_path"],
+        )
 
-        print(result)
         response_data = {
-            "request_id": request_id,
-            "response": str(result)
+            "request_id": message_data["request_id"],
+            "response": str(verify_result)
         }
         message_data_bytes = json.dumps(response_data).encode('utf-8')
         await producer.send("gran_verify_response", value=message_data_bytes)

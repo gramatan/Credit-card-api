@@ -9,6 +9,7 @@ router = APIRouter()
 
 @router.post('/verify')
 async def verify(
+    card_number: str,
     selfie: str,
     document: str,
 ) -> VerificationResponse:
@@ -16,6 +17,7 @@ async def verify(
     Эндпоинт для верификации пользователя.
 
     Args:
+        card_number (str): Номер карты.
         selfie (str): путь к Селфи пользователя.
         document (str): путь к Документ пользователя.
 
@@ -23,7 +25,9 @@ async def verify(
         VerificationResponse: Результат верификации.
     """
     verification_service = VerifyService()
-    return await verification_service.verify(
+    verification_result = await verification_service.verify(
+        card_number,
         selfie,
         document,
     )
+    return VerificationResponse(verified=verification_result)
