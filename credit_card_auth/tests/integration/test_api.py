@@ -75,12 +75,6 @@ def test_bad_user():
         },
         id='balance_history',
     ),
-    pytest.param(
-        'api/verify',
-        'post',
-        {'card_number': '8675309'},
-        id='verify',
-    ),
 ])
 def test_five_hundred_response(
     endpoint_url,
@@ -120,17 +114,6 @@ def test_five_hundred_response(
             url=endpoint_url,
             params=request_params,
             headers=token,
-        )
-
-    elif endpoint_url == 'api/verify':
-        response = client.post(
-            url=endpoint_url,
-            params=request_params,
-            headers=token,
-            files={
-                'selfie': prepare_files[0],
-                'document': prepare_files[1],
-            },
         )
 
     else:

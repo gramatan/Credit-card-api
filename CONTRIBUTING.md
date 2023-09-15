@@ -40,8 +40,8 @@ poetry shell
 
 ## Структура проекта
 
-Проект разделен на три микросервиса: авторизация (`credit_card_auth`), 
-баланс и транзакционные операции (`credit_card_balance`), 
+Проект разделен на три микросервиса: авторизация (`credit_card_auth`),
+баланс и транзакционные операции (`credit_card_balance`),
 верификация (`credit_card_verify`).
 
 Единый для всех сервисов конфигурационный файл:
@@ -84,7 +84,7 @@ poetry shell
   - [routers](credit_card_balance%2Fsrc%2Frouters) : Файлы с описанием эндпоинтов.
   - [schemas](credit_card_balance%2Fsrc%2Fschemas) : Схемы данных.
   - [services](credit_card_balance%2Fsrc%2Fservices) : Файлы с сервисами для работы с приложением.
-  
+
 - `tests`: Тесты сервиса.
   - `unit`: Юнит тесты разбиты по файлам в соответствии со структурой проекта.
   - `integration`: Сценарий интеграционных тестов из задания в одном файле + тесты API.

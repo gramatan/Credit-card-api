@@ -1,6 +1,7 @@
 """Основной файл приложения."""
 import asyncio
 import json
+import logging
 
 from aiokafka import AIOKafkaConsumer
 from fastapi import FastAPI
@@ -26,15 +27,17 @@ class Settings(BaseSettings):
 app = FastAPI()
 
 
-@app.on_event("startup")
+@app.on_event('startup')
 async def startup_event():
+    """Начало работы приложения."""
     app.state.kafka_producer = await start_producer()
     app.state.pending_requests = {}
     asyncio.create_task(kafka_response_listener())
 
 
-@app.on_event("shutdown")
+@app.on_event('shutdown')
 async def shutdown_event():
+    """Окончание работы приложения."""
     await stop_producer(app.state.kafka_producer)
 
 
@@ -53,19 +56,22 @@ app.include_router(
 
 
 async def kafka_response_listener():
+    """Слушатель ответов от сервиса верификации."""
     consumer = AIOKafkaConsumer(
-        "gran_verify_response",
+        'gran_verify_response',
         bootstrap_servers='localhost:24301',
     )
     await consumer.start()
     try:
         async for message in consumer:
-            data = json.loads(message.value)
-            request_id = data["request_id"]
-            queue = app.state.pending_requests.get(request_id)
+            message_data = json.loads(message.value)
+            request_id = message_data['request_id']
+            queue = app.state.pending_requests.get(request_id)  # noqa: S113
             if queue:
-                await queue.put(data["response"])
-                del app.state.pending_requests[request_id]
+                await queue.put(message_data['response'])
+                app.state.pending_requests.pop(request_id, None)
+    except asyncio.CancelledError:
+        logging.warning('Kafka consumer was cancelled.')
     finally:
         await consumer.stop()
 

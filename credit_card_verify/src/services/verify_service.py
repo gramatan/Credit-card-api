@@ -4,7 +4,7 @@ import asyncio
 from aiohttp import ClientSession, TCPConnector
 from deepface import DeepFace
 
-from config.config import BALANCE_APP_PORT, BALANCE_APP_HOST
+from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
 
 
 class VerifyService:
@@ -30,7 +30,7 @@ class VerifyService:
         from main_verify import executor  # noqa: WPS433
 
         loop = asyncio.get_running_loop()
-        try:
+        try:    # noqa: WPS229
             verification_result_dict = await loop.run_in_executor(
                 executor,
                 DeepFace.verify,
@@ -62,10 +62,9 @@ class VerifyService:
         """
         verified_str = str(verification_result).lower()
         async with ClientSession(connector=TCPConnector(ssl=False)) as session:
-            response = await session.post(
+            await session.post(
                 f'http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/verify',
                 params={
-                    "card_number": card_number,
-                    "verified": verified_str,
+                    'card_number': card_number,
+                    'verified': verified_str,
                 })
-            print(response)
