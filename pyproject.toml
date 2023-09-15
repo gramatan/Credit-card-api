@@ -18,6 +18,7 @@ pytest-asyncio = "^0.21.1"
 pytest-mock = "^3.11.1"
 pydantic-settings = "^2.0.3"
 aiokafka = "^0.8.1"
+aiohttp = "^3.8.5"
 
 [tool.poetry.group.ml.dependencies]
 h5py = "^3"
