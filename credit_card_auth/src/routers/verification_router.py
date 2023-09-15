@@ -1,7 +1,11 @@
 """Роутер для верификации пользователя."""
+import asyncio
 import json
-from fastapi import APIRouter, Depends, File, UploadFile, Request, status
+import uuid
 
+from fastapi import APIRouter, Depends, File, UploadFile, Request, status, HTTPException
+
+from config.config import RESPONSE_TIMEOUT
 from credit_card_auth.src.schemas.transactions_schemas import (
     VerificationRequest,
 )
@@ -17,7 +21,7 @@ async def verify(   # noqa: WPS210
     selfie: UploadFile = File(...),
     document: UploadFile = File(...),
     token: str = Depends(oauth2_scheme),
-):
+) -> VerificationRequest:
     """
     Эндпоинт для верификации пользователя.
 
@@ -34,6 +38,7 @@ async def verify(   # noqa: WPS210
 
     """
     producer = request.app.state.kafka_producer
+    pending_requests = request.app.state.pending_requests
     selfie_path = f'photo_storage/{card_number}_selfie_tmp.jpg'
     document_path = f'photo_storage/{card_number}_document_tmp.jpg'
 
@@ -43,7 +48,10 @@ async def verify(   # noqa: WPS210
     with open(document_path, 'wb') as doc_buffer:
         doc_buffer.write(document.file.read())
 
+    request_id = uuid.uuid4().hex
+
     message_data = {
+        "request_id": request_id,
         "card_number": card_number,
         "selfie_path": selfie_path,
         "document_path": document_path
@@ -52,6 +60,19 @@ async def verify(   # noqa: WPS210
     message_data_bytes = json.dumps(message_data).encode('utf-8')
     await producer.send("gran_verify", value=message_data_bytes)
 
-    return status.HTTP_200_OK
+    queue = asyncio.Queue()
+    pending_requests[request_id] = queue
+
+    try:
+        response = await asyncio.wait_for(
+            queue.get(),
+            timeout=RESPONSE_TIMEOUT,
+        )
+        return VerificationRequest(verified=response)
+    except asyncio.TimeoutError:
+        raise HTTPException(
+            status_code=status.HTTP_408_REQUEST_TIMEOUT,
+            detail='Время ожидания ответа от сервиса верификации истекло',
+        )
 
 

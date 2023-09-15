@@ -1,6 +1,8 @@
 """Основной файл приложения."""
-from contextlib import asynccontextmanager
+import asyncio
+import json
 
+from aiokafka import AIOKafkaConsumer
 from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 
@@ -27,6 +29,8 @@ app = FastAPI()
 @app.on_event("startup")
 async def startup_event():
     app.state.kafka_producer = await start_producer()
+    app.state.pending_requests = {}
+    asyncio.create_task(kafka_response_listener())
 
 
 @app.on_event("shutdown")
@@ -46,6 +50,27 @@ app.include_router(
     prefix=PATH_PREFIX,
     tags=['transactions'],
 )
+
+
+async def kafka_response_listener():
+    print("Starting Kafka listener...")
+    consumer = AIOKafkaConsumer(
+        "gran_verify_response",
+        bootstrap_servers='localhost:24301',
+    )
+    await consumer.start()
+    print("Consumer started!")
+    try:
+        async for message in consumer:
+            print(f"Received message: {message.value}")
+            data = json.loads(message.value)
+            request_id = data["request_id"]
+            queue = app.state.pending_requests.get(request_id)
+            if queue:
+                await queue.put(data["response"])
+                del app.state.pending_requests[request_id]
+    finally:
+        await consumer.stop()
 
 if __name__ == '__main__':
     import uvicorn  # noqa: WPS433

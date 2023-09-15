@@ -13,7 +13,7 @@ class VerifyService:
         self,
         selfie_path: str,
         document_path: str,
-    ) -> VerificationResponse:
+    ) -> bool:
         """
         Сервис для верификации пользователя.
 
@@ -22,16 +22,19 @@ class VerifyService:
             document_path (str): Путь к Документ пользователя.
 
         Returns:
-            VerificationResponse: Результат верификации.
+            bool: Результат верификации.
         """
         from main_verify import executor  # noqa: WPS433
 
         loop = asyncio.get_running_loop()
-        verification_result = await loop.run_in_executor(
-            executor,
-            DeepFace.verify,
-            selfie_path,
-            document_path,
-        )
+        try:
+            verification_result = await loop.run_in_executor(
+                executor,
+                DeepFace.verify,
+                selfie_path,
+                document_path,
+            )
+        except ValueError:
+            return False
 
-        return VerificationResponse(verified=verification_result['verified'])
+        return verification_result['verified']

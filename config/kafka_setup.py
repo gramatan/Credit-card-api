@@ -21,7 +21,6 @@ async def start_consumer():
         consumer = AIOKafkaConsumer(
             'gran_verify',
             bootstrap_servers='localhost:24301',
-            group_id="verification-group"
         )
         await consumer.start()
         return consumer

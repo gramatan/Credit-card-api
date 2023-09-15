@@ -26,6 +26,8 @@ KAFKA_HOST = '127.0.0.1'
 
 PATH_PREFIX = '/api'
 
+RESPONSE_TIMEOUT = 5
+
 PRE_INSTALLED_CARD_NUMBER = '123'
 PRE_INSTALLED_CARD_DATA = {     # noqa: WPS407
     'name': 'test',
