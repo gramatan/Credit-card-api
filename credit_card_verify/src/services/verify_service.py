@@ -27,6 +27,33 @@ class VerifyService:
         Returns:
             bool: Результат верификации.
         """
+        verification_result = await self._get_verification_result(
+            selfie_path,
+            document_path,
+        )
+
+        await self._change_limit(
+            card_number=card_number,
+            verification_result=verification_result,
+        )
+
+        return verification_result
+
+    async def _get_verification_result(
+        self,
+        selfie_path: str,
+        document_path: str,
+    ) -> bool:
+        """
+        Получает результат верификации, используя DeepFace.
+
+        Args:
+            selfie_path (str): Путь к Селфи пользователя.
+            document_path (str): Путь к Документ пользователя.
+
+        Returns:
+            bool: Результат верификации.
+        """
         from main_verify import executor  # noqa: WPS433
 
         loop = asyncio.get_running_loop()
@@ -37,18 +64,11 @@ class VerifyService:
                 selfie_path,
                 document_path,
             )
-            verification_result = bool(verification_result_dict['verified'])
+            return bool(verification_result_dict['verified'])
         except ValueError:
-            verification_result = False
+            return False
 
-        await self.change_limit(
-            card_number=card_number,
-            verification_result=verification_result,
-        )
-
-        return verification_result
-
-    async def change_limit(
+    async def _change_limit(
         self,
         card_number: str,
         verification_result: bool,

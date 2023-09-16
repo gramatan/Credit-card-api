@@ -13,7 +13,6 @@ from config.kafka_setup import (
     stop_consumer,
     stop_producer,
 )
-from credit_card_verify.src.routers import verify_router
 
 
 class Settings(BaseSettings):
@@ -41,8 +40,6 @@ async def shutdown_event():
     await stop_producer(app.state.kafka_producer)
 
 executor = ProcessPoolExecutor(max_workers=1)
-
-app.include_router(verify_router.router, prefix='/api', tags=['verify'])
 
 
 async def kafka_listener(app: FastAPI):  # noqa: WPS442, WPS210
