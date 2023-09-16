@@ -45,7 +45,9 @@ docker run -d --name kafka -e ALLOW_PLAINTEXT_LISTENER=yes -e KAFKA_CFG_ZOOKEEPE
 docker exec -it kafka /opt/bitnami/kafka/bin/kafka-topics.sh --create --topic gran_verify --bootstrap-server host.docker.internal:24301 --partitions 1 --replication-factor 1
 docker exec -it kafka /opt/bitnami/kafka/bin/kafka-topics.sh --create --topic gran_verify_response --bootstrap-server host.docker.internal:24301 --partitions 1 --replication-factor 1
 ```
+Обновлены тесты.
 
+![img_1.png](img_1.png)
 
 ## Week5. SHIFT-559. Сервис авторизации и проксирования запросов
 Сервис разбит на три микросервиса:
@@ -66,8 +68,6 @@ python main_verify.py - для сервиса верификации на 24201
 ```
 
 Весь код покрыт тестами. Тесты эндпоинтов находятся в папке `tests/integration` с префиксом `test_api_`.
-
-![img_1.png](img_1.png)
 
 
 ## Credit card api.
