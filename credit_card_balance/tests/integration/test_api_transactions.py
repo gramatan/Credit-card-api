@@ -108,3 +108,57 @@ def test_withdrawal(withdraw_sum, expected):
         assert response.status_code == 200
         assert response.json()['card_number'] == '123'
         assert response.json()['balance'] == str(expected_balance)
+
+
+@pytest.mark.parametrize('verify_result, expected_low, expected_big', [
+    pytest.param(False, True, False, id='Low Limit'),
+    pytest.param(True, True, True, id='Big Limit'),
+])
+def test_change_limit(verify_result, expected_low, expected_big):
+    """
+    Тест на изменение лимита.
+
+    Args:
+        verify_result (bool): Результат верификации.
+        expected_low (bool): Проверка снятия 15.
+        expected_big (bool): Проверка снятия 50.
+    """
+    client = TestClient(app)
+
+    client.post(
+        url='api/verify',
+        params={
+            'card_number': '123',
+            'verified': verify_result,
+        },
+    )
+    response_low = client.post(
+        url='api/withdrawal',
+        params={
+            'card_number': '123',
+            'amount': 15000,
+        },
+    )
+    assert response_low.status_code == 200
+    assert response_low.json()['card_number'] == '123'
+
+    if expected_big:
+        response_big = client.post(
+            url='api/withdrawal',
+            params={
+                'card_number': '123',
+                'amount': 50000,
+            },
+        )
+        assert response_big.status_code == 200
+        assert response_big.json()['card_number'] == '123'
+
+    else:
+        with pytest.raises(ValueError):
+            client.post(
+                url='api/withdrawal',
+                params={
+                    'card_number': '123',
+                    'amount': 50000,
+                },
+            )
