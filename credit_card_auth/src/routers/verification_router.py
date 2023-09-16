@@ -1,15 +1,13 @@
 """Роутер для верификации пользователя."""
-import asyncio
-import json
-import uuid
-
 from fastapi import APIRouter, Depends, File, Request, UploadFile
 
-from config.config import RESPONSE_TIMEOUT
 from credit_card_auth.src.schemas.transactions_schemas import (
     VerificationRequest,
 )
 from credit_card_auth.src.services.handler_utils import oauth2_scheme
+from credit_card_auth.src.services.verification_service import (
+    VerificationService,
+)
 
 router = APIRouter()
 
@@ -35,34 +33,10 @@ async def verify(   # noqa: WPS210
     Returns:
         VerificationRequest: Результат верификации.
     """
-    producer = request.app.state.kafka_producer
-    pending_requests = request.app.state.pending_requests
-    selfie_path = f'photo_storage/{card_number}_selfie_tmp.jpg'
-    document_path = f'photo_storage/{card_number}_document_tmp.jpg'
-
-    with open(selfie_path, 'wb') as selfie_buffer:
-        selfie_buffer.write(selfie.file.read())
-
-    with open(document_path, 'wb') as doc_buffer:
-        doc_buffer.write(document.file.read())
-
-    request_id = uuid.uuid4().hex
-
-    message_data = {
-        'request_id': request_id,
-        'card_number': card_number,
-        'selfie_path': selfie_path,
-        'document_path': document_path,
-    }
-
-    message_data_bytes = json.dumps(message_data).encode('utf-8')
-    await producer.send('gran_verify', value=message_data_bytes)
-
-    queue = asyncio.Queue()  # type: ignore
-    pending_requests[request_id] = queue
-
-    response = await asyncio.wait_for(
-        queue.get(),
-        timeout=RESPONSE_TIMEOUT,
+    verification_service = VerificationService()
+    return await verification_service.verify(
+        card_number,
+        request,
+        selfie,
+        document,
     )
-    return VerificationRequest(verified=response)
