@@ -64,6 +64,7 @@ docker exec -it kafka /opt/bitnami/kafka/bin/kafka-topics.sh --create --topic gr
 - Сервис верификации на 24201 - source code: `credit_card_verify`
 
 Документация к сервисам находится в папке `docs` в формате `service_name.yaml` и в папках с сервисами в формате JSON.
+Скрипт генерации апи - [get_api.py](get_api.py)
 
 Порядок запуска приложения и полное описание структуры [CONTRIBUTING.md](CONTRIBUTING.md)
 

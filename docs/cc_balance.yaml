@@ -1,302 +1,273 @@
-openapi: 3.1.0
-info:
-  title: FastAPI
-  version: 0.1.0
-paths:
-  /api/balance:
-    get:
-      tags:
-        - balance
-      summary: Read Balance
-      description: |-
-        Получение баланса.
-
-        Args:
-            card_number (str): Номер карты.
-
-        Returns:
-            UserBalanceRequest: Баланс.
-      operationId: read_balance_api_balance_get
-      parameters:
-        - name: card_number
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Card Number
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserBalanceRequest'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/balance/history:
-    get:
-      tags:
-        - balance
-      summary: Read Balance History
-      description: |-
-        Получение истории баланса.
-
-        Args:
-            card_number (str): Номер карты.
-            from_date (datetime): Дата начала.
-            to_date (datetime): Дата конца.
-
-        Returns:
-            list[BalanceLogModel]: История баланса.
-      operationId: read_balance_history_api_balance_history_get
-      parameters:
-        - name: card_number
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Card Number
-        - name: from_date
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date-time
-            title: From Date
-        - name: to_date
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date-time
-            title: To Date
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/BalanceLogModel'
-                title: Response Read Balance History Api Balance History Get
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/withdrawal:
-    post:
-      tags:
-        - transactions
-      summary: Withdrawal
-      description: |-
-        Эндпоинт для снятия денег с карты.
-
-        Args:
-            card_number (str): Номер карты.
-            amount (Decimal): Сумма.
-
-        Returns:
-            TransactionRequest: Новый баланс.
-      operationId: withdrawal_api_withdrawal_post
-      parameters:
-        - name: card_number
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Card Number
-        - name: amount
-          in: query
-          required: true
-          schema:
-            anyOf:
-              - type: number
-              - type: string
-            title: Amount
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionRequest'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/deposit:
-    post:
-      tags:
-        - transactions
-      summary: Deposit
-      description: |-
-        Эндпоинт для пополнения карты.
-
-        Args:
-            card_number (str): Номер карты.
-            amount (Decimal): Сумма.
-
-        Returns:
-            TransactionRequest: Новый баланс.
-      operationId: deposit_api_deposit_post
-      parameters:
-        - name: card_number
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Card Number
-        - name: amount
-          in: query
-          required: true
-          schema:
-            anyOf:
-              - type: number
-              - type: string
-            title: Amount
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionRequest'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/verify:
-    post:
-      tags:
-        - transactions
-      summary: Verify
-      description: |-
-        Эндпоинт для повышения лимита после верификации.
-
-        Args:
-            card_number (str): Номер карты.
-            verified (bool): Подтверждение верификации.
-      operationId: verify_api_verify_post
-      parameters:
-        - name: card_number
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Card Number
-        - name: verified
-          in: query
-          required: true
-          schema:
-            type: boolean
-            title: Verified
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
     BalanceLogModel:
+      description: Класс для логов баланса.
       properties:
-        card_number:
-          type: string
-          title: Card Number
-        before:
-          type: string
-          title: Before
         after:
-          type: string
           title: After
+          type: string
+        before:
+          title: Before
+          type: string
+        card_number:
+          title: Card Number
+          type: string
         changes:
-          type: string
           title: Changes
-        datetime_utc:
           type: string
+        datetime_utc:
           format: date-time
           title: Datetime Utc
-      type: object
+          type: string
       required:
-        - card_number
-        - before
-        - after
-        - changes
-        - datetime_utc
+      - card_number
+      - before
+      - after
+      - changes
+      - datetime_utc
       title: BalanceLogModel
-      description: Класс для логов баланса.
+      type: object
     HTTPValidationError:
       properties:
         detail:
           items:
             $ref: '#/components/schemas/ValidationError'
-          type: array
           title: Detail
-      type: object
+          type: array
       title: HTTPValidationError
+      type: object
     TransactionRequest:
-      properties:
-        card_number:
-          type: string
-          title: Card Number
-        balance:
-          type: string
-          title: Balance
-      type: object
-      required:
-        - card_number
-        - balance
-      title: TransactionRequest
       description: Схема для транзакций.
-    UserBalanceRequest:
       properties:
-        card_number:
-          type: string
-          title: Card Number
         balance:
-          type: string
           title: Balance
-      type: object
+          type: string
+        card_number:
+          title: Card Number
+          type: string
       required:
-        - card_number
-        - balance
-      title: UserBalanceRequest
+      - card_number
+      - balance
+      title: TransactionRequest
+      type: object
+    UserBalanceRequest:
       description: Balance response schema.
+      properties:
+        balance:
+          title: Balance
+          type: string
+        card_number:
+          title: Card Number
+          type: string
+      required:
+      - card_number
+      - balance
+      title: UserBalanceRequest
+      type: object
     ValidationError:
       properties:
         loc:
           items:
             anyOf:
-              - type: string
-              - type: integer
-          type: array
+            - type: string
+            - type: integer
           title: Location
+          type: array
         msg:
-          type: string
           title: Message
-        type:
           type: string
+        type:
           title: Error Type
-      type: object
+          type: string
       required:
-        - loc
-        - msg
-        - type
+      - loc
+      - msg
+      - type
       title: ValidationError
+      type: object
+info:
+  title: FastAPI
+  version: 0.1.0
+openapi: 3.1.0
+paths:
+  /api/balance:
+    get:
+      description: "Получение баланса.\n\nArgs:\n    card_number (str): Номер карты.\n\
+        \nReturns:\n    UserBalanceRequest: Баланс."
+      operationId: read_balance_api_balance_get
+      parameters:
+      - in: query
+        name: card_number
+        required: true
+        schema:
+          title: Card Number
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBalanceRequest'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Read Balance
+      tags:
+      - balance
+  /api/balance/history:
+    get:
+      description: "Получение истории баланса.\n\nArgs:\n    card_number (str): Номер\
+        \ карты.\n    from_date (datetime): Дата начала.\n    to_date (datetime):\
+        \ Дата конца.\n\nReturns:\n    list[BalanceLogModel]: История баланса."
+      operationId: read_balance_history_api_balance_history_get
+      parameters:
+      - in: query
+        name: card_number
+        required: true
+        schema:
+          title: Card Number
+          type: string
+      - in: query
+        name: from_date
+        required: true
+        schema:
+          format: date-time
+          title: From Date
+          type: string
+      - in: query
+        name: to_date
+        required: true
+        schema:
+          format: date-time
+          title: To Date
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BalanceLogModel'
+                title: Response Read Balance History Api Balance History Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Read Balance History
+      tags:
+      - balance
+  /api/deposit:
+    post:
+      description: "Эндпоинт для пополнения карты.\n\nArgs:\n    card_number (str):\
+        \ Номер карты.\n    amount (Decimal): Сумма.\n\nReturns:\n    TransactionRequest:\
+        \ Новый баланс."
+      operationId: deposit_api_deposit_post
+      parameters:
+      - in: query
+        name: card_number
+        required: true
+        schema:
+          title: Card Number
+          type: string
+      - in: query
+        name: amount
+        required: true
+        schema:
+          anyOf:
+          - type: number
+          - type: string
+          title: Amount
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRequest'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Deposit
+      tags:
+      - transactions
+  /api/verify:
+    post:
+      description: "Эндпоинт для повышения лимита после верификации.\n\nArgs:\n  \
+        \  card_number (str): Номер карты.\n    verified (bool): Подтверждение верификации."
+      operationId: verify_api_verify_post
+      parameters:
+      - in: query
+        name: card_number
+        required: true
+        schema:
+          title: Card Number
+          type: string
+      - in: query
+        name: verified
+        required: true
+        schema:
+          title: Verified
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Verify
+      tags:
+      - transactions
+  /api/withdrawal:
+    post:
+      description: "Эндпоинт для снятия денег с карты.\n\nArgs:\n    card_number (str):\
+        \ Номер карты.\n    amount (Decimal): Сумма.\n\nReturns:\n    TransactionRequest:\
+        \ Новый баланс."
+      operationId: withdrawal_api_withdrawal_post
+      parameters:
+      - in: query
+        name: card_number
+        required: true
+        schema:
+          title: Card Number
+          type: string
+      - in: query
+        name: amount
+        required: true
+        schema:
+          anyOf:
+          - type: number
+          - type: string
+          title: Amount
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRequest'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Withdrawal
+      tags:
+      - transactions

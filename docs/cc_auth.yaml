@@ -1,22 +1,179 @@
-openapi: 3.1.0
+components:
+  schemas:
+    BalanceLogModel:
+      description: Класс для логов баланса.
+      properties:
+        after:
+          title: After
+          type: string
+        before:
+          title: Before
+          type: string
+        card_number:
+          title: Card Number
+          type: string
+        changes:
+          title: Changes
+          type: string
+        datetime_utc:
+          format: date-time
+          title: Datetime Utc
+          type: string
+      required:
+      - card_number
+      - before
+      - after
+      - changes
+      - datetime_utc
+      title: BalanceLogModel
+      type: object
+    Body_login_for_access_token_api_auth_post:
+      properties:
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+        grant_type:
+          anyOf:
+          - pattern: password
+            type: string
+          - type: 'null'
+          title: Grant Type
+        password:
+          title: Password
+          type: string
+        scope:
+          default: ''
+          title: Scope
+          type: string
+        username:
+          title: Username
+          type: string
+      required:
+      - username
+      - password
+      title: Body_login_for_access_token_api_auth_post
+      type: object
+    Body_verify_api_verify_post:
+      properties:
+        document:
+          format: binary
+          title: Document
+          type: string
+        selfie:
+          format: binary
+          title: Selfie
+          type: string
+      required:
+      - selfie
+      - document
+      title: Body_verify_api_verify_post
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    TokenData:
+      description: Token data schema.
+      properties:
+        access_token:
+          title: Access Token
+          type: string
+        token_type:
+          title: Token Type
+          type: string
+      required:
+      - access_token
+      - token_type
+      title: TokenData
+      type: object
+    TransactionRequest:
+      description: Схема для транзакций.
+      properties:
+        balance:
+          title: Balance
+          type: string
+        card_number:
+          title: Card Number
+          type: string
+      required:
+      - card_number
+      - balance
+      title: TransactionRequest
+      type: object
+    UserBalanceRequest:
+      description: Balance response schema.
+      properties:
+        balance:
+          title: Balance
+          type: string
+        card_number:
+          title: Card Number
+          type: string
+      required:
+      - card_number
+      - balance
+      title: UserBalanceRequest
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+    VerificationRequest:
+      description: Схема для результата верификации.
+      properties:
+        verified:
+          title: Verified
+          type: boolean
+      required:
+      - verified
+      title: VerificationRequest
+      type: object
+  securitySchemes:
+    OAuth2PasswordBearer:
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: api/auth
+      type: oauth2
 info:
   title: FastAPI
   version: 0.1.0
+openapi: 3.1.0
 paths:
   /api/auth:
     post:
-      tags:
-        - auth
-      summary: Login For Access Token
-      description: |-
-        Получение токена.
-
-        Args:
-            form_data (OAuth2PasswordRequestForm): Данные формы.
-            response (TokenService): Сервис для работы с токенами.
-
-        Returns:
-            TokenData: Токен.
+      description: "Получение токена.\n\nArgs:\n    form_data (OAuth2PasswordRequestForm):\
+        \ Данные формы.\n    response (TokenService): Сервис для работы с токенами.\n\
+        \nReturns:\n    TokenData: Токен."
       operationId: login_for_access_token_api_auth_post
       requestBody:
         content:
@@ -26,425 +183,217 @@ paths:
         required: true
       responses:
         '200':
-          description: Successful Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenData'
+          description: Successful Response
         '422':
-          description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Login For Access Token
+      tags:
+      - auth
   /api/balance:
     get:
-      tags:
-        - balance
-      summary: Read Balance
-      description: |-
-        Получение баланса.
-
-        Args:
-            card_number (str): Номер карты.
-            token (str): Токен.
-
-        Raises:
-            HTTPException: Если не удалось получить баланс.
-
-        Returns:
-            UserBalanceRequest: Баланс.
+      description: "Получение баланса.\n\nArgs:\n    card_number (str): Номер карты.\n\
+        \    token (str): Токен.\n\nRaises:\n    HTTPException: Если ответ от сервиса\
+        \ не 200.\n\nReturns:\n    UserBalanceRequest: Баланс."
       operationId: read_balance_api_balance_get
-      security:
-        - OAuth2PasswordBearer: []
       parameters:
-        - name: card_number
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Card Number
+      - in: query
+        name: card_number
+        required: true
+        schema:
+          title: Card Number
+          type: string
       responses:
         '200':
-          description: Successful Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBalanceRequest'
+          description: Successful Response
         '422':
-          description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Read Balance
+      tags:
+      - balance
   /api/balance/history:
     get:
-      tags:
-        - balance
-      summary: Read Balance History
-      description: |-
-        Получение истории баланса.
-
-        Args:
-            card_number (str): Номер карты.
-            from_date (datetime): Дата начала.
-            to_date (datetime): Дата конца.
-            token (str): Токен.
-
-        Raises:
-            HTTPException: Если не удалось получить историю баланса.
-
-        Returns:
-            list[BalanceLogModel]: История баланса.
+      description: "Получение истории баланса.\n\nArgs:\n    card_number (str): Номер\
+        \ карты.\n    from_date (datetime): Дата начала.\n    to_date (datetime):\
+        \ Дата конца.\n    token (str): Токен.\n\nRaises:\n    HTTPException: Если\
+        \ ответ от сервиса не 200.\n\nReturns:\n    list[BalanceLogModel]: История\
+        \ баланса."
       operationId: read_balance_history_api_balance_history_get
-      security:
-        - OAuth2PasswordBearer: []
       parameters:
-        - name: card_number
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Card Number
-        - name: from_date
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date-time
-            title: From Date
-        - name: to_date
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date-time
-            title: To Date
+      - in: query
+        name: card_number
+        required: true
+        schema:
+          title: Card Number
+          type: string
+      - in: query
+        name: from_date
+        required: true
+        schema:
+          format: date-time
+          title: From Date
+          type: string
+      - in: query
+        name: to_date
+        required: true
+        schema:
+          format: date-time
+          title: To Date
+          type: string
       responses:
         '200':
-          description: Successful Response
           content:
             application/json:
               schema:
-                type: array
                 items:
                   $ref: '#/components/schemas/BalanceLogModel'
                 title: Response Read Balance History Api Balance History Get
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /api/withdrawal:
-    post:
-      tags:
-        - transactions
-      summary: Withdrawal
-      description: |-
-        Эндпоинт для снятия денег с карты.
-
-        Args:
-            card_number (str): Номер карты.
-            amount (Decimal): Сумма.
-            token (str): Токен.
-
-        Raises:
-            HTTPException: Если не получили ответ 200.
-
-        Returns:
-            TransactionRequest: Новый баланс.
-      operationId: withdrawal_api_withdrawal_post
-      security:
-        - OAuth2PasswordBearer: []
-      parameters:
-        - name: card_number
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Card Number
-        - name: amount
-          in: query
-          required: true
-          schema:
-            anyOf:
-              - type: number
-              - type: string
-            title: Amount
-      responses:
-        '200':
+                type: array
           description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionRequest'
         '422':
-          description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Read Balance History
+      tags:
+      - balance
   /api/deposit:
     post:
-      tags:
-        - transactions
-      summary: Deposit
-      description: |-
-        Эндпоинт для пополнения карты.
-
-        Args:
-            card_number (str): Номер карты.
-            amount (Decimal): Сумма.
-            token (str): Токен.
-
-        Raises:
-            HTTPException: Если не получили ответ 200.
-
-        Returns:
-            TransactionRequest: Новый баланс.
+      description: "Эндпоинт для пополнения карты.\n\nArgs:\n    card_number (str):\
+        \ Номер карты.\n    amount (Decimal): Сумма.\n    token (str): Токен.\n\n\
+        Raises:\n    HTTPException: Если не получили ответ 200.\n\nReturns:\n    TransactionRequest:\
+        \ Новый баланс."
       operationId: deposit_api_deposit_post
-      security:
-        - OAuth2PasswordBearer: []
       parameters:
-        - name: card_number
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Card Number
-        - name: amount
-          in: query
-          required: true
-          schema:
-            anyOf:
-              - type: number
-              - type: string
-            title: Amount
+      - in: query
+        name: card_number
+        required: true
+        schema:
+          title: Card Number
+          type: string
+      - in: query
+        name: amount
+        required: true
+        schema:
+          anyOf:
+          - type: number
+          - type: string
+          title: Amount
       responses:
         '200':
-          description: Successful Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransactionRequest'
+          description: Successful Response
         '422':
-          description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Deposit
+      tags:
+      - transactions
   /api/verify:
     post:
-      tags:
-        - transactions
-      summary: Verify
-      description: |-
-        Эндпоинт для верификации пользователя.
-
-        Args:
-            card_number (str): Номер карты.
-            selfie (UploadFile): Селфи пользователя.
-            document (UploadFile): Документ пользователя.
-            token (str): Токен.
-
-        Raises:
-            HTTPException: Если не получили ответ 200.
-
-        Returns:
-            VerificationRequest: Результат верификации.
+      description: "Эндпоинт для верификации пользователя.\n\nArgs:\n    card_number\
+        \ (str): Номер карты.\n    request (Request): Сам запрос для состояний.\n\
+        \    selfie (UploadFile): Селфи пользователя.\n    document (UploadFile):\
+        \ Документ пользователя.\n    token (str): Токен.\n\nReturns:\n    VerificationRequest:\
+        \ Результат верификации."
       operationId: verify_api_verify_post
-      security:
-        - OAuth2PasswordBearer: []
       parameters:
-        - name: card_number
-          in: query
-          required: true
-          schema:
-            type: string
-            title: Card Number
-      requestBody:
+      - in: query
+        name: card_number
         required: true
+        schema:
+          title: Card Number
+          type: string
+      requestBody:
         content:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Body_verify_api_verify_post'
+        required: true
       responses:
         '200':
-          description: Successful Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/VerificationRequest'
+          description: Successful Response
         '422':
-          description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-components:
-  schemas:
-    BalanceLogModel:
-      properties:
-        card_number:
-          type: string
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Verify
+      tags:
+      - verification
+  /api/withdrawal:
+    post:
+      description: "Эндпоинт для снятия денег с карты.\n\nArgs:\n    card_number (str):\
+        \ Номер карты.\n    amount (Decimal): Сумма.\n    token (str): Токен.\n\n\
+        Raises:\n    HTTPException: Если не получили ответ 200.\n\nReturns:\n    TransactionRequest:\
+        \ Новый баланс."
+      operationId: withdrawal_api_withdrawal_post
+      parameters:
+      - in: query
+        name: card_number
+        required: true
+        schema:
           title: Card Number
-        before:
           type: string
-          title: Before
-        after:
-          type: string
-          title: After
-        changes:
-          type: string
-          title: Changes
-        datetime_utc:
-          type: string
-          format: date-time
-          title: Datetime Utc
-      type: object
-      required:
-        - card_number
-        - before
-        - after
-        - changes
-        - datetime_utc
-      title: BalanceLogModel
-      description: Класс для логов баланса.
-    Body_login_for_access_token_api_auth_post:
-      properties:
-        grant_type:
+      - in: query
+        name: amount
+        required: true
+        schema:
           anyOf:
-            - type: string
-              pattern: password
-            - type: 'null'
-          title: Grant Type
-        username:
-          type: string
-          title: Username
-        password:
-          type: string
-          title: Password
-        scope:
-          type: string
-          title: Scope
-          default: ''
-        client_id:
-          anyOf:
-            - type: string
-            - type: 'null'
-          title: Client Id
-        client_secret:
-          anyOf:
-            - type: string
-            - type: 'null'
-          title: Client Secret
-      type: object
-      required:
-        - username
-        - password
-      title: Body_login_for_access_token_api_auth_post
-    Body_verify_api_verify_post:
-      properties:
-        selfie:
-          type: string
-          format: binary
-          title: Selfie
-        document:
-          type: string
-          format: binary
-          title: Document
-      type: object
-      required:
-        - selfie
-        - document
-      title: Body_verify_api_verify_post
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    TokenData:
-      properties:
-        access_token:
-          type: string
-          title: Access Token
-        token_type:
-          type: string
-          title: Token Type
-      type: object
-      required:
-        - access_token
-        - token_type
-      title: TokenData
-      description: Token data schema.
-    TransactionRequest:
-      properties:
-        card_number:
-          type: string
-          title: Card Number
-        balance:
-          type: string
-          title: Balance
-      type: object
-      required:
-        - card_number
-        - balance
-      title: TransactionRequest
-      description: Схема для транзакций.
-    UserBalanceRequest:
-      properties:
-        card_number:
-          type: string
-          title: Card Number
-        balance:
-          type: string
-          title: Balance
-      type: object
-      required:
-        - card_number
-        - balance
-      title: UserBalanceRequest
-      description: Balance response schema.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-              - type: string
-              - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-        - loc
-        - msg
-        - type
-      title: ValidationError
-    VerificationRequest:
-      properties:
-        verified:
-          type: boolean
-          title: Verified
-      type: object
-      required:
-        - verified
-      title: VerificationRequest
-      description: Схема для результата верификации.
-  securitySchemes:
-    OAuth2PasswordBearer:
-      type: oauth2
-      flows:
-        password:
-          scopes: {}
-          tokenUrl: api/auth
+          - type: number
+          - type: string
+          title: Amount
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRequest'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - OAuth2PasswordBearer: []
+      summary: Withdrawal
+      tags:
+      - transactions
