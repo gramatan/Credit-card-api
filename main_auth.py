@@ -1,14 +1,15 @@
 """Основной файл приложения."""
 import asyncio
-import json
-import logging
 
-from aiokafka import AIOKafkaConsumer
 from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 
 from config.config import AUTH_APP_HOST, AUTH_APP_PORT, PATH_PREFIX
-from config.kafka_setup import start_producer, stop_producer
+from config.kafka_setup import (
+    kafka_response_listener,
+    start_producer,
+    stop_producer,
+)
 from credit_card_auth.src.routers import (
     balance_router,
     token_router,
@@ -32,7 +33,7 @@ async def startup_event():
     """Начало работы приложения."""
     app.state.kafka_producer = await start_producer()
     app.state.pending_requests = {}
-    asyncio.create_task(kafka_response_listener())
+    asyncio.create_task(kafka_response_listener(app))
 
 
 @app.on_event('shutdown')
@@ -53,27 +54,6 @@ app.include_router(
     prefix=PATH_PREFIX,
     tags=['transactions'],
 )
-
-
-async def kafka_response_listener():
-    """Слушатель ответов от сервиса верификации."""
-    consumer = AIOKafkaConsumer(
-        'gran_verify_response',
-        bootstrap_servers='localhost:24301',
-    )
-    await consumer.start()
-    try:
-        async for message in consumer:
-            message_data = json.loads(message.value)
-            request_id = message_data['request_id']
-            queue = app.state.pending_requests.get(request_id)  # noqa: S113
-            if queue:
-                await queue.put(message_data['response'])
-                app.state.pending_requests.pop(request_id, None)
-    except asyncio.CancelledError:
-        logging.warning('Kafka consumer was cancelled.')
-    finally:
-        await consumer.stop()
 
 
 if __name__ == '__main__':
