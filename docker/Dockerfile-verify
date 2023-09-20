@@ -16,6 +16,8 @@ ENV PYTHONUNBUFFERED=1 \
 
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
+FROM python-base as builder_2
+
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
     curl \
@@ -26,19 +28,18 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 
-RUN poetry install --without ml
-
-FROM python-base
-
-COPY --from=python-base $PYSETUP_PATH $PYSETUP_PATH
-
 RUN poetry install
 
-COPY config/ config/ \
-     credit_card_verify/ credit_card_verify/ \
-     photo_storage/ photo_storage/ \
-     main_verify.py ./
+FROM python-base as final
 
-VOLUME ["/opt/pysetup/photo_storage"]
+WORKDIR /app
+COPY --from=builder_2 $PYSETUP_PATH $PYSETUP_PATH
+
+COPY ./config/ ./config/
+COPY ./credit_card_verify/ ./credit_card_verify/
+COPY ./photo_storage/ ./photo_storage/
+COPY main_verify.py ./
+
+VOLUME ["/app/photo_storage/"]
 
 CMD ["python", "main_verify.py"]

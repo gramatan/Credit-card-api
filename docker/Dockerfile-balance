@@ -16,6 +16,8 @@ ENV PYTHONUNBUFFERED=1 \
 
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
+FROM python-base as builder
+
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
     curl \
@@ -28,12 +30,13 @@ COPY poetry.lock pyproject.toml ./
 
 RUN poetry install --without ml
 
-FROM python-base
+FROM python-base as final
 
-COPY --from=python-base $PYSETUP_PATH $PYSETUP_PATH
+WORKDIR /app
+COPY --from=builder $PYSETUP_PATH $PYSETUP_PATH
 
-COPY config/ config/ \
-     credit_card_balance/ credit_card_balance/ \
-     main_balance.py ./
+COPY ./config/ ./config/
+COPY ./credit_card_balance/ ./credit_card_balance/
+COPY main_balance.py .
 
 CMD ["python", "main_balance.py"]

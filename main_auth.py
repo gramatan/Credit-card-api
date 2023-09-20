@@ -21,7 +21,7 @@ from credit_card_auth.src.routers import (
 class Settings(BaseSettings):
     """Конфигурация приложения."""
 
-    app_host: str = AUTH_APP_HOST
+    app_host: str = '0.0.0.0'
     app_port: int = AUTH_APP_PORT
 
 

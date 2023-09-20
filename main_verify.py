@@ -18,7 +18,7 @@ from config.kafka_setup import (
 class Settings(BaseSettings):
     """Конфигурация приложения."""
 
-    app_host: str = VERIFICATION_HOST
+    app_host: str = '0.0.0.0'
     app_port: int = VERIFICATION_PORT
 
 

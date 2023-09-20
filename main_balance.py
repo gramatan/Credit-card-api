@@ -11,7 +11,7 @@ from credit_card_balance.src.routers import balance_router, transactions_router
 class Settings(BaseSettings):
     """Конфигурация приложения."""
 
-    app_host: str = BALANCE_APP_HOST
+    app_host: str = '0.0.0.0'
     app_port: int = BALANCE_APP_PORT
 
 

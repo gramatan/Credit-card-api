@@ -16,6 +16,8 @@ ENV PYTHONUNBUFFERED=1 \
 
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
+FROM python-base as builder
+
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
     curl \
@@ -28,17 +30,18 @@ COPY poetry.lock pyproject.toml ./
 
 RUN poetry install --without ml
 
-FROM python-base
+FROM python-base as final
 
-COPY --from=python-base $PYSETUP_PATH $PYSETUP_PATH
+WORKDIR /app
+COPY --from=builder $PYSETUP_PATH $PYSETUP_PATH
 
-COPY config/ config/ \
-     credit_card_auth/ credit_card_auth/ \
-     photo_storage/ photo_storage/ \
-     main_auth.py ./ \
-     localhost.key ./ \
-     localhost.crt ./
+COPY ./config/ ./config/
+COPY ./credit_card_auth/ ./credit_card_auth/
+COPY ./photo_storage/ ./photo_storage/
+COPY main_auth.py ./
+COPY localhost.key ./
+COPY localhost.crt ./
 
-VOLUME ["/opt/pysetup/photo_storage"]
+VOLUME ["/app/photo_storage/"]
 
 CMD ["python", "main_auth.py"]
