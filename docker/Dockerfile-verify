@@ -32,13 +32,13 @@ FROM python-base
 
 COPY --from=python-base $PYSETUP_PATH $PYSETUP_PATH
 
+RUN poetry install
+
 COPY config/ config/ \
-     credit_card_auth/ credit_card_auth/ \
+     credit_card_verify/ credit_card_verify/ \
      photo_storage/ photo_storage/ \
-     main_auth.py ./ \
-     localhost.key ./ \
-     localhost.crt ./
+     main_verify.py ./
 
 VOLUME ["/opt/pysetup/photo_storage"]
 
-CMD ["python", "main_auth.py"]
+CMD ["python", "main_verify.py"]

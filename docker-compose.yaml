@@ -1,0 +1,70 @@
+version: '3'
+
+networks:
+  cc_main_net:
+    driver: bridge
+  cc_balance_net:
+    driver: bridge
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+    networks:
+      - cc_main_net
+
+  kafka:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile-kafka
+    image: custom-kafka:latest
+    ports:
+      - "24301:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+    networks:
+      - cc_main_net
+
+  cc_auth:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-auth
+    image: cc_auth:latest
+    ports:
+      - "24001:24001"
+    depends_on:
+      - kafka
+    volumes:
+      - photo_storage:/opt/pysetup/photo_storage
+    networks:
+      - cc_main_net
+      - cc_balance_net
+
+  balance:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-balance
+    image: cc_balance:latest
+    depends_on:
+      - cc_auth
+    networks:
+      - cc_balance_net
+
+  verify:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-verify
+    image: cc_verify:latest
+    volumes:
+      - photo_storage:/opt/pysetup/photo_storage
+    depends_on:
+      - kafka
+    networks:
+      - cc_main_net
+
+volumes:
+  photo_storage:
+

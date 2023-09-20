@@ -1,9 +1,11 @@
 #!/bin/bash
 
-while ! /opt/bitnami/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092 >/dev/null 2>&1; do
-    echo "Waiting for Kafka to be ready..."
-    sleep 2
-done
+topics=$(kafka-topics.sh --list --bootstrap-server localhost:9092)
 
-/opt/bitnami/kafka/bin/kafka-topics.sh --create --topic gran_verify --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-/opt/bitnami/kafka/bin/kafka-topics.sh --create --topic gran_verify_response --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+if ! echo "$topics" | grep -q "gran_verify"; then
+    kafka-topics.sh --create --bootstrap-server localhost:9092 --topic gran_verify
+fi
+
+if ! echo "$topics" | grep -q "gran_verify_response"; then
+    kafka-topics.sh --create --bootstrap-server localhost:9092 --topic gran_verify_response
+fi

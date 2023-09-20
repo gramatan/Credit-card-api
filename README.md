@@ -1,3 +1,24 @@
+## Week6. SHIFT-620. Dockerfile для своего проекта.
+Созданы Dockerfile для каждого сервиса.
+
+### Сборка образов и запуск контейнеров:
+docker-compose up
+
+zookeeper + kafka:
+```
+Запуск зоокипер:
+docker run -d --name zookeeper -e ALLOW_ANONYMOUS_LOGIN=yes bitnami/zookeeper:latest
+
+Сборка кафка:
+docker build -t custom-kafka:latest -f .\docker\Dockerfile-kafka .\docker\
+
+Запуск кафка:
+docker run -d --name kafka -p 24301:9092 --link zookeeper:zookeeper custom-kafka
+
+Создаем топики(должны создаться автоматически при запуске. в таком случае запускать не надо)
+docker exec -it kafka /create-topics.sh
+```
+
 ## Week5. SHIFT-560. Добавить сервис верификации пользователя с deepface.
 Добавлена работа с локальной кафкой.
 Предустановленные пользователи и карточки в конфиге [config.py](config%2Fconfig.py)

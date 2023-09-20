@@ -4,6 +4,7 @@ ENV ALLOW_PLAINTEXT_LISTENER=yes \
     KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181 \
     KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://host.docker.internal:24301
 
-COPY create-topics.sh /create-topics.sh
+COPY create-topics.sh ./ \
+     entrypoint.sh ./
 
-CMD ["/opt/bitnami/scripts/kafka/entrypoint.sh", "/opt/bitnami/scripts/kafka/run.sh"]
+ENTRYPOINT ["/entrypoint.sh"]

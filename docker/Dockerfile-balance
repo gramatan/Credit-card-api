@@ -33,12 +33,7 @@ FROM python-base
 COPY --from=python-base $PYSETUP_PATH $PYSETUP_PATH
 
 COPY config/ config/ \
-     credit_card_auth/ credit_card_auth/ \
-     photo_storage/ photo_storage/ \
-     main_auth.py ./ \
-     localhost.key ./ \
-     localhost.crt ./
+     credit_card_balance/ credit_card_balance/ \
+     main_balance.py ./
 
-VOLUME ["/opt/pysetup/photo_storage"]
-
-CMD ["python", "main_auth.py"]
+CMD ["python", "main_balance.py"]
