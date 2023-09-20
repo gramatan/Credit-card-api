@@ -4,7 +4,7 @@ import asyncio
 from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 
-from config.config import AUTH_APP_HOST, AUTH_APP_PORT, PATH_PREFIX
+from config.config import AUTH_APP_PORT, PATH_PREFIX
 from config.kafka_setup import (
     kafka_response_listener,
     start_producer,
@@ -21,7 +21,7 @@ from credit_card_auth.src.routers import (
 class Settings(BaseSettings):
     """Конфигурация приложения."""
 
-    app_host: str = '0.0.0.0'
+    app_host: str = '0.0.0.0'   # noqa: F401, S104
     app_port: int = AUTH_APP_PORT
 
 

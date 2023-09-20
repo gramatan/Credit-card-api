@@ -4,14 +4,14 @@ from concurrent.futures import ProcessPoolExecutor
 from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 
-from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
+from config.config import BALANCE_APP_PORT
 from credit_card_balance.src.routers import balance_router, transactions_router
 
 
 class Settings(BaseSettings):
     """Конфигурация приложения."""
 
-    app_host: str = '0.0.0.0'
+    app_host: str = '0.0.0.0'   # noqa: F401, S104
     app_port: int = BALANCE_APP_PORT
 
 

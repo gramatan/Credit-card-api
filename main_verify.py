@@ -6,7 +6,7 @@ from concurrent.futures import ProcessPoolExecutor
 from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 
-from config.config import VERIFICATION_HOST, VERIFICATION_PORT
+from config.config import VERIFICATION_PORT
 from config.kafka_setup import (
     start_consumer,
     start_producer,
@@ -18,7 +18,7 @@ from config.kafka_setup import (
 class Settings(BaseSettings):
     """Конфигурация приложения."""
 
-    app_host: str = '0.0.0.0'
+    app_host: str = '0.0.0.0'   # noqa: F401, S104
     app_port: int = VERIFICATION_PORT
 
 
