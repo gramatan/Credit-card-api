@@ -1,0 +1,11 @@
+.git
+.idea
+.vscode
+.gitignore
+.mypy_cache
+.pytest_cache
+Makefile
+*.md
+*.jpg
+*.png
+__pycache__
