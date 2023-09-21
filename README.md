@@ -1,29 +1,69 @@
 ## Week6. SHIFT-620. Dockerfile для своего проекта.
 Созданы Dockerfile для каждого сервиса.
 
-### Сборка образов и запуск контейнеров:
-docker-compose up
-
-zookeeper + kafka:
-```
-Запуск зоокипер:
-docker run -d --name zookeeper -e ALLOW_ANONYMOUS_LOGIN=yes bitnami/zookeeper:latest
-
-Сборка кафка:
-docker build -t custom-kafka:latest -f .\docker\Dockerfile-kafka .\docker\
-
-Запуск кафка:
-docker run -d --name kafka -p 24301:9092 --link zookeeper:zookeeper custom-kafka
-
-Создаем топики(должны создаться автоматически при запуске. в таком случае запускать не надо)
-docker exec -it kafka /create-topics.sh
-```
-
-## Week5. SHIFT-560. Добавить сервис верификации пользователя с deepface.
-Добавлена работа с локальной кафкой.
 Предустановленные пользователи и карточки в конфиге [config.py](config%2Fconfig.py)
 
 ![img.png](img.png)
+
+Данные предустановленного пользователя:
+```
+логин: test_user
+пароль: test_password
+```
+
+### Сборка образов и запуск контейнеров:
+Сети:
+
+    cc_main_net: Основная сеть для всех сервисов.
+    cc_balance_net: Дополнительная сеть для сервиса баланса.
+
+Сервисы:
+
+    zookeeper:
+        Использует образ bitnami/zookeeper:latest.
+        Всегда перезапускается при остановке.
+        Подключен к сети cc_main_net.
+
+    kafka:
+        Строится на основе Dockerfile-kafka.
+        Зависит от zookeeper.
+        Имеет проверку здоровья через healthcheck-kafka.sh.
+        Подключен к сети cc_main_net.
+
+    cc_auth:
+        Сервис аутентификации.
+        Строится на основе Dockerfile-auth.
+        Зависит от kafka (ожидает, пока Kafka будет здоров).
+        Проброс порта 24001 на хостовую машину.
+        Использует том photo_storage.
+        Подключен к сети cc_main_net.
+
+    cc_balance:
+        Сервис баланса.
+        Строится на основе Dockerfile-balance.
+        Зависит от kafka.
+        Подключен к сетям cc_main_net и cc_balance_net(В дальнейшем будем использовать её для связи с БД).
+
+    cc_verify:
+        Сервис верификации.
+        Строится на основе Dockerfile-verify.
+        Зависит от kafka.
+        Использует том photo_storage.
+        Подключен к сети cc_main_net.
+
+Тома:
+
+    photo_storage: Используется для хранения фотографий. Используется сервисами cc_auth и cc_verify.
+
+Запуск всех сервисов по команде `docker-compose up` или `docker compose -f .\docker-compose.yaml up`.
+Также можно использовать флаг `-d` для 'тихого' запуска сервисов.
+
+При возникновении ошибок необходимо перезапустить сервис вручную.
+После перезапуска сервиса кафка необходимо перезапустить сервисы cc_*.
+
+
+## Week5. SHIFT-560. Добавить сервис верификации пользователя с deepface.
+Добавлена работа с локальной кафкой.
 
 Между запуском zookeper и kafka(независимо от способа запуска, в контейнере или локально) нужно выдержать паузу. если kafka завершается повторить команду запуска до получения результата.
 
