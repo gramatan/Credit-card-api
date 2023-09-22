@@ -1,6 +1,17 @@
 ## Week6. SHIFT-620. Dockerfile для своего проекта.
 Созданы Dockerfile для каждого сервиса.
 
+[Dockerfile-kafka](docker%2FDockerfile-kafka) - для запуска кафки в контейнере. На основе bitnami/kafka:latest.
+
+[Dockerfile-auth](docker%2FDockerfile-auth) - для запуска сервиса авторизации в контейнере.
+
+[Dockerfile-balance](docker%2FDockerfile-balance) - для запуска сервиса баланса в контейнере.
+
+[Dockerfile-verify](docker%2FDockerfile-verify) - для запуска сервиса верификации в контейнере.
+
+На текущий момент все сервисы запускаются в одном контейнере поэтому в конфиге хосты указаны именами сервисов из docker-compose.
+![img_3.png](img_3.png)
+
 Предустановленные пользователи и карточки в конфиге [config.py](config%2Fconfig.py)
 
 ![img.png](img.png)
