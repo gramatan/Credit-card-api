@@ -45,7 +45,7 @@ services:
       kafka:
         condition: service_healthy
     volumes:
-      - photo_storage:/photo_storage/
+      - photo_storage:/app/photo_storage/
     networks:
       - cc_main_net
 

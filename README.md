@@ -73,6 +73,29 @@
 При возникновении ошибок необходимо перезапустить сервис вручную.
 После перезапуска сервиса кафка необходимо перезапустить сервисы cc_*.
 
+На всякий случай добавлю алгоритм для поднятия всего без docker-compose:
+
+```
+docker network create cc_main_net
+
+docker run -d --name zookeeper --network cc_main_net -e ALLOW_ANONYMOUS_LOGIN=yes bitnami/zookeeper:latest
+
+docker build -t custom-kafka:latest -f docker/Dockerfile-kafka .
+
+docker run -d --name kafka --network cc_main_net --link zookeeper -e KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181  custom-kafka:latest
+
+docker build -t cc_auth:latest -f docker/Dockerfile-auth .
+
+docker run -d --name cc_auth --network cc_main_net --link kafka -p 24001:24001 -v photo_storage:/app/photo_storage/ cc_auth:latest
+
+docker build -t cc_balance:latest -f docker/Dockerfile-balance .
+
+docker run -d --name cc_balance --network cc_main_net --link kafka cc_balance:latest
+
+docker build -t cc_verify:latest -f docker/Dockerfile-verify .
+
+docker run -d --name cc_verify --network cc_main_net --link kafka -v photo_storage:/app/photo_storage cc_verify:latest
+```
 
 ## Week5. SHIFT-560. Добавить сервис верификации пользователя с deepface.
 Добавлена работа с локальной кафкой.
