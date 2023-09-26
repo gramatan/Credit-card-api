@@ -1,0 +1,42 @@
+table card_owners {
+  owner_id bigserial [PK]
+  first_name varchar(50)
+  last_name varchar(50)
+}
+
+table labels {
+  label_id bigserial [PK]
+  title varchar(50)
+  color char(7)
+  description varchar(200)
+}
+
+table cards {
+  card_id bigserial [PK]
+  owner_id bigint
+  card_number varchar(18) [unique]
+  card_limit bigint [note: 'Not negative']
+  card_info jsonb
+  card_balance bigint
+  is_active boolean [default: true]
+}
+
+table operations {
+  operation_id bigserial [PK]
+  card_id bigint
+  change_amount bigint
+  datetime_utc timestamp
+}
+
+table operation_labels {
+  operation_id bigint
+  label_id bigint
+  indexes {
+    (operation_id, label_id) [PK]
+  }
+}
+
+Ref: cards.owner_id > card_owners.owner_id
+Ref: operations.card_id > cards.card_id
+Ref: operation_labels.operation_id > operations.operation_id
+Ref: operation_labels.label_id > labels.label_id
