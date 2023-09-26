@@ -30,4 +30,3 @@ WHERE card_number = '4444555533337777';
 UPDATE cards
 SET is_active = false
 WHERE card_number = '4444555533337777';
-

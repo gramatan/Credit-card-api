@@ -29,7 +29,7 @@
 
 ![db_scheme.png](db%2Fbalance%2Fdb_scheme.png)
 
-Ради уменьшения размера репо убрал файл с весами и закомментил строку в [Dockerfile-verify](docker%2FDockerfile-verify). 
+Ради уменьшения размера репо убрал файл с весами и закомментил строку в [Dockerfile-verify](docker%2FDockerfile-verify).
 Теперь после запуска сервиса при первом запросе он скачает веса модели, что займет определенное время(600мб как-никак).
 
 ## Week6. SHIFT-620. Dockerfile для своего проекта.
