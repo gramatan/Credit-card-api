@@ -1,0 +1,5 @@
+Table web_users {
+  id bigserial [PK]
+  login varchar(100) [unique]
+  hashed_password char(60)
+}
