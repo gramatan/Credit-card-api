@@ -1,14 +1,3 @@
-"""Скрипты для создания базы."""
-
-create_web_users = """
-CREATE TABLE web_users (
-    id BIGSERIAL PRIMARY KEY,
-    login VARCHAR(100) UNIQUE NOT NULL,
-    hashed_password CHAR(60) NOT NULL
-);
-"""
-
-create_table_cards = """
 CREATE TABLE cards (
     id BIGSERIAL PRIMARY KEY,
     card_number VARCHAR(18) UNIQUE NOT NULL,
@@ -17,9 +6,7 @@ CREATE TABLE cards (
     card_balance BIGINT NOT NULL,
     is_active BOOLEAN DEFAULT TRUE
 );
-"""
 
-create_common_logs = """
 CREATE TABLE common_logs (
     card_number_id BIGINT,
     datetime_utc TIMESTAMP DEFAULT current_timestamp,
@@ -29,9 +16,7 @@ CREATE TABLE common_logs (
     PRIMARY KEY (card_number_id, datetime_utc),
     FOREIGN KEY (card_number_id) REFERENCES cards(id) ON DELETE CASCADE
 );
-"""
 
-create_balance_logs = """
 CREATE TABLE balance_logs (
     card_number_id BIGINT,
     datetime_utc TIMESTAMP DEFAULT current_timestamp,
@@ -41,4 +26,3 @@ CREATE TABLE balance_logs (
     PRIMARY KEY (card_number_id, datetime_utc),
     FOREIGN KEY (card_number_id) REFERENCES cards(id) ON DELETE CASCADE
 );
-"""
