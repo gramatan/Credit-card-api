@@ -1,9 +1,14 @@
+DROP TABLE IF EXISTS common_logs;
+DROP TABLE IF EXISTS balance_logs;
+DROP TABLE IF EXISTS cards;
+
 CREATE TABLE cards (
     id BIGSERIAL PRIMARY KEY,
     card_number VARCHAR(18) UNIQUE NOT NULL,
     card_limit BIGINT NOT NULL CHECK (card_limit >= 0),
-    card_info JSONB,
     card_balance BIGINT NOT NULL,
+    card_first_name VARCHAR(50),
+    card_second_name VARCHAR(50),
     is_active BOOLEAN DEFAULT TRUE
 );
 

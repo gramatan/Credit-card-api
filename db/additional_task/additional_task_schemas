@@ -16,7 +16,6 @@ table cards {
   owner_id bigint
   card_number varchar(18) [unique]
   card_limit bigint [note: 'Not negative']
-  card_info jsonb
   card_balance bigint
   is_active boolean [default: true]
 }

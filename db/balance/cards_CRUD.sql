@@ -1,7 +1,7 @@
 
 -- добавление карты
-INSERT INTO cards (card_number, card_limit, card_info, card_balance)
-VALUES ('4444555533337777', 0, '{"type": "Visa", "name": "Viktor"}', 0);
+INSERT INTO cards (card_number, card_limit, card_first_name, card_second_name, card_balance)
+VALUES ('4444555533337777', 0, 'name', 'surname', 0);
 
 -- получаем все карты
 SELECT * FROM cards;
@@ -18,11 +18,11 @@ WHERE card_number = '4444555533337777';
 -- обновляем инфо и баланс
 UPDATE cards
 SET
-    card_info = '{"type": "Visa", "name": "not_Viktor", "age": 20}',
+    card_first_name = 'Vasiliy',
     card_balance = 666
 WHERE card_number = '4444555533337777';
 
--- удаляем карту. запрос то я напишу, но смысл флага is_active в том, что мы не удаляем запись из таблицы, а просто помечаем ее как неактивную
+-- удаляем карту. Вместо запроса ниже используем флаг is_active
 DELETE FROM cards
 WHERE card_number = '4444555533337777';
 

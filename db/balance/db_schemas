@@ -1,18 +1,11 @@
-// Use DBML to define your database structure
-// Docs: https://dbml.dbdiagram.io/docs
-Table web_users {
-  id bigserial [PK]
-  login varchar(100) [unique]
-  hashed_password char(60)
-}
-
-Table cards {
-  id bigserial [PK]
+table cards {
+  card_id bigserial [PK]
   card_number varchar(18) [unique]
   card_limit bigint [note: 'Not negative']
-  card_info jsonb
   card_balance bigint
-  is_active boolean [default: 'true']
+  card_first_name varchar(50)
+  card_second_name varchar(50)
+  is_active boolean [default: true]
 }
 
 Table common_logs {
@@ -39,6 +32,5 @@ Table balance_logs {
   }
 }
 
-Ref: common_logs.card_number_id > cards.id
-
-Ref: balance_logs.card_number_id > cards.id
+Ref: common_logs.card_number_id > cards.card_id
+Ref: balance_logs.card_number_id > cards.card_id

@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS web_users;
+
 CREATE TABLE web_users (
     id BIGSERIAL PRIMARY KEY,
     login VARCHAR(100) UNIQUE NOT NULL,

@@ -17,5 +17,5 @@ SET balance_before = 100000, balance_after = 200000, changes = 100000
 WHERE card_number_id = 4 AND
         datetime_utc = '2023-09-26 09:16:00.625240';
 
--- удаляем логи по номеру карточки
+-- удаляем логи по номеру карточки(нетипичное использование)
 DELETE FROM common_logs WHERE card_number_id = 1;
