@@ -163,3 +163,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 /app.db
+openssl.cnf
+result.json
+test.py
+model_weights/vgg_face_weights.h5
+photo_storage/123_document_tmp.jpg
+photo_storage/123_selfie_tmp.jpg
