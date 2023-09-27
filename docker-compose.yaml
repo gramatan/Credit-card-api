@@ -33,6 +33,20 @@ services:
     networks:
       - cc_main_net
 
+  cc_postgres:
+    image: bitnami/postgresql:16
+    restart: always
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_USER: shift_cc
+      POSTGRES_PASSWORD: shift_cc_pass
+      POSTGRES_DB: shift_cc_db
+    volumes:
+      - postgres_data:/bitnami/postgresql
+    networks:
+      - cc_main_net
+
   cc_auth:
     build:
       context: .
@@ -44,6 +58,8 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+      cc_postgres:
+        condition: service_started
     volumes:
       - photo_storage:/app/photo_storage/
     networks:
@@ -59,9 +75,10 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+      cc_postgres:
+        condition: service_started
     networks:
       - cc_main_net
-      - cc_balance_net
 
   cc_verify:
     build:
@@ -79,3 +96,4 @@ services:
 
 volumes:
   photo_storage:
+  postgres_data:
