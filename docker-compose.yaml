@@ -3,8 +3,6 @@ version: '3'
 networks:
   cc_main_net:
     driver: bridge
-  cc_balance_net:
-    driver: bridge
 
 services:
   zookeeper:
@@ -43,7 +41,7 @@ services:
     image: bitnami/postgresql:16
     restart: always
     ports:
-      - "5436:5432"
+      - "5432:5432"
     environment:
       POSTGRES_USER: shift_cc
       POSTGRES_PASSWORD: shift_cc_pass

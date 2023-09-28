@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, VARCHAR, CHAR
+from sqlalchemy import CHAR, VARCHAR, BigInteger, Column
 from sqlalchemy.orm import DeclarativeMeta, declarative_base
 
 Base: DeclarativeMeta = declarative_base()
