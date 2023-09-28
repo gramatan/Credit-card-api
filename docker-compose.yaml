@@ -12,6 +12,11 @@ services:
     restart: always
     environment:
       ALLOW_ANONYMOUS_LOGIN: 'yes'
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/bitnami/zookeeper/bin/zkServer.sh status | grep 'Mode: standalone' || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - cc_main_net
 
@@ -27,7 +32,8 @@ services:
       timeout: 5s
       retries: 6
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     environment:
       KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
     networks:
