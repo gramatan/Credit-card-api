@@ -61,16 +61,15 @@
 Сети:
 
     cc_main_net: Основная сеть для всех сервисов.
-    cc_balance_net: Дополнительная сеть для сервиса баланса.
 
 Сервисы:
 
-    zookeeper:
+    cc_zookeeper:
         Использует образ bitnami/zookeeper:latest.
         Всегда перезапускается при остановке.
         Подключен к сети cc_main_net.
 
-    kafka:
+    cc_kafka:
         Строится на основе Dockerfile-kafka.
         Зависит от zookeeper.
         Имеет проверку здоровья через healthcheck-kafka.sh.
@@ -111,24 +110,25 @@
 
 ```
 docker network create cc_main_net
+docker volume create photo_storage
 
-docker run -d --name zookeeper --network cc_main_net -e ALLOW_ANONYMOUS_LOGIN=yes bitnami/zookeeper:latest
+docker run -d --name cc_zookeeper --network cc_main_net -e ALLOW_ANONYMOUS_LOGIN=yes bitnami/zookeeper:latest
 
 docker build -t custom-kafka:latest -f docker/Dockerfile-kafka .
 
-docker run -d --name kafka --network cc_main_net --link zookeeper -e KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181  custom-kafka:latest
+docker run -d --name cc_kafka --network cc_main_net --link cc_zookeeper -e ALLOW_PLAINTEXT_LISTENER=yes -e KAFKA_CFG_ZOOKEEPER_CONNECT=cc_zookeeper:2181 -e KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://cc_kafka:9092 custom-kafka:latest
 
 docker build -t cc_auth:latest -f docker/Dockerfile-auth .
 
-docker run -d --name cc_auth --network cc_main_net --link kafka -p 24001:24001 -v photo_storage:/app/photo_storage/ cc_auth:latest
+docker run -d --name cc_auth --network cc_main_net --link cc_kafka -p 24001:24001 -v photo_storage:/app/photo_storage/ cc_auth:latest
 
 docker build -t cc_balance:latest -f docker/Dockerfile-balance .
 
-docker run -d --name cc_balance --network cc_main_net --link kafka cc_balance:latest
+docker run -d --name cc_balance --network cc_main_net --link cc_kafka cc_balance:latest
 
 docker build -t cc_verify:latest -f docker/Dockerfile-verify .
 
-docker run -d --name cc_verify --network cc_main_net --link kafka -v photo_storage:/app/photo_storage cc_verify:latest
+docker run -d --name cc_verify --network cc_main_net --link cc_kafka -v photo_storage:/app/photo_storage cc_verify:latest
 ```
 
 ## Week5. SHIFT-560. Добавить сервис верификации пользователя с deepface.

@@ -14,14 +14,12 @@ class UserAlchemyModel(Base):
         index=True,
     )
     login = Column(
-        VARCHAR,
+        VARCHAR(100),
         unique=True,
         nullable=False,
         index=True,
-        length=100,
     )
     hashed_password = Column(
-        CHAR,
+        CHAR(60),
         nullable=False,
-        length=60,
     )

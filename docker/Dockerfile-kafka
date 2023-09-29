@@ -1,11 +1,17 @@
 FROM bitnami/kafka:latest
 
 ENV ALLOW_PLAINTEXT_LISTENER=yes \
-    KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181 \
-    KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+    KAFKA_CFG_ZOOKEEPER_CONNECT=cc_zookeeper:2181 \
+    KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://cc_kafka:9092
 
 COPY ./docker/create-topics.sh ./
 COPY ./docker/entrypoint.sh ./
 COPY ./docker/healthcheck-kafka.sh ./
+
+USER root
+
+RUN chmod +x /entrypoint.sh
+RUN chmod +x /create-topics.sh
+RUN chmod +x /healthcheck-kafka.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

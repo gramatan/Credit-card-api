@@ -22,7 +22,7 @@ KAFKA_PORT = 9092
 AUTH_APP_HOST = 'cc_auth'       # NOQA: S104
 BALANCE_APP_HOST = 'cc_balance'    # NOQA: S104
 VERIFICATION_HOST = 'cc_verify'   # NOQA: S104
-KAFKA_HOST = 'kafka'
+KAFKA_HOST = 'cc_kafka'
 
 PATH_PREFIX = '/api'
 
