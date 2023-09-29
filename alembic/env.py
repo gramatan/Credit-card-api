@@ -1,13 +1,12 @@
 import asyncio
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 
+from alembic import context
 from config.postgres_config import app_config
 from credit_card_auth.src.database.base import Base as Base1
 from credit_card_balance.src.database.base import Base as Base2
-
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -43,12 +42,12 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = config.get_main_option('sqlalchemy.url')
     context.configure(
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
+        dialect_opts={'paramstyle': 'named'},
     )
 
     with context.begin_transaction():
