@@ -7,22 +7,22 @@ Create Date: 2023-09-29 13:13:53.693624
 """
 from typing import Sequence, Union
 
-from passlib.context import CryptContext
-from alembic import op
 import sqlalchemy as sa
+from passlib.context import CryptContext
 
+from alembic import op
 
-TEST_USER_LOGIN = "test_user"
-TEST_USER_PASSWORD = "test_password"
-TEST_CARD_NUMBER = "123"
-TEST_FIRST_NAME = "test"
+TEST_USER_LOGIN = 'test_user'
+TEST_USER_PASSWORD = 'test_password'
+TEST_CARD_NUMBER = '123'
+TEST_FIRST_NAME = 'test'
 
 
 # revision identifiers, used by Alembic.
 revision: str = '66e2e1b7375a'
-down_revision: Union[str, None] = '82b113162ce5'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = '82b113162ce5'
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -82,4 +82,3 @@ def downgrade() -> None:
             """
         ).bindparams(login=TEST_USER_LOGIN)
     )
-

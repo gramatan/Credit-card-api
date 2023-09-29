@@ -1,10 +1,13 @@
+"""Базовые модели для работы с БД."""
 from sqlalchemy import CHAR, VARCHAR, BigInteger, Column
 from sqlalchemy.orm import DeclarativeMeta, declarative_base
 
 Base: DeclarativeMeta = declarative_base()
 
 
-class UserAlchemyModel(Base):
+class UserAlchemyModel(Base):  # type: ignore
+    """Модель пользователя."""
+
     __tablename__ = 'users'
 
     id = Column(

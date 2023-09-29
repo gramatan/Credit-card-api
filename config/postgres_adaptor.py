@@ -1,3 +1,4 @@
+"""Модуль с адаптером для работы с БД."""
 from asyncio import current_task
 
 from sqlalchemy.ext.asyncio import (
@@ -11,13 +12,20 @@ from config.postgres_config import app_config
 
 
 class DatabaseConnection:
+    """Класс для работы с БД."""
 
-    def __init__(self, config: app_config):
-        _engine = create_async_engine(
-            url=config.postgres.uri,
+    def __init__(self, config: app_config):  # type: ignore
+        """
+        Инициализация класса.
+
+        Args:
+            config: Конфигурация.
+        """
+        engine = create_async_engine(
+            url=config.postgres.uri,    # type: ignore
         )
         async_session_factory = async_sessionmaker(
-            _engine,
+            engine,
             expire_on_commit=False,
         )
         self._session_generator = async_scoped_session(
@@ -26,4 +34,10 @@ class DatabaseConnection:
         )
 
     def get_session(self) -> AsyncSession:
+        """
+        Получение сессии для работы с БД.
+
+        Returns:
+            Сессия для работы с БД.
+        """
         return self._session_generator()

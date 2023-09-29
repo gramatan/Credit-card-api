@@ -1,3 +1,4 @@
+"""Базовые модели для работы с БД."""
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -11,10 +12,12 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 
-Base = declarative_base()
+Base = declarative_base()   # type: ignore
 
 
-class CardAlchemyModel(Base):
+class CardAlchemyModel(Base):   # type: ignore
+    """Модель карты."""
+
     __tablename__ = 'cards'
 
     id = Column(
@@ -23,7 +26,7 @@ class CardAlchemyModel(Base):
         autoincrement=True,
     )
     card_number = Column(
-        String(18),
+        String(18),  # noqa: WPS432
         unique=True,
         nullable=False,
     )
@@ -37,10 +40,10 @@ class CardAlchemyModel(Base):
         nullable=False,
     )
     card_first_name = Column(
-        String(50),
+        String(50),  # noqa: WPS432
     )
     card_second_name = Column(
-        String(50),
+        String(50),  # noqa: WPS432
     )
     is_active = Column(
         Boolean,
@@ -48,7 +51,9 @@ class CardAlchemyModel(Base):
     )
 
 
-class CommonLogAlchemyModel(Base):
+class CommonLogAlchemyModel(Base):  # type: ignore
+    """Модель лога изменения по карте."""
+
     __tablename__ = 'common_logs'
 
     card_number_id = Column(
@@ -85,7 +90,9 @@ class CommonLogAlchemyModel(Base):
     )
 
 
-class BalanceLogAlchemyModel(Base):
+class BalanceLogAlchemyModel(Base):  # type: ignore
+    """Модель лога изменения баланса по карте."""
+
     __tablename__ = 'balance_logs'
 
     card_number_id = Column(
