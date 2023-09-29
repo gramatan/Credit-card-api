@@ -45,7 +45,7 @@ app_config = AppConfig(
     postgres=PostgresConfig(    # noqa: S106
         login='shift_cc',
         password='shift_cc_pass',
-        host='127.0.0.1',
+        host='cc_postgres',
         port='5432',
         db_name='shift_cc_db',
     ),

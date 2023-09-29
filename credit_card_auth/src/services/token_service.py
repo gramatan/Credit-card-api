@@ -18,19 +18,21 @@ class TokenService:
     def __init__(
         self,
         token_repository: TokenRepository = Depends(),
+        api_user_repo: ApiUserRepository = Depends(ApiUserRepository),
     ):
         """
         Инициализация сервиса.
 
         Args:
             token_repository (TokenRepository): Репо токенов.
+            api_user_repo (ApiUserRepository): Репо пользователей API.
         """
         self.token_repo = token_repository
-        self.api_user_repo = ApiUserRepository()
+        self.api_user_repo = api_user_repo
 
     async def get_token(
         self,
-        form_data: OAuth2PasswordRequestForm = Depends(),
+        form_data: OAuth2PasswordRequestForm,
     ) -> TokenData:
         """
         Получение токена.
@@ -41,7 +43,10 @@ class TokenService:
         Returns:
             TokenData: Токен.
         """
-        self.api_user_repo.check_user(form_data.username, form_data.password)
+        await self.api_user_repo.check_user(
+            form_data.username,
+            form_data.password,
+        )
         access_token_expires = timedelta(minutes=TOKEN_TTL)
         access_token = self.token_repo.create_access_token(
             token_data={'sub': form_data.username},

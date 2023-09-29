@@ -41,3 +41,17 @@ class DatabaseConnection:
             Сессия для работы с БД.
         """
         return self._session_generator()
+
+
+database_connection = DatabaseConnection(app_config)
+
+
+async def get_db_session() -> AsyncSession:  # type: ignore
+    """
+    Получение сессии для работы с БД.
+
+    Yields:
+        Сессия для работы с БД.
+    """
+    async with database_connection.get_session() as session:
+        yield session
