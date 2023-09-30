@@ -1,19 +1,30 @@
 """Репозиторий для храненилища пользователей."""
-from decimal import Decimal
+from fastapi import Depends
+from sqlalchemy import select, update
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from config.config import USER_EXISTS_ERROR, USER_NOT_FOUND_ERROR
-from credit_card_balance.src.models.user import User
+from config.postgres_adaptor import get_db_session
+from credit_card_balance.src.database.base import CardAlchemyModel
 
 
 class UserStorage:
     """Класс для хранения пользователей."""
 
-    def __init__(self):
-        """Инициализация репозитория."""
-        self._active: dict[str, User] = {}   # type: ignore
-        self._closed: list[User] = []        # type: ignore
+    def __init__(
+        self,
+        session: AsyncSession = Depends(get_db_session),
+    ):
+        """
+        Инициализация репозитория.
 
-    def add(self, card_number: str, user_info: dict) -> None:
+        Args:
+            session (AsyncSession): Сессия для работы с БД.
+        """
+        self.session = session
+
+    async def add(self, card_number: str, user_info: dict) -> None:
         """
         Добавление пользователя.
 
@@ -24,17 +35,23 @@ class UserStorage:
         Raises:
             ValueError: Если пользователь с такой картой уже существует.
         """
-        if self._is_exist_user(card_number, in_active=True, in_closed=True):
-            raise ValueError(USER_EXISTS_ERROR)
-        user = User(
+        user = CardAlchemyModel(
             card_number=card_number,
-            limit=Decimal(0),
-            info=user_info,
-            _balance=Decimal(0),
+            card_limit=0,
+            card_balance=0,
+            card_first_name=user_info.get('first_name', ''),
+            card_second_name=user_info.get('second_name', ''),
+            is_active=True,
         )
-        self._active[card_number] = user
 
-    def get_user(self, card_number: str) -> User | None:
+        self.session.add(user)
+        try:
+            await self.session.commit()
+        except IntegrityError:
+            await self.session.rollback()
+            raise ValueError(USER_EXISTS_ERROR)
+
+    async def get_user(self, card_number: str) -> CardAlchemyModel | None:
         """
         Получение пользователя по номеру карты.
 
@@ -42,33 +59,46 @@ class UserStorage:
             card_number (str): Номер карты.
 
         Returns:
-            User | None: Пользователь.
+            CardAlchemyModel | None: Пользователь.
         """
-        return self._active.get(card_number)
+        db_user = await self.session.execute(
+            select(
+                CardAlchemyModel,
+            ).filter_by(card_number=card_number),
+        )
+        return db_user.scalars().first()
 
-    def update_user(self, user: User) -> User:
+    async def update_user(self, user: CardAlchemyModel) -> CardAlchemyModel:
         """
         Обновление пользователя.
 
         Args:
-            user (User): Пользователь.
+            user (CardAlchemyModel): Пользователь.
 
         Returns:
-            User: Пользователь.
+            CardAlchemyModel: Пользователь.
 
         Raises:
             ValueError: Если пользователь не существует.
         """
-        if not self._is_exist_user(     # noqa: WPS337
-            user.card_number,
-            in_active=True,
-            in_closed=False,
-        ):
+        is_exist_card = await self.get_user(user.card_number)
+        if not is_exist_card:
             raise ValueError(USER_NOT_FOUND_ERROR)
-        self._active[user.card_number] = user
+
+        card_update = update(CardAlchemyModel).where(
+            CardAlchemyModel.card_number == user.card_number,
+        ).values(
+            card_limit=user.card_limit,
+            card_balance=user.card_balance,
+            card_first_name=user.card_first_name,
+            card_second_name=user.card_second_name,
+        )
+        await self.session.execute(card_update)
+        await self.session.commit()
+
         return user
 
-    def close(self, card_number: str) -> bool:
+    async def close(self, card_number: str) -> bool:
         """
         Закрытие пользователя.
 
@@ -81,35 +111,11 @@ class UserStorage:
         Raises:
             ValueError: Если пользователь не существует или не активен.
         """
-        if not self._is_exist_user(     # noqa: WPS337
-            card_number,
-            in_active=True,
-            in_closed=False,
-        ):
+        user = await self.get_user(card_number)
+        if not user:
             raise ValueError(USER_NOT_FOUND_ERROR)
-        self._closed.append(self._active.pop(card_number))
-        return card_number not in self._active
 
-    def _is_exist_user(
-        self,
-        card_number: str,
-        in_active: bool = True,
-        in_closed: bool = True,
-    ) -> bool:
-        """
-        Проверка существования пользователя.
+        user.is_active = False
+        await self.session.commit()
 
-        Args:
-            card_number (str): Номер карты.
-            in_active (bool): Проверять в активных.
-            in_closed (bool): Проверять в закрытых.
-
-        Returns:
-            bool: True, если пользователь существует.
-        """
-        in_active_condition = in_active and card_number in self._active
-        in_closed_condition = in_closed and any(
-            user for user in self._closed if user.card_number == card_number
-        )
-
-        return in_active_condition or in_closed_condition
+        return not user.is_active

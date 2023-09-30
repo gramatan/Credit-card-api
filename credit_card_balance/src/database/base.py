@@ -1,4 +1,6 @@
 """Базовые модели для работы с БД."""
+from datetime import datetime
+
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -20,32 +22,32 @@ class CardAlchemyModel(Base):   # type: ignore
 
     __tablename__ = 'cards'
 
-    id = Column(
+    id: int = Column(
         BigInteger,
         primary_key=True,
         autoincrement=True,
     )
-    card_number = Column(
+    card_number: str = Column(
         String(18),  # noqa: WPS432
         unique=True,
         nullable=False,
     )
-    card_limit = Column(
+    card_limit: int = Column(
         BigInteger,
         CheckConstraint('card_limit >= 0'),
         nullable=False,
     )
-    card_balance = Column(
+    card_balance: int = Column(
         BigInteger,
         nullable=False,
     )
-    card_first_name = Column(
+    card_first_name: str = Column(
         String(50),  # noqa: WPS432
     )
-    card_second_name = Column(
+    card_second_name: str = Column(
         String(50),  # noqa: WPS432
     )
-    is_active = Column(
+    is_active: bool = Column(
         Boolean,
         default=True,
     )
@@ -56,7 +58,7 @@ class CommonLogAlchemyModel(Base):  # type: ignore
 
     __tablename__ = 'common_logs'
 
-    card_number_id = Column(
+    card_number_id: int = Column(
         BigInteger,
         ForeignKey(
             'cards.id',
@@ -64,20 +66,20 @@ class CommonLogAlchemyModel(Base):  # type: ignore
         ),
         nullable=False,
     )
-    datetime_utc = Column(
+    datetime_utc: datetime = Column(
         DateTime,
         default=func.current_timestamp(),
         nullable=False,
     )
-    limit_before = Column(
+    limit_before: int = Column(
         BigInteger,
         nullable=False,
     )
-    limit_after = Column(
+    limit_after: int = Column(
         BigInteger,
         nullable=False,
     )
-    changes = Column(
+    changes: int = Column(
         BigInteger,
         nullable=False,
     )
@@ -95,7 +97,7 @@ class BalanceLogAlchemyModel(Base):  # type: ignore
 
     __tablename__ = 'balance_logs'
 
-    card_number_id = Column(
+    card_number_id: int = Column(
         BigInteger,
         ForeignKey(
             'cards.id',
@@ -103,20 +105,20 @@ class BalanceLogAlchemyModel(Base):  # type: ignore
         ),
         nullable=False,
     )
-    datetime_utc = Column(
+    datetime_utc: datetime = Column(
         DateTime,
         default=func.current_timestamp(),
         nullable=False,
     )
-    balance_before = Column(
+    balance_before: int = Column(
         BigInteger,
         nullable=False,
     )
-    balance_after = Column(
+    balance_after: int = Column(
         BigInteger,
         nullable=False,
     )
-    changes = Column(
+    changes: int = Column(
         BigInteger,
         nullable=False,
     )

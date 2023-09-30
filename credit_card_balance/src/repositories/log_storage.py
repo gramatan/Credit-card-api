@@ -1,43 +1,49 @@
 """Репозиторий для хранения логов."""
-from bisect import bisect_left, bisect_right
-from collections import defaultdict
 from datetime import datetime
 
-from credit_card_balance.src.models.logs import BalanceLog, CommonLog
+from fastapi import Depends
+from sqlalchemy import and_, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-BalanceLogDict = dict[str, list[BalanceLog]]
+from config.postgres_adaptor import get_db_session
+from credit_card_balance.src.database.base import (
+    BalanceLogAlchemyModel,
+    CardAlchemyModel,
+    CommonLogAlchemyModel,
+)
 
 
 class LogStorage:
     """Репозиторий для хранения логов."""
 
-    def __init__(self):
-        """Инициализация репозитория."""
-        self._balance_logs: BalanceLogDict = defaultdict(list)  # type: ignore
-        self._other_logs: list[CommonLog] = []  # type: ignore
+    def __init__(self, session: AsyncSession = Depends(get_db_session)):
+        """
+        Инициализация репозитория.
 
-    def save(self, log: CommonLog):
+        Args:
+            session (AsyncSession): Сессия для работы с БД.
+        """
+        self.session = session
+
+    async def save(
+        self,
+        log: CommonLogAlchemyModel | BalanceLogAlchemyModel,
+    ) -> None:
         """
         Сохранение лога.
 
         Args:
-            log (CommonLog): Лог.
+            log: Лог (может быть или BalanceLog, или CommonLog).
         """
-        if isinstance(log, BalanceLog):
-            logs = self._balance_logs.get(log.card_number)
-            if logs is None:
-                self._balance_logs[log.card_number] = [log]
-            else:
-                logs.append(log)
-        else:
-            self._other_logs.append(log)
+        self.session.add(log)
+        await self.session.commit()
 
-    def get_balance_history(
+    async def get_balance_history(
         self,
         card_number: str,
         from_date: datetime,
         to_date: datetime,
-    ) -> list[BalanceLog]:
+    ) -> list[BalanceLogAlchemyModel]:
         """
         Получение истории изменения баланса.
 
@@ -47,36 +53,26 @@ class LogStorage:
             to_date (datetime): Конечная дата.
 
         Returns:
-            list[BalanceLog]: История изменения баланса.
+            list[BalanceLogAlchemyModel]: История изменения баланса.
         """
-        logs = self._balance_logs.get(card_number, [])
+        card = await self.session.execute(
+            select(CardAlchemyModel).filter_by(card_number=card_number),
+        )
+        card = card.scalar_one_or_none()    # type: ignore
+        if not card:
+            return []
 
-        if logs:
-            start_date = bisect_left(
-                logs,
-                from_date,
-                key=self._get_datetime_from_log,
-            )
-            end_date = bisect_right(
-                logs,
-                to_date,
-                key=self._get_datetime_from_log,
-            )
-
-            return logs[start_date:end_date]
-        return []
-
-    def _get_datetime_from_log(
-        self,
-        log: BalanceLog,
-    ):
-        """
-        Получение даты из лога.
-
-        Args:
-            log (BalanceLog): Лог.
-
-        Returns:
-            datetime: Дата.
-        """
-        return log.datetime_utc
+        logs = await self.session.execute(
+            select(
+                BalanceLogAlchemyModel,
+            ).filter(
+                BalanceLogAlchemyModel.card_number_id == card.id,   # type: ignore # noqa: E501
+                and_(
+                    BalanceLogAlchemyModel.datetime_utc >= from_date,
+                    BalanceLogAlchemyModel.datetime_utc <= to_date,
+                ),
+            ).order_by(
+                BalanceLogAlchemyModel.datetime_utc.desc(),
+            ),
+        )
+        return list(logs.scalars().all())

@@ -1,13 +1,17 @@
 """Репо для работы с транзакциями."""
-from datetime import datetime
-from decimal import Decimal
+from fastapi import Depends
 
 from config.config import (
     AMOUNT_ERROR,
+    FIRST_USER_FIELD,
+    SECOND_USER_FIELD,
     USER_BALANCE_LIMIT_ERROR,
     USER_NOT_FOUND_ERROR,
 )
-from credit_card_balance.src.models.logs import BalanceLog, CommonLog
+from credit_card_balance.src.database.base import (
+    BalanceLogAlchemyModel,
+    CommonLogAlchemyModel,
+)
 from credit_card_balance.src.repositories.log_storage import LogStorage
 from credit_card_balance.src.repositories.user_storage import UserStorage
 
@@ -15,7 +19,11 @@ from credit_card_balance.src.repositories.user_storage import UserStorage
 class Transactions:     # noqa: WPS214
     """Класс для работы с транзакциями."""
 
-    def __init__(self, user_storage: UserStorage, history: LogStorage):
+    def __init__(
+        self,
+        user_storage: UserStorage = Depends(UserStorage),
+        history: LogStorage = Depends(LogStorage),
+    ):
         """
         Инициализация репозитория.
 
@@ -26,7 +34,7 @@ class Transactions:     # noqa: WPS214
         self._user_storage = user_storage
         self._history = history
 
-    def get_balance(self, card_number: str) -> Decimal:
+    async def get_balance(self, card_number: str) -> int:
         """
         Получение баланса.
 
@@ -37,50 +45,50 @@ class Transactions:     # noqa: WPS214
             ValueError: Если пользователь не найден.
 
         Returns:
-            Decimal: Баланс.
+            int: Баланс в копейках.
         """
-        user = self._user_storage.get_user(card_number)
+        user = await self._user_storage.get_user(card_number)
         if user:
-            return user.balance
+            return user.card_balance
         raise ValueError(USER_NOT_FOUND_ERROR)
 
-    def withdraw(self, card_number: str, amount: Decimal) -> Decimal:
+    async def withdraw(self, card_number: str, amount: int) -> int:
         """
         Снятие денег.
 
         Args:
             card_number (str): Номер карты.
-            amount (Decimal): Сумма.
+            amount (int): Сумма в копейках.
 
         Raises:
             ValueError: Если неправильная сумма операции.
 
         Returns:
-            Decimal: Баланс.
+            int: Баланс в копейках.
         """
         if not self._check_amount(amount):
             raise ValueError(AMOUNT_ERROR)
-        return self._change_balance(card_number, -amount)
+        return await self._change_balance(card_number, -amount)
 
-    def deposit(self, card_number: str, amount: Decimal) -> Decimal:
+    async def deposit(self, card_number: str, amount: int) -> int:
         """
         Пополнение баланса.
 
         Args:
             card_number: Номер карты.
-            amount: Сумма пополнения.
+            amount: Сумма пополнения в копейках.
 
         Raises:
             ValueError: Если неправильная сумма операции.
 
         Returns:
-            Decimal: Баланс.
+            int: Баланс в копейках.
         """
         if not self._check_amount(amount):
             raise ValueError(AMOUNT_ERROR)
-        return self._change_balance(card_number, amount)
+        return await self._change_balance(card_number, amount)
 
-    def update_info(self, card_number: str, user_info: dict) -> None:
+    async def update_info(self, card_number: str, user_info: dict) -> None:
         """
         Обновление информации о пользователе.
 
@@ -91,30 +99,33 @@ class Transactions:     # noqa: WPS214
         Raises:
             ValueError: Если пользователь не найден.
         """
-        user = self._user_storage.get_user(card_number)
+        user = await self._user_storage.get_user(card_number)
         if not user:
             raise ValueError(USER_NOT_FOUND_ERROR)
 
-        user.info.update(user_info)
+        if FIRST_USER_FIELD in user_info:
+            user.card_first_name = user_info['card_first_name']
 
-        self._user_storage.update_user(user)
+        if SECOND_USER_FIELD in user_info:
+            user.card_second_name = user_info['card_second_name']
 
-        log = CommonLog(
-            card_number=card_number,
-            before=user.limit,
-            after=user.limit,
-            changes=Decimal(0),
-            _datetime_utc=datetime.utcnow(),
+        await self._user_storage.update_user(user)
+
+        log = CommonLogAlchemyModel(
+            card_number_id=user.id,
+            limit_before=user.card_limit,
+            limit_after=user.card_limit,
+            changes=0,
         )
-        self._history.save(log)
+        await self._history.save(log)
 
-    def change_limit(self, card_number: str, new_limit: Decimal) -> None:
+    async def change_limit(self, card_number: str, new_limit: int) -> None:
         """
         Изменение лимита пользователя.
 
         Args:
             card_number (str): Номер карты.
-            new_limit (Decimal): Новый лимит.
+            new_limit (int): Новый лимит в копейках.
 
         Raises:
             ValueError: Если пользователь не найден.
@@ -122,24 +133,23 @@ class Transactions:     # noqa: WPS214
         if not self._check_amount(new_limit):
             raise ValueError(AMOUNT_ERROR)
 
-        user = self._user_storage.get_user(card_number)
+        user = await self._user_storage.get_user(card_number)
         if not user:
             raise ValueError(USER_NOT_FOUND_ERROR)
 
-        old_limit = user.limit
-        user.limit = new_limit
-        self._user_storage.update_user(user)
+        old_limit = user.card_limit
+        user.card_limit = new_limit
+        await self._user_storage.update_user(user)
 
-        log = CommonLog(
-            card_number=card_number,
-            before=old_limit,
-            after=new_limit,
-            changes=new_limit - old_limit,
-            _datetime_utc=datetime.utcnow(),
+        log = CommonLogAlchemyModel(
+            card_number_id=user.id,
+            limit_before=old_limit,
+            limit_after=user.card_limit,
+            changes=0,
         )
-        self._history.save(log)
+        await self._history.save(log)
 
-    def _change_balance(self, card_number: str, amount: Decimal) -> Decimal:
+    async def _change_balance(self, card_number: str, amount: int) -> int:
         """
         Изменение баланса.
 
@@ -152,32 +162,31 @@ class Transactions:     # noqa: WPS214
             ValueError: Если новый баланс меньше лимита.
 
         Returns:
-            Decimal: Новый баланс.
+            int: Новый баланс.
         """
-        user = self._user_storage.get_user(card_number)
+        user = await self._user_storage.get_user(card_number)
         if not user:
             raise ValueError(USER_NOT_FOUND_ERROR)
 
-        new_balance = user.balance + amount
-
-        if new_balance < -user.limit:
+        new_balance: int = user.card_balance + amount
+        if new_balance < -user.card_limit:
             raise ValueError(USER_BALANCE_LIMIT_ERROR)
 
-        old_balance = user.balance
-        user.balance = new_balance
+        old_balance = user.card_balance
+        user.card_balance = new_balance
 
-        self._history.save(BalanceLog(
-            card_number=card_number,
-            before=old_balance,
-            after=user.balance,
+        log = BalanceLogAlchemyModel(
+            card_number_id=user.id,
+            balance_before=old_balance,
+            balance_after=user.card_balance,
             changes=amount,
-            _datetime_utc=datetime.utcnow(),
-        ))
+        )
+        await self._history.save(log)
 
-        self._user_storage.update_user(user)
-        return user.balance
+        await self._user_storage.update_user(user)
+        return user.card_balance
 
-    def _check_amount(self, amount: Decimal) -> bool:
+    def _check_amount(self, amount: int) -> bool:
         """
         Проверка суммы операции. TBD.
 
