@@ -145,7 +145,7 @@ class Transactions:     # noqa: WPS214
             card_number_id=user.id,
             limit_before=old_limit,
             limit_after=user.card_limit,
-            changes=0,
+            changes=new_limit - old_limit,
         )
         await self._history.save(log)
 
