@@ -42,6 +42,11 @@ COPY main_auth.py ./
 COPY localhost.key ./
 COPY localhost.crt ./
 
+# alembic stuff
+COPY ./alembic/ ./alembic/
+COPY alembic.ini ./
+COPY ./credit_card_balance/src/database/base.py ./credit_card_balance/src/database/base.py
+
 VOLUME ["/app/photo_storage/"]
 
 CMD ["python", "main_auth.py"]

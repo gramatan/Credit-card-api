@@ -28,12 +28,10 @@ poetry shell
 
 5. Запуск приложения:
 
-Запуск в докере:
-
-`docker-compose up -d`
+`docker compose up -d`
 
 
-Запуск без докера::
+Запуск без докера(not recommended):
 
 ```
 python main_auth.py - для сервиса авторизации на 24001 (C HTTPS)
@@ -72,7 +70,7 @@ python main_verify.py - для сервиса верификации на 24201
 - [main_auth.py](main_auth.py) : Основной файл приложения.
 
 - `src` : Исходный код проекта.
-  - [database](src%2Fdatabase) : Файлы для работы с базой данных.  - TBU
+  - [database](src%2Fdatabase) : Файлы для работы с базой данных.
   - [repositories](credit_card_auth%2Fsrc%2Frepositories) : Файлы с репозиториями для работы с базой данных.
   - [routers](credit_card_auth%2Fsrc%2Frouters) : Файлы с описанием эндпоинтов.
   - [schemas](credit_card_auth%2Fsrc%2Fschemas) : Схемы данных.
@@ -87,8 +85,7 @@ python main_verify.py - для сервиса верификации на 24201
 - [main_balance.py](main_balance.py) : Основной файл приложения.
 
 - `src` : Исходный код проекта.
-  - [database](src%2Fdatabase) : Файлы для работы с базой данных.  - TBU
-  - [models](src%2Fmodels) : Модели данных.
+  - [database](src%2Fdatabase) : Файлы для работы с базой данных и модели.
   - [repositories](credit_card_balance%2Fsrc%2Frepositories) : Файлы с репозиториями для работы с базой данных.
   - [routers](credit_card_balance%2Fsrc%2Frouters) : Файлы с описанием эндпоинтов.
   - [schemas](credit_card_balance%2Fsrc%2Fschemas) : Схемы данных.
@@ -110,6 +107,7 @@ python main_verify.py - для сервиса верификации на 24201
   - `integration`: Сценарий интеграционных тестов из задания в одном файле + тесты API.
 
 ### Общие файлы
+- [alembic](alembic) : Скрипты для миграции.
 - [CHANGELOG.md](CHANGELOG.md) : История изменений проекта.
 - `CONTRIBUTING.md` : Рекомендации для контрибьюторов (вы сейчас читаете его).
 - [README.md](README.md) : Описание проекта.

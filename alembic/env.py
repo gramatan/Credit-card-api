@@ -8,8 +8,8 @@ from config.postgres_config import app_config
 from credit_card_auth.src.database.base import Base as Base1
 from credit_card_balance.src.database.base import Base as Base2
 
-
-app_config.postgres.host = 'localhost'
+# Раскоментировать, если нужно запускать миграции локально
+# app_config.postgres.host = 'localhost'
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
