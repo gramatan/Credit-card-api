@@ -1,8 +1,11 @@
 """Базовые модели для работы с БД."""
+from passlib.context import CryptContext
 from sqlalchemy import CHAR, VARCHAR, BigInteger, Column
 from sqlalchemy.orm import DeclarativeMeta, declarative_base
 
 Base: DeclarativeMeta = declarative_base()
+
+pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 
 class UserAlchemyModel(Base):  # type: ignore

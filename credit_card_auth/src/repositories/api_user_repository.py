@@ -4,8 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config.postgres_adaptor import get_db_session
-from credit_card_auth.src.database.base import UserAlchemyModel
-from credit_card_auth.src.database.database import pwd_context
+from credit_card_auth.src.database.base import UserAlchemyModel, pwd_context
 
 
 class ApiUserRepository:

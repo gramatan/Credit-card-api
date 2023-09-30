@@ -5,12 +5,12 @@ Revises: 82b113162ce5
 Create Date: 2023-09-29 13:13:53.693624
 
 """
-from typing import Sequence, Union
+from typing import Sequence
 
 import sqlalchemy as sa
-from passlib.context import CryptContext
 
 from alembic import op
+from credit_card_auth.src.database.base import pwd_context
 
 TEST_USER_LOGIN = 'test_user'
 TEST_USER_PASSWORD = 'test_password'
@@ -26,7 +26,6 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
     hashed_password = pwd_context.hash(TEST_USER_PASSWORD)
 
     op.execute(
