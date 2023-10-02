@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import pytest
 
-from credit_card_balance.src.models.user import User
+from credit_card_balance.src.database.base import CardAlchemyModel
 
 
 @pytest.mark.parametrize('card_number, user_info, expected', [
@@ -51,7 +51,7 @@ def test_add_success(
 
 @pytest.mark.parametrize('card_number, expected_type, expected', [
     pytest.param('1234567890123456', type(None), True, id='User exists'),
-    pytest.param('1234567890', User, True, id='User not exists'),
+    pytest.param('1234567890', CardAlchemyModel, True, id='User not exists'),
 ])
 def test_get_user(card_number, expected_type, expected, not_empty_storage):
     """
@@ -67,7 +67,7 @@ def test_get_user(card_number, expected_type, expected, not_empty_storage):
         not_empty_storage.get_user(card_number),
         expected_type,
     )
-    if isinstance(test_result, User):
+    if isinstance(test_result, CardAlchemyModel):
         assert not_empty_storage.get_user(
             card_number,
         ).card_number == card_number
@@ -109,11 +109,10 @@ def test_update_user(
     """
     if exception == 'Raises':
         with pytest.raises(ValueError):
-            user = User(
+            user = CardAlchemyModel(
                 card_number=card_number,
-                limit=Decimal(0),
-                info={},
-                _balance=Decimal(0),
+                card_limit=0,
+                card_balance=0,
             )
             not_empty_storage.update_user(user)
     else:

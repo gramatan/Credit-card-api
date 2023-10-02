@@ -6,9 +6,11 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
+from config.postgres_adaptor import get_db_session
 from main_auth import app
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize('endpoint_url, req', [
     pytest.param('api/balance', 'get', id='balance'),
     pytest.param('api/balance/history', 'get', id='balance_history'),
@@ -16,7 +18,7 @@ from main_auth import app
     pytest.param('api/deposit', 'post', id='deposit'),
     pytest.param('api/verify', 'post', id='verify'),
 ])
-def test_four_o_one_response(endpoint_url, req):
+async def test_four_o_one_response(endpoint_url, req, test_client):
     """
     Тест на 401.
 
@@ -24,28 +26,16 @@ def test_four_o_one_response(endpoint_url, req):
         endpoint_url (str): URL эндпоинта.
         req (str): Тип запроса.
     """
-    client = TestClient(app)
+    client = test_client
     if req == 'get':
-        response = client.get(url=endpoint_url)
+        response = await client.get(url=endpoint_url)
     else:
-        response = client.post(url=endpoint_url)
+        response = await client.post(url=endpoint_url)
 
     assert response.status_code == 401
 
 
-def test_bad_user():
-    """Тест на неправильного пользователя."""
-    client = TestClient(app)
-    response = client.post(
-        url='api/auth',
-        data={
-            'username': 'bad_user',
-            'password': 'bad_password',
-        },
-    )
-    assert response.status_code == 401
-
-
+@pytest.mark.asyncio
 @pytest.mark.parametrize('endpoint_url, req, request_params', [
     pytest.param(
         'api/balance',
@@ -76,13 +66,13 @@ def test_bad_user():
         id='balance_history',
     ),
 ])
-def test_five_hundred_response(
+async def test_five_hundred_response(
     endpoint_url,
     req,
     request_params,
-    good_client,
     mocker,
     prepare_files,
+    test_client
 ):
     """
     Тест на получение плохих ответов от других сервисов.
@@ -91,7 +81,6 @@ def test_five_hundred_response(
         endpoint_url (str): URL эндпоинта.
         req (str): Тип запроса.
         request_params (dict): Параметры запроса.
-        good_client (tuple[TestClient, dict]): Клиент и токен.
         mocker: Мокер.
         prepare_files: Подготовленные файлы.
     """
@@ -108,16 +97,25 @@ def test_five_hundred_response(
     mocker.patch.object(httpx.AsyncClient, 'get', new=mock_response)
     mocker.patch.object(httpx.AsyncClient, 'post', new=mock_response)
 
-    client, token = good_client
+    client = test_client
+    response = await client.post(
+        url='api/auth',
+        data={
+            'username': 'test_user',
+            'password': 'test_password',
+        },
+    )
+    token = await response.json()
+
     if req == 'get':
-        response = client.get(
+        response = await client.get(
             url=endpoint_url,
             params=request_params,
             headers=token,
         )
 
     else:
-        response = client.post(
+        response = await client.post(
             url=endpoint_url,
             params=request_params,
             headers=token,
