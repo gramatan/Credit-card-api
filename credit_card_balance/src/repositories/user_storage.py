@@ -35,6 +35,7 @@ class UserStorage:
         Raises:
             ValueError: Если пользователь с такой картой уже существует.
         """
+        user_info = user_info or {}
         user = CardAlchemyModel(
             card_number=card_number,
             card_limit=0,
