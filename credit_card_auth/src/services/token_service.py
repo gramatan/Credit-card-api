@@ -48,7 +48,7 @@ class TokenService:
             form_data.password,
         )
         access_token_expires = timedelta(minutes=TOKEN_TTL)
-        access_token = self.token_repo.create_access_token(
+        access_token = await self.token_repo.create_access_token(
             token_data={'sub': form_data.username},
             expires_delta=access_token_expires,
         )

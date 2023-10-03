@@ -1,10 +1,12 @@
 import pytest
 import pytest_asyncio
 from fastapi import HTTPException
-from sqlalchemy import insert, delete
+from sqlalchemy import delete, insert
 
-from credit_card_auth.src.database.base import pwd_context, UserAlchemyModel
-from credit_card_auth.src.repositories.api_user_repository import ApiUserRepository
+from credit_card_auth.src.database.base import UserAlchemyModel, pwd_context
+from credit_card_auth.src.repositories.api_user_repository import (
+    ApiUserRepository,
+)
 
 
 @pytest.mark.asyncio

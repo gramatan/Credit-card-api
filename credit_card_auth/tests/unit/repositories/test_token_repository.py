@@ -19,7 +19,7 @@ def valid_token_data():
     return {'sub': 'test_user'}
 
 
-def create_token(token_data: dict, token_type: str):
+async def create_token(token_data: dict, token_type: str):
     """
     Создание токена.
 
@@ -43,6 +43,7 @@ def create_token(token_data: dict, token_type: str):
     return jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize('test_data, expires_delta', [
     pytest.param(
         ['this_is_not_a_dict'],
@@ -55,7 +56,7 @@ def create_token(token_data: dict, token_type: str):
         id='invalid data type none',
     ),
 ])
-def test_create_access_token_exceptions(test_data, expires_delta):
+async def test_create_access_token_exceptions(test_data, expires_delta):
     """
     Проверка исключений при создании токена.
 
@@ -65,9 +66,10 @@ def test_create_access_token_exceptions(test_data, expires_delta):
     """
     repo = TokenRepository()
     with pytest.raises((AttributeError, AssertionError)):
-        repo.create_access_token(test_data, expires_delta)
+        await repo.create_access_token(test_data, expires_delta)
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize('test_data, expires_delta', [
     pytest.param(
         {'sub': 'test_user'},
@@ -85,7 +87,7 @@ def test_create_access_token_exceptions(test_data, expires_delta):
         id='long string',
     ),
 ])
-def test_create_access_token_with_sub(test_data, expires_delta):
+async def test_create_access_token_with_sub(test_data, expires_delta):
     """
     Проверка создания токена.
 
@@ -94,12 +96,13 @@ def test_create_access_token_with_sub(test_data, expires_delta):
         expires_delta (timedelta): Время жизни токена.
     """
     repo = TokenRepository()
-    token = repo.create_access_token(test_data, expires_delta)
+    token = await repo.create_access_token(test_data, expires_delta)
     decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     assert 'exp' in decoded_token
     assert decoded_token['sub'] == test_data.get('sub')
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize('test_data, expires_delta', [
     pytest.param(
         {},
@@ -112,7 +115,7 @@ def test_create_access_token_with_sub(test_data, expires_delta):
         id='many keys',
     ),
 ])
-def test_create_access_token_without_sub(test_data, expires_delta):
+async def test_create_access_token_without_sub(test_data, expires_delta):
     """
     Проверка создания токена.
 
@@ -121,18 +124,19 @@ def test_create_access_token_without_sub(test_data, expires_delta):
         expires_delta (timedelta): Время жизни токена.
     """
     repo = TokenRepository()
-    token = repo.create_access_token(test_data, expires_delta)
+    token = await repo.create_access_token(test_data, expires_delta)
     decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     assert 'exp' in decoded_token
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize('token_type, expected', [
     pytest.param('normal', True, id='normal token'),
     pytest.param('expired', False, id='expired token'),
     pytest.param('wrong_secret_key', False, id='wrong secret key'),
     pytest.param('no_sub_field', False, id='no sub field'),
 ])
-def test_verify_token(token_type, expected, valid_token_data):
+async def test_verify_token(token_type, expected, valid_token_data):
     """
     Проверка верификации токена.
 
@@ -142,5 +146,6 @@ def test_verify_token(token_type, expected, valid_token_data):
         valid_token_data (dict): Валидные данные для токена.
     """
     repo = TokenRepository()
-    token = create_token(valid_token_data, token_type)
-    assert repo.verify_token(token) == expected
+    token = await create_token(valid_token_data, token_type)
+    response = await repo.verify_token(token)
+    assert response == expected

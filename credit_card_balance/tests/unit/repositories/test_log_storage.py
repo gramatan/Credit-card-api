@@ -1,106 +1,131 @@
 """Тесты хранилища логов."""
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
+import pytest_asyncio
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
+from credit_card_balance.src.database.base import BalanceLogAlchemyModel
 from credit_card_balance.src.repositories.log_storage import LogStorage
 
 
-@pytest.mark.parametrize('card_id, from_date, to_date, expected_length', [
-    pytest.param(
-        '1234567890',
-        datetime(year=2024, month=2, day=29),
-        datetime(year=2024, month=2, day=29),
-        1,
-        id='One day',
-    ),
-    pytest.param(
-        '1234567890',
-        datetime(year=2023, month=8, day=31),
-        datetime(year=2024, month=2, day=24),
-        0,
-        id='Before start of logs',
-    ),
-    pytest.param(
-        '1234567890',
-        datetime(year=2024, month=3, day=6),
-        datetime(year=2024, month=3, day=28),
-        0,
-        id='After end of logs',
-    ),
-    pytest.param(
-        '1234567890',
-        datetime(year=2024, month=2, day=26),
-        datetime(year=2024, month=2, day=28),
-        3,
-        id='Part of logs',
-    ),
-    pytest.param(
-        '1234567890',
-        datetime(year=2024, month=2, day=25),
-        datetime(year=2024, month=3, day=5),
-        10,
-        id='All logs',
-    ),
-    pytest.param(
-        '3453',
-        datetime(year=2024, month=2, day=26),
-        datetime(year=2024, month=2, day=28),
-        0,
-        id='No logs',
-    ),
-])
-def test_get_balance_history(
-    card_id,
-    from_date,
-    to_date,
-    expected_length,
-    log_storage_with_history,
-):
-    """
-    Тест получения истории изменения баланса.
+@pytest.mark.asyncio
+class TestLogStorage:
+    @pytest_asyncio.fixture
+    async def repository(self, db_session):
+        yield LogStorage(db_session)
+        await db_session.commit()
 
-    Args:
-        card_id (str): Номер карты.
-        from_date (datetime): Начальная дата.
-        to_date (datetime): Конечная дата.
-        expected_length (int): Ожидаемая длина.
-        log_storage_with_history (LogStorage): Хранилище с историей.
-    """
-    history = log_storage_with_history.get_balance_history(
+    @pytest.mark.parametrize('card_id, from_date, to_date, expected_length', [
+        pytest.param(
+            '456',
+            datetime(year=2024, month=2, day=29),
+            datetime(year=2024, month=2, day=29, hour=23, minute=59),
+            1,
+            id='One day',
+        ),
+        pytest.param(
+            '456',
+            datetime(year=2023, month=8, day=31),
+            datetime(year=2024, month=2, day=24),
+            0,
+            id='Before start of logs',
+        ),
+        pytest.param(
+            '456',
+            datetime(year=2024, month=3, day=6),
+            datetime(year=2024, month=3, day=28),
+            0,
+            id='After end of logs',
+        ),
+        pytest.param(
+            '456',
+            datetime(year=2024, month=2, day=26),
+            datetime(year=2024, month=2, day=28),
+            3,
+            id='Part of logs',
+        ),
+        pytest.param(
+            '456',
+            datetime(year=2024, month=2, day=25),
+            datetime(year=2024, month=3, day=5),
+            10,
+            id='All logs',
+        ),
+        pytest.param(
+            '3',
+            datetime(year=2024, month=2, day=26),
+            datetime(year=2024, month=2, day=28),
+            0,
+            id='No logs',
+        ),
+    ])
+    async def test_get_balance_history(
+        self,
         card_id,
         from_date,
         to_date,
-    )
-    assert len(history) == expected_length
+        expected_length,
+        repository,
+    ):
+        """
+        Тест получения истории изменения баланса.
 
+        Args:
+            card_id (str): Номер карты.
+            from_date (datetime): Начальная дата.
+            to_date (datetime): Конечная дата.
+            expected_length (int): Ожидаемая длина.
+        """
+        # async with async_sessionmaker(bind=db_engine)() as session:
+        history = await repository.get_balance_history(
+            card_id,
+            from_date,
+            to_date,
+        )
+        assert len(history) == expected_length
 
-@pytest.mark.parametrize('log_type, logs_count, expected_length', [
-    pytest.param('balance_logs', 3, 3, id='Balance logs_3'),
-    pytest.param('balance_logs', 5, 5, id='Balance logs_5'),
-    pytest.param('common_logs', 2, 2, id='Common logs_2'),
-    pytest.param('common_logs', 3, 3, id='Common logs_3'),
-])
-def test_save_logs(
-    logs_collection,
-    log_type,
-    logs_count,
-    expected_length,
-):
-    """
-    Тест сохранения логов.
+    @pytest.mark.parametrize('log_type, logs_count, expected_length', [
+        pytest.param('balance_logs', 1, 1, id='save_log'),
+    ])
+    async def test_save_logs(
+        self,
+        log_type,
+        logs_count,
+        expected_length,
+        repository,
+    ):
+        """
+        Тест сохранения логов.
 
-    Args:
-        logs_collection (dict): Коллекция логов.
-        log_type (str): Тип логов.
-        logs_count (int): Количество логов.
-        expected_length (int): Ожидаемая длина.
-    """
-    storage = LogStorage()
-    for log in logs_collection[log_type][:logs_count]:
-        storage.save(log)
+        Args:
+            logs_collection (dict): Коллекция логов.
+            log_type (str): Тип логов.
+            logs_count (int): Количество логов.
+            expected_length (int): Ожидаемая длина.
+        """
+        logs = []
+        prev = 0
+        base_date = datetime(year=1989, month=5, day=10, minute=5)
+        for addtional_day in range(logs_count):
+            logs.append(BalanceLogAlchemyModel(
+                card_number_id=2,
+                datetime_utc=base_date + timedelta(minutes=addtional_day),
+                balance_before=prev,
+                balance_after=prev + 1000,
+                changes=1000,
+            ))
+            prev += 1000
 
-    if log_type == 'balance_logs':
-        assert len(storage._balance_logs['1234567890']) == expected_length
-    else:
-        assert len(storage._other_logs) == expected_length
+        print(logs)
+        for log in logs:
+            print(log)
+            await repository.save(log)
+
+        response = await repository.get_balance_history(
+            '456',
+            datetime(year=1989, month=5, day=10),
+            datetime(year=1989, month=5, day=11),
+        )
+
+        assert len(response) == expected_length

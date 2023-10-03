@@ -6,11 +6,19 @@ import pytest
 from credit_card_verify.src.services.verify_service import VerifyService
 
 
+@pytest.fixture(scope='module')
+def event_loop():
+    loop = asyncio.get_event_loop()
+    yield loop
+    loop.close()
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize('verification_result, expected', [
     (True, True),
     (False, False),
 ])
-def test_verify_service(mocker, verification_result, expected):
+async def test_verify_service(mocker, verification_result, expected):
     """
     Тест сервиса верификации.
 
@@ -37,10 +45,10 @@ def test_verify_service(mocker, verification_result, expected):
     mocker.patch('aiohttp.ClientSession.post', new=mock_response)
 
     verify_service = VerifyService()
-    test_result = asyncio.run(verify_service.verify(
+    test_result = await verify_service.verify(
         card_number='123',
         selfie_path='path/to/selfie',
         document_path='path/to/document',
-    ))
+    )
 
     assert test_result == expected

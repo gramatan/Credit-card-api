@@ -9,7 +9,7 @@ from config.config import ALGORITHM, SECRET_KEY, TOKEN_TTL
 class TokenRepository:
     """Репозиторий для работы с токенами."""
 
-    def create_access_token(
+    async def create_access_token(
         self,
         token_data: dict,
         expires_delta: timedelta | None = None,
@@ -32,7 +32,7 @@ class TokenRepository:
         to_encode.update({'exp': expire})
         return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-    def verify_token(self, token: str):
+    async def verify_token(self, token: str):
         """Функция проверки токена.
 
         Args:
