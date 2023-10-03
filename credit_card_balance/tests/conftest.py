@@ -75,7 +75,7 @@ async def db_session(new_db_schema, db_engine):
 @pytest_asyncio.fixture(autouse=True)
 async def prepare_cards_for_logs(db_engine):
     cards = [
-        CardAlchemyModel(card_number='123', card_limit=0, card_balance=0, card_first_name='Ivan'),
+        CardAlchemyModel(card_number='123', card_limit=1000, card_balance=0, card_first_name='Ivan'),
         CardAlchemyModel(card_number='456', card_limit=0, card_balance=0),
         CardAlchemyModel(card_number='789', card_limit=0, card_balance=0),
     ]

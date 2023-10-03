@@ -1,4 +1,4 @@
-## Week7. SHIFT-691. Задание 2. Задание 2. Внедрить Postgres в сервисах.
+## Week7. SHIFT-691. Задание 2. Внедрить Postgres в сервисах.
 
 Для работы с БД используется SQLAlchemy ORM.
 
@@ -11,11 +11,11 @@ docker compose up -d
     ```shell
     poetry run alembic upgrade head
     ```
-    
+
     или из контейнера cc_auth(После того как он запустится. Проверьте как назван ваш контейнер):
     ```shell
    docker exec -it credit_card-cc_auth alembic upgrade head
-    ```    
+    ```
 
 ## Week7. SHIFT-690. Задание 1. Реляционное представление доменной модели
 

@@ -59,7 +59,7 @@ async def new_db_schema(flush_db, db_engine):
 @pytest_asyncio.fixture(scope='module')
 async def db_session(new_db_schema, db_engine):
     pg_session = async_sessionmaker(db_engine, expire_on_commit=False)
-    async with pg_session() as session, session.begin():
+    async with pg_session() as session:
         yield session
         await session.rollback()
         await session.close()
