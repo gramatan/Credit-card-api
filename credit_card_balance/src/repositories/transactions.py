@@ -103,11 +103,14 @@ class Transactions:     # noqa: WPS214
         if not user:
             raise ValueError(USER_NOT_FOUND_ERROR)
 
-        if FIRST_USER_FIELD in user_info:
-            user.card_first_name = user_info[FIRST_USER_FIELD]
-
-        if SECOND_USER_FIELD in user_info:
-            user.card_second_name = user_info[SECOND_USER_FIELD]
+        user.card_first_name = user_info.get(
+            FIRST_USER_FIELD,
+            user.card_first_name,
+        )
+        user.card_second_name = user_info.get(
+            SECOND_USER_FIELD,
+            user.card_second_name,
+        )
 
         await self._user_storage.update_user(user)
 

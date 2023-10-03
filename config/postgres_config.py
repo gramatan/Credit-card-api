@@ -1,6 +1,8 @@
 """Конфигурация подключения к postgres."""
 from dataclasses import dataclass
 
+from config.config import POSTGRES_HOST
+
 
 @dataclass
 class PostgresConfig:
@@ -45,8 +47,7 @@ app_config = AppConfig(
     postgres=PostgresConfig(    # noqa: S106
         login='shift_cc',
         password='shift_cc_pass',
-        # host='cc_postgres',
-        host='localhost',
+        host=POSTGRES_HOST,
         port='5432',
         db_name='shift_cc_db',
     ),

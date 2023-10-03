@@ -8,9 +8,16 @@ from main_auth import app
 
 @pytest.mark.asyncio
 class TestApi:
+    """Класс для тестирования API."""
 
     @pytest_asyncio.fixture(scope='module')
     async def test_client(self):
+        """
+        Фикстура для создания клиента для тестирования.
+
+        Yields:
+            TestClient: Клиент для тестирования.
+        """
         yield TestClient(app)
 
     @pytest.mark.parametrize('endpoint_url, req', [
@@ -27,6 +34,7 @@ class TestApi:
         Args:
             endpoint_url (str): URL эндпоинта.
             req (str): Тип запроса.
+            test_client (TestClient): Клиент для тестирования.
         """
         client = test_client
         if req == 'get':
@@ -37,7 +45,12 @@ class TestApi:
         assert response.status_code == 401
 
     async def test_bad_user(self, test_client):
-        """Тест на неправильного пользователя."""
+        """
+        Тест на неправильного пользователя.
+
+        Args:
+            test_client (TestClient): Клиент для тестирования.
+        """
         client = test_client
         response = client.post(
             url='api/auth',

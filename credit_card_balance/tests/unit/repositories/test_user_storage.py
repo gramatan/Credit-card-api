@@ -9,8 +9,19 @@ from credit_card_balance.src.repositories.user_storage import UserStorage
 
 @pytest.mark.asyncio
 class TestLogStorage:
+    """Тесты для репозитория UserStorage."""
+
     @pytest_asyncio.fixture
     async def repository(self, db_session):
+        """
+        Фикстура для создания репозитория.
+
+        Args:
+            db_session (AsyncSession): Сессия для работы с БД.
+
+        Yields:
+            UserStorage: Репозиторий для тестов.
+        """
         yield UserStorage(db_session)
         await db_session.commit()
 
@@ -62,7 +73,13 @@ class TestLogStorage:
         pytest.param('8675309', type(None), True, id='User exists'),
         pytest.param('123', CardAlchemyModel, True, id='User not exists'),
     ])
-    async def test_get_user(self, card_number, expected_type, expected, repository):
+    async def test_get_user(
+        self,
+        card_number,
+        expected_type,
+        expected,
+        repository,
+    ):
         """
         Тест для проверки получения пользователя.
 
@@ -73,10 +90,9 @@ class TestLogStorage:
             repository (UserStorage): репо с методами для проверки.
         """
         test_result = await repository.get_user(card_number)
-        assert type(test_result) == expected_type
+        assert isinstance(test_result, expected_type)
 
-
-    @pytest.mark.parametrize('card_number, new_limit, expected_limit, exception', [
+    @pytest.mark.parametrize('card_number, new_limit, expected_limit, exception', [  # noqa: E501
         pytest.param(
             '123',
             500,
@@ -125,7 +141,6 @@ class TestLogStorage:
             assert updated_user.card_limit == expected_limit
             user_after = await repository.get_user(card_number)
             assert user_after.card_limit == expected_limit
-
 
     @pytest.mark.parametrize('card_number, expected', [
         pytest.param('123', True, id='User exists'),

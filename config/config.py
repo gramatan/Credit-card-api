@@ -27,6 +27,10 @@ BALANCE_APP_HOST = 'cc_balance'    # NOQA: S104
 VERIFICATION_HOST = 'cc_verify'   # NOQA: S104
 KAFKA_HOST = 'cc_kafka'
 
+# POSTGRES_HOST = 'localhost'         # NOQA: E800
+POSTGRES_HOST = 'cc_postgres'     # NOQA: E800
+
+
 PATH_PREFIX = '/api'
 
 RESPONSE_TIMEOUT = 30

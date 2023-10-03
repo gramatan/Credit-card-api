@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 
 import pytest
 import pytest_asyncio
-from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from credit_card_balance.src.database.base import BalanceLogAlchemyModel
 from credit_card_balance.src.repositories.log_storage import LogStorage
@@ -11,8 +10,19 @@ from credit_card_balance.src.repositories.log_storage import LogStorage
 
 @pytest.mark.asyncio
 class TestLogStorage:
+    """Тесты хранилища логов."""
+
     @pytest_asyncio.fixture
     async def repository(self, db_session):
+        """
+        Фикстура для создания репозитория.
+
+        Args:
+            db_session (AsyncSession): Сессия для работы с БД.
+
+        Yields:
+            LogStorage: Репозиторий для тестов.
+        """
         yield LogStorage(db_session)
         await db_session.commit()
 
@@ -76,8 +86,8 @@ class TestLogStorage:
             from_date (datetime): Начальная дата.
             to_date (datetime): Конечная дата.
             expected_length (int): Ожидаемая длина.
+            repository (LogStorage): Репозиторий.
         """
-        # async with async_sessionmaker(bind=db_engine)() as session:
         history = await repository.get_balance_history(
             card_id,
             from_date,
@@ -88,7 +98,7 @@ class TestLogStorage:
     @pytest.mark.parametrize('log_type, logs_count, expected_length', [
         pytest.param('balance_logs', 1, 1, id='save_log'),
     ])
-    async def test_save_logs(
+    async def test_save_logs(   # noqa: WPS210
         self,
         log_type,
         logs_count,
@@ -99,10 +109,10 @@ class TestLogStorage:
         Тест сохранения логов.
 
         Args:
-            logs_collection (dict): Коллекция логов.
             log_type (str): Тип логов.
             logs_count (int): Количество логов.
             expected_length (int): Ожидаемая длина.
+            repository (LogStorage): Репозиторий.
         """
         logs = []
         prev = 0
@@ -117,9 +127,7 @@ class TestLogStorage:
             ))
             prev += 1000
 
-        print(logs)
         for log in logs:
-            print(log)
             await repository.save(log)
 
         response = await repository.get_balance_history(

@@ -1,7 +1,6 @@
 """Базовые модели для работы с БД."""
 from datetime import datetime
 
-import sqlalchemy.orm
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -12,9 +11,10 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     String,
 )
+from sqlalchemy.orm import DeclarativeMeta, declarative_base
 from sqlalchemy.sql import func
 
-Base = sqlalchemy.orm.declarative_base()   # type: ignore
+Base: DeclarativeMeta = declarative_base()
 
 
 class CardAlchemyModel(Base):   # type: ignore

@@ -1,6 +1,4 @@
 """Тесты для репозитория транзакций."""
-from decimal import Decimal
-
 import pytest
 import pytest_asyncio
 
@@ -13,11 +11,20 @@ from credit_card_balance.src.repositories.user_storage import UserStorage
 class TestTransactions:
     """Тесты для репозитория транзакций."""
 
-    GOOD_USER = '123'
-    BAD_USER = '8675309'
+    GOOD_USER = '123'       # noqa: WPS115
+    BAD_USER = '8675309'    # noqa: WPS115
 
     @pytest_asyncio.fixture
     async def repository(self, db_session):
+        """
+        Фикстура для создания репозитория.
+
+        Args:
+            db_session (AsyncSession): Сессия для работы с БД.
+
+        Yields:
+            Transactions: Репозиторий для тестов.
+        """
         yield Transactions(UserStorage(db_session), LogStorage(db_session))
         await db_session.commit()
 
@@ -47,7 +54,7 @@ class TestTransactions:
 
         Args:
             card_id (str): Номер карты.
-            expected_balance (Decimal): Ожидаемый баланс.
+            expected_balance (int): Ожидаемый баланс.
             exception (str): Ожидаемое исключение.
             repository (Transactions): репо с методами для проверки.
         """
@@ -245,7 +252,7 @@ class TestTransactions:
             new_info (dict): Новая информация.
             expected_info (dict): Ожидаемая информация.
             exception (str): Ожидаемое исключение.
-            repository
+            repository (Transactions): репо с методами для проверки.
         """
         if exception == 'Raises':
             with pytest.raises(ValueError):
@@ -255,7 +262,6 @@ class TestTransactions:
         await repository.update_info(card_id, new_info)
 
         user = await repository._user_storage.get_user(card_id)
-        print('меточка для поиска', user.card_number, user.card_first_name, user.card_second_name)
         if expected_info.get('name'):
             assert user.card_first_name == expected_info['name']
         if expected_info.get('surname'):
