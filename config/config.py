@@ -29,7 +29,7 @@ KAFKA_HOST = 'cc_kafka'
 
 # POSTGRES_HOST = 'localhost'         # NOQA: E800
 # POSTGRES_HOST = 'cc_postgres'     # NOQA: E800
-POSTGRES_HOST = 'postgresql'     # NOQA: E800
+POSTGRES_HOST = 'postgres'     # NOQA: E800
 
 
 PATH_PREFIX = '/api'

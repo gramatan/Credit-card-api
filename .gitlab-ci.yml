@@ -3,9 +3,8 @@ default:
 
 
 stages:
-  - linters
   - tests
-
+  - linters
 
 Tests:
   stage: tests
