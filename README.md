@@ -17,6 +17,20 @@ docker compose up -d
    docker exec -it credit_card-cc_auth alembic upgrade head
     ```
 
+Ради уменьшения размера репо убрал файл с весами и закомментил строку 43 в [Dockerfile-verify](docker%2FDockerfile-verify).
+Теперь после запуска сервиса при первом запросе(каждый раз после создания нового контейнера) он скачает веса модели, что займет определенное время(600мб как-никак).
+Либо можно докинуть файл в папку [model_weights](model_weights) и раскомментить строку. Сам файл с весами в соседнем репо: [model_weights](https://gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/model_weights/-/blob/main/vgg_face_weights.h5?ref_type=heads)
+
+Предустановленные пользователи и карточки в конфиге [config.py](config%2Fconfig.py)
+
+![img.png](img.png)
+
+Данные предустановленного пользователя:
+```
+логин: test_user
+пароль: test_password
+```
+
 ## Week7. SHIFT-690. Задание 1. Реляционное представление доменной модели
 
 Допущения:
@@ -47,10 +61,6 @@ docker compose up -d
 
 ![db_scheme.png](db%2Fbalance%2Fdb_scheme.png)
 
-Ради уменьшения размера репо убрал файл с весами и закомментил строку в [Dockerfile-verify](docker%2FDockerfile-verify).
-Теперь после запуска сервиса при первом запросе он скачает веса модели, что займет определенное время(600мб как-никак).
-Либо можно докинуть файл. Он есть в ветке week6_shift_620.(тогда строку стоит раскомментить).
-
 ## Week6. SHIFT-620. Dockerfile для своего проекта.
 Созданы Dockerfile для каждого сервиса.
 
@@ -65,16 +75,6 @@ docker compose up -d
 На текущий момент все сервисы запускаются в одном контейнере поэтому в конфиге хосты указаны именами сервисов из docker-compose.
 
 ![img_3.png](img_3.png)
-
-Предустановленные пользователи и карточки в конфиге [config.py](config%2Fconfig.py)
-
-![img.png](img.png)
-
-Данные предустановленного пользователя:
-```
-логин: test_user
-пароль: test_password
-```
 
 ### Сборка образов и запуск контейнеров:
 Сети:
@@ -203,8 +203,6 @@ docker exec -it kafka /opt/bitnami/kafka/bin/kafka-topics.sh --create --topic gr
 docker exec -it kafka /opt/bitnami/kafka/bin/kafka-topics.sh --create --topic gran_verify_response --bootstrap-server host.docker.internal:24301 --partitions 1 --replication-factor 1
 ```
 Обновлены тесты.
-
-![img_1.png](img_1.png)
 
 ## Week5. SHIFT-559. Сервис авторизации и проксирования запросов
 Сервис разбит на три микросервиса:

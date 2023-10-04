@@ -40,7 +40,7 @@ RUN apt-get update \
 WORKDIR /app
 COPY --from=builder_2 $PYSETUP_PATH $PYSETUP_PATH
 
-COPY model_weights/vgg_face_weights.h5 /root/.deepface/weights/vgg_face_weights.h5
+#COPY model_weights/vgg_face_weights.h5 /root/.deepface/weights/vgg_face_weights.h5
 
 COPY ./config/ ./config/
 COPY ./credit_card_verify/ ./credit_card_verify/

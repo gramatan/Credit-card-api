@@ -43,7 +43,22 @@ python main_verify.py - для сервиса верификации на 24201
 
 ![img_2.png](img_2.png)
 
+Для работы с БД используется SQLAlchemy ORM.
 
+Запуск для проверки работоспособности:
+1) Поднять контейнеры:
+```shell
+docker compose up -d
+```
+2) Миграции можно запустить из папки с проектом, предварительно раскомментировав строку 12 в [env.py](alembic%2Fenv.py):
+    ```shell
+    poetry run alembic upgrade head
+    ```
+
+    или из контейнера cc_auth(После того как он запустится. Проверьте как назван ваш контейнер):
+    ```shell
+   docker exec -it credit_card-cc_auth alembic upgrade head
+    ```
 
 ## Структура проекта
 
@@ -80,6 +95,13 @@ python main_verify.py - для сервиса верификации на 24201
   - `unit`: Юнит тесты разбиты по файлам в соответствии со структурой проекта.
   - `integration`: Сценарий интеграционных тестов из задания в одном файле + тесты API.
 
+  #### БД:
+  Для данного сервиса нужна всего одна таблица c пользователями веб портала auth.
+
+  ![db_scheme.png](db%2Fauth%2Fdb_scheme.png)
+
+  Модель описана в файле [base.py](credit_card_auth%2Fsrc%2Fdatabase%2Fbase.py)
+
 
 ### Микросервис: credit_card_balance
 - [main_balance.py](main_balance.py) : Основной файл приложения.
@@ -91,9 +113,17 @@ python main_verify.py - для сервиса верификации на 24201
   - [schemas](credit_card_balance%2Fsrc%2Fschemas) : Схемы данных.
   - [services](credit_card_balance%2Fsrc%2Fservices) : Файлы с сервисами для работы с приложением.
 
-- `tests`: Тесты сервиса.
-  - `unit`: Юнит тесты разбиты по файлам в соответствии со структурой проекта.
-  - `integration`: Сценарий интеграционных тестов из задания в одном файле + тесты API.
+  - `tests`: Тесты сервиса.
+    - `unit`: Юнит тесты разбиты по файлам в соответствии со структурой проекта.
+    - `integration`: Сценарий интеграционных тестов из задания в одном файле + тесты API.
+
+    #### БД:
+    Таблицы для хранения логов(Balance и Common) и карточек.
+
+    ![db_scheme.png](db%2Fbalance%2Fdb_scheme.png)
+
+    Модель описана в файле [base.py](credit_card_balance%2Fsrc%2Fdatabase%2Fbase.py)
+
 
 ### Микросервис: credit_card_verify
 - [main_verify.py](main_verify.py) : Основной файл приложения.
