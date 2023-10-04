@@ -9,6 +9,12 @@ stages:
 
 Tests:
   stage: tests
+  services:
+    - bitnami/postgresql:latest
+  variables:
+    POSTGRES_USER: 'shift_cc'
+    POSTGRES_PASSWORD: 'shift_cc_pass'
+    POSTGRES_DB: 'shift_cc_db'
   before_script:
     - apt-get update && apt-get install -y curl
     - curl -sSL https://install.python-poetry.org | python3 -
