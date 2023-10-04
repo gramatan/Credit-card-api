@@ -20,6 +20,7 @@ app_config = AppConfig(
     ),
 )
 
+
 @pytest.fixture(scope='module')
 def event_loop():
     """
