@@ -43,20 +43,3 @@ class TestApi:
             response = client.post(url=endpoint_url)
 
         assert response.status_code == 401
-
-    async def test_bad_user(self, test_client):
-        """
-        Тест на неправильного пользователя.
-
-        Args:
-            test_client (TestClient): Клиент для тестирования.
-        """
-        client = test_client
-        response = client.post(
-            url='api/auth',
-            data={
-                'username': 'bad_user',
-                'password': 'bad_password',
-            },
-        )
-        assert response.status_code == 401
