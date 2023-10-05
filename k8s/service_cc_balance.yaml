@@ -2,33 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: gran_cc_balance
-  labels:
-    app: gran_cc_balance
 spec:
-  replicas: 1
   selector:
-    matchLabels:
-      app: gran_cc_balance
-  template:
-    metadata:
-      name: gran_cc_balance
-      labels:
-          app: gran_cc_balance
-  spec:
-    containers:
-      - name: gran_cc_balance
-        image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card:cc_balance
-        ports:
-          - containerPort: 24101
-        resources:
-          requests:
-            memory: "100Mi"
-            cpu: "250m"
-          limits:
-            memory: "100Mi"
-            cpu: "500m"
-        envFrom:
-          - configMapRef:
-            name: gran_cc_configmap
-          - secretRef:
-              name: gran_cc_secrets
+    app: gran_cc_balance
+  ports:
+    - protocol: TCP
+      port: 24101
+      targetPort: 24101
+  
