@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gran-cc-auth-migrations
+spec:
+  template:
+    spec:
+      containers:
+      - name: gran-cc-auth-migrations
+        image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card:cc_auth
+        command: ["poetry", "run", "alembic", "upgrade", "head"]
+        envFrom:
+        - configMapRef:
+            name: gran_cc_configmap
+        - secretRef:
+            name: gran_cc_secrets
+      restartPolicy: OnFailure

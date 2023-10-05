@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gran_cc_balance
+  labels:
+    app: gran_cc_balance
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+      app: gran_cc_balance
+  containers:
+    - name: gran_cc_balance
+      image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card:cc_balance
+      imagePullPolicy: IfNotPresent
