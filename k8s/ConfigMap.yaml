@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gran_cc_configmap
+data:
+  AUTH_APP_PORT: "24001"
+  BALANCE_APP_PORT: "24101"
+  VERIFICATION_PORT: "24201"
+  KAFKA_PORT: "9092"
+  AUTH_APP_HOST: "cc_auth"
+  BALANCE_APP_HOST: "cc_balance"
+  VERIFICATION_HOST: "cc_verify"
+  KAFKA_HOST: "cc_kafka"
+  POSTGRES_HOST: "cc_postgres"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB_NAME: "shift_cc_db"
+  TOKEN_TTL: "30"
+  VERIFIED_BALANCE: "100000"
+  UNVERIFIED_BALANCE: "20000"
+  FIRST_USER_FIELD: "first_name"
+  SECOND_USER_FIELD: "surname"

@@ -1,7 +1,13 @@
 """Конфигурация подключения к postgres."""
 from dataclasses import dataclass
 
-from config.config import POSTGRES_HOST
+from config.config import (
+    POSTGRES_DB_NAME,
+    POSTGRES_DB_PASS,
+    POSTGRES_DB_USER,
+    POSTGRES_HOST,
+    POSTGRES_PORT,
+)
 
 
 @dataclass
@@ -45,10 +51,10 @@ class AppConfig:
 
 app_config = AppConfig(
     postgres=PostgresConfig(    # noqa: S106
-        login='shift_cc',
-        password='shift_cc_pass',
+        login=POSTGRES_DB_USER,
+        password=POSTGRES_DB_PASS,
         host=POSTGRES_HOST,
-        port='5432',
-        db_name='shift_cc_db',
+        port=POSTGRES_PORT,
+        db_name=POSTGRES_DB_NAME,
     ),
 )
