@@ -13,7 +13,7 @@ spec:
     metadata:
       name: gran_cc_balance
       labels:
-          app: gran_cc_balance
+        app: gran_cc_balance
   spec:
     containers:
       - name: gran_cc_balance
