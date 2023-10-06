@@ -12,6 +12,7 @@ from config.kafka_setup import (
 )
 from credit_card_auth.src.routers import (
     balance_router,
+    readiness,
     token_router,
     transactions_router,
     verification_router,
@@ -54,7 +55,7 @@ app.include_router(
     prefix=PATH_PREFIX,
     tags=['transactions'],
 )
-
+app.include_router(readiness.router, tags=['readiness'])
 
 if __name__ == '__main__':
     import uvicorn  # noqa: WPS433

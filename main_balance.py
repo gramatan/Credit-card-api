@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings
 
 from config.config import BALANCE_APP_PORT
 from credit_card_balance.src.routers import balance_router, transactions_router
+from credit_card_balance.src.routers import readiness
 
 
 class Settings(BaseSettings):
@@ -28,6 +29,7 @@ app.include_router(
     prefix='/api',
     tags=['transactions'],
 )
+app.include_router(readiness.router, tags=['readiness'])
 
 
 if __name__ == '__main__':

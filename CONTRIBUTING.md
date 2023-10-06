@@ -60,6 +60,44 @@ docker compose up -d
    docker exec -it credit_card-cc_auth alembic upgrade head
     ```
 
+
+## Шаги для разворачивания в кубернетис
+
+1. Примените конфигурации для хранилища данных:
+  ```
+   kubectl apply -f k8s/volume.yaml
+  ```
+
+2. Добавьте секреты и константы:
+  ```
+  kubectl apply -f k8s/secret.yaml
+  kubectl apply -f k8s/configmap.yaml
+  ```
+
+3. Деплоим сервисы:
+  ```
+  kubectl apply -f k8s/deployment_cc_auth.yaml
+  kubectl apply -f k8s/deployment_cc_balance.yaml
+  kubectl apply -f k8s/deployment_cc_verify.yaml
+  ```
+
+4. Деплоим сервисы:
+  ```
+  kubectl apply -f k8s/service_cc_auth.yaml
+  kubectl apply -f k8s/service_cc_balance.yaml
+  ```
+
+5. По хорошему джобой накатываем миграции(но доступа у меня сейчас нет):
+  ```
+  kubectl apply -f k8s/job_alembic.yaml
+  ```
+  
+  Проверка статуса:
+  ```
+  kubectl get pods
+  kubectl logs <pod_name>
+  ```
+
 ## Структура проекта
 
 Проект разделен на три микросервиса: авторизация (`credit_card_auth`),

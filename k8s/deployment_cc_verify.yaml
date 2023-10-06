@@ -20,6 +20,18 @@ spec:
           image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_verify:latest
           ports:
             - containerPort: 24201
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 24201
+            initialDelaySeconds: 20
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 24201
+            initialDelaySeconds: 20
+            periodSeconds: 5
           resources:
             requests:
               memory: "2500Mi"

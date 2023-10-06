@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: gran-cc-auth-migrations
-        image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card:cc_auth
+        image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_auth:latest
         command: ["poetry", "run", "alembic", "upgrade", "head"]
         envFrom:
         - configMapRef:

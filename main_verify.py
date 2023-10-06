@@ -13,6 +13,7 @@ from config.kafka_setup import (
     stop_consumer,
     stop_producer,
 )
+from credit_card_verify.src.routers import readiness
 
 
 class Settings(BaseSettings):
@@ -24,6 +25,7 @@ class Settings(BaseSettings):
 
 app = FastAPI()
 
+app.include_router(readiness.router, tags=['readiness'])
 
 @app.on_event('startup')
 async def startup_event():
