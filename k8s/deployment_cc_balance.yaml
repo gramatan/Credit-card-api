@@ -14,21 +14,21 @@ spec:
       name: gran_cc_balance
       labels:
         app: gran_cc_balance
-  spec:
-    containers:
-      - name: gran_cc_balance
-        image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card:cc_balance
-        ports:
-          - containerPort: 24101
-        resources:
-          requests:
-            memory: "100Mi"
-            cpu: "250m"
-          limits:
-            memory: "100Mi"
-            cpu: "500m"
-        envFrom:
-          - configMapRef:
-            name: gran_cc_configmap
-          - secretRef:
-              name: gran_cc_secrets
+    spec:
+      containers:
+        - name: gran_cc_balance
+          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_balance:latest
+          ports:
+            - containerPort: 24101
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "250m"
+            limits:
+              memory: "100Mi"
+              cpu: "500m"
+          envFrom:
+            - configMapRef:
+                name: gran_cc_configmap
+            - secretRef:
+                name: gran_cc_secrets

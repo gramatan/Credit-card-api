@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: gran_cc_auth
-          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card:cc_auth
+          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_auth:latest
           ports:
             - containerPort: 24001
           resources:
@@ -29,7 +29,7 @@ spec:
               cpu: "500m"
           envFrom:
             - configMapRef:
-              name: gran_cc_configmap
+                name: gran_cc_configmap
             - secretRef:
                 name: gran_cc_secrets
           volumeMounts:
