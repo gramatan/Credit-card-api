@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gran_cc_balance
+  name: gran-cc-balance
   labels:
-    app: gran_cc_balance
+    app: gran-cc-balance
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gran_cc_balance
+      app: gran-cc-balance
   template:
     metadata:
-      name: gran_cc_balance
+      name: gran-cc-balance
       labels:
-        app: gran_cc_balance
+        app: gran-cc-balance
     spec:
       containers:
-        - name: gran_cc_balance
+        - name: gran-cc-balance
           image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_balance:latest
           ports:
             - containerPort: 24101
@@ -29,6 +29,6 @@ spec:
               cpu: "500m"
           envFrom:
             - configMapRef:
-                name: gran_cc_configmap
+                name: gran-cc-configmap
             - secretRef:
-                name: gran_cc_secrets
+                name: gran-cc-secrets

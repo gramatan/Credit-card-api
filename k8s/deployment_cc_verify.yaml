@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gran_cc_verify
+  name: gran-cc-verify
   labels:
-    app: gran_cc_verify
+    app: gran-cc-verify
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gran_cc_verify
+      app: gran-cc-verify
   template:
     metadata:
-      name: gran_cc_verify
+      name: gran-cc-verify
       labels:
-        app: gran_cc_verify
+        app: gran-cc-verify
     spec:
       containers:
-        - name: gran_cc_verify
+        - name: gran-cc-verify
           image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_verify:latest
           ports:
             - containerPort: 24201
@@ -29,9 +29,9 @@ spec:
               cpu: "1000m"
           envFrom:
             - configMapRef:
-                name: gran_cc_configmap
+                name: gran-cc-configmap
             - secretRef:
-                name: gran_cc_secrets
+                name: gran-cc-secrets
           volumeMounts:
             - mountPath: /app/photo_storage
               name: photo-storage

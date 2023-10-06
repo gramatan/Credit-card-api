@@ -11,7 +11,7 @@ spec:
         command: ["poetry", "run", "alembic", "upgrade", "head"]
         envFrom:
         - configMapRef:
-            name: gran_cc_configmap
+            name: gran-cc-configmap
         - secretRef:
-            name: gran_cc_secrets
+            name: gran-cc-secrets
       restartPolicy: OnFailure

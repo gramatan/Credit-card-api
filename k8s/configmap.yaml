@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: gran_cc_configmap
+  name: gran-cc-configmap
 data:
   AUTH_APP_PORT: "24001"
   BALANCE_APP_PORT: "24101"
   VERIFICATION_PORT: "24201"
   KAFKA_PORT: "9092"
-  AUTH_APP_HOST: "gran_cc_auth"
-  BALANCE_APP_HOST: "gran_cc_balance"
-  VERIFICATION_HOST: "gran_cc_verify"
+  AUTH_APP_HOST: "gran-cc-auth"
+  BALANCE_APP_HOST: "gran-cc-balance"
+  VERIFICATION_HOST: "gran-cc-verify"
   KAFKA_HOST: "cc_kafka"
   POSTGRES_HOST: "postgres.test.svc.cluster.local"
   POSTGRES_PORT: "5432"

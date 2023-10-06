@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gran_cc_auth
+  name: gran-cc-auth
   labels:
-    app: gran_cc_auth
+    app: gran-cc-auth
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gran_cc_auth
+      app: gran-cc-auth
   template:
     metadata:
-      name: gran_cc_auth
+      name: gran-cc-auth
       labels:
-        app: gran_cc_auth
+        app: gran-cc-auth
     spec:
       containers:
-        - name: gran_cc_auth
+        - name: gran-cc-auth
           image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_auth:latest
           ports:
             - containerPort: 24001
@@ -29,9 +29,9 @@ spec:
               cpu: "500m"
           envFrom:
             - configMapRef:
-                name: gran_cc_configmap
+                name: gran-cc-configmap
             - secretRef:
-                name: gran_cc_secrets
+                name: gran-cc-secrets
           volumeMounts:
             - mountPath: /app/photo_storage
               name: photo-storage
