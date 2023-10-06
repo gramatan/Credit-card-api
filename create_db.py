@@ -1,5 +1,6 @@
-import asyncpg
 import asyncio
+
+import asyncpg
 
 from config.config import (
     POSTGRES_DB_NAME,

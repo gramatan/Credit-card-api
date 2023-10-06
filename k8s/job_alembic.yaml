@@ -6,7 +6,7 @@ spec:
   containers:
   - name: gran-cc-auth-migrations
     image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_auth:latest
-    command: ["python", "create_db.py"]
+    command: ["alembic", "upgrade", "head"]
     envFrom:
     - configMapRef:
         name: gran-cc-configmap
