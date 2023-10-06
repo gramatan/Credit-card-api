@@ -27,6 +27,7 @@ app = FastAPI()
 
 app.include_router(readiness.router, tags=['readiness'])
 
+
 @app.on_event('startup')
 async def startup_event():
     """Начало работы приложения."""

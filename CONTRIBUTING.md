@@ -91,7 +91,7 @@ docker compose up -d
   ```
   kubectl apply -f k8s/job_alembic.yaml
   ```
-  
+
   Проверка статуса:
   ```
   kubectl get pods

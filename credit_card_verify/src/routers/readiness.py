@@ -1,3 +1,4 @@
+"""Проверки для кубера."""
 from fastapi import APIRouter, status
 from starlette.responses import JSONResponse
 
@@ -5,7 +6,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/ready",
+    '/ready',
     response_class=JSONResponse,
     status_code=status.HTTP_200_OK,
 )
@@ -16,11 +17,11 @@ async def ready():
     Returns:
         dict: Статус готовности.
     """
-    return {"status": "ready"}
+    return {'status': 'ready'}
 
 
 @router.get(
-    "/live",
+    '/live',
     response_class=JSONResponse,
     status_code=status.HTTP_200_OK,
 )
@@ -31,4 +32,4 @@ async def live():
     Returns:
         dict: Статус жизнеспособности.
     """
-    return {"status": "alive"}
+    return {'status': 'alive'}

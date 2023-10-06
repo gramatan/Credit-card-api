@@ -9,4 +9,3 @@ spec:
     - protocol: TCP
       port: 24101
       targetPort: 24101
-  
