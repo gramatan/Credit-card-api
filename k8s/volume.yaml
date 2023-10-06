@@ -5,7 +5,7 @@ metadata:
 spec:
   storageClassName: yc-network-ssd
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 50Mi
+      storage: 64Mi
