@@ -6,7 +6,7 @@ import logging
 from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
 from kafka.errors import KafkaConnectionError
 
-from config.config import KAFKA_HOST, KAFKA_PORT
+from config.config import KAFKA_HOST, KAFKA_PASSWORD, KAFKA_PORT, KAFKA_USER
 
 
 async def start_producer():
@@ -17,9 +17,17 @@ async def start_producer():
         AIOKafkaProducer: Продюссер.
     """
     try:    # noqa: WPS229
-        producer = AIOKafkaProducer(
-            bootstrap_servers=f'{KAFKA_HOST}:{KAFKA_PORT}',
-        )
+        if KAFKA_USER and KAFKA_PASSWORD:
+            producer = AIOKafkaProducer(
+                bootstrap_servers=f'{KAFKA_HOST}:{KAFKA_PORT}',
+                sasl_mechanism='PLAIN',
+                sasl_plain_username=KAFKA_USER,
+                sasl_plain_password=KAFKA_PASSWORD,
+            )
+        else:
+            producer = AIOKafkaProducer(
+                bootstrap_servers=f'{KAFKA_HOST}:{KAFKA_PORT}',
+            )
         await producer.start()
         return producer
     except KafkaConnectionError:
@@ -47,10 +55,19 @@ async def start_consumer():
         AIOKafkaConsumer: Консьюмер.
     """
     try:    # noqa: WPS229
-        consumer = AIOKafkaConsumer(
-            'gran_verify',
-            bootstrap_servers=f'{KAFKA_HOST}:{KAFKA_PORT}',
-        )
+        if KAFKA_USER and KAFKA_PASSWORD:
+            consumer = AIOKafkaConsumer(
+                'gran_verify',
+                bootstrap_servers=f'{KAFKA_HOST}:{KAFKA_PORT}',
+                sasl_mechanism='PLAIN',
+                sasl_plain_username=KAFKA_USER,
+                sasl_plain_password=KAFKA_PASSWORD,
+            )
+        else:
+            consumer = AIOKafkaConsumer(
+                'gran_verify',
+                bootstrap_servers=f'{KAFKA_HOST}:{KAFKA_PORT}',
+            )
         await consumer.start()
         return consumer
     except KafkaConnectionError:
@@ -77,10 +94,19 @@ async def kafka_response_listener(app):
     Args:
         app (FastAPI): Экземпляр приложения.
     """
-    consumer = AIOKafkaConsumer(
-        'gran_verify_response',
-        bootstrap_servers=f'{KAFKA_HOST}:{KAFKA_PORT}',
-    )
+    if KAFKA_USER and KAFKA_PASSWORD:
+        consumer = AIOKafkaConsumer(
+            'gran_verify_response',
+            bootstrap_servers=f'{KAFKA_HOST}:{KAFKA_PORT}',
+            sasl_mechanism='PLAIN',
+            sasl_plain_username=KAFKA_USER,
+            sasl_plain_password=KAFKA_PASSWORD,
+        )
+    else:
+        consumer = AIOKafkaConsumer(
+            'gran_verify_response',
+            bootstrap_servers=f'{KAFKA_HOST}:{KAFKA_PORT}',
+        )
     await consumer.start()
     try:
         async for message in consumer:

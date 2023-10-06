@@ -21,12 +21,15 @@ TOKEN_TTL = int(os.environ.get('TOKEN_TTL', 30))
 AUTH_APP_PORT = int(os.environ.get('AUTH_APP_PORT', 24001))
 BALANCE_APP_PORT = int(os.environ.get('BALANCE_APP_PORT', 24101))
 VERIFICATION_PORT = int(os.environ.get('VERIFICATION_PORT', 24201))
-KAFKA_PORT = int(os.environ.get('KAFKA_PORT', 9092))
 
 AUTH_APP_HOST = os.environ.get('AUTH_APP_HOST', 'cc_auth')
 BALANCE_APP_HOST = os.environ.get('BALANCE_APP_HOST', 'cc_balance')
 VERIFICATION_HOST = os.environ.get('VERIFICATION_HOST', 'cc_verify')
+
 KAFKA_HOST = os.environ.get('KAFKA_HOST', 'cc_kafka')
+KAFKA_PORT = int(os.environ.get('KAFKA_PORT', 9092))
+KAFKA_USER = os.environ.get('KAFKA_USER', '')
+KAFKA_PASSWORD = os.environ.get('KAFKA_PASSWORD', '')
 
 POSTGRES_HOST = os.environ.get('POSTGRES_HOST', 'cc_postgres')
 POSTGRES_PORT = os.environ.get('POSTGRES_PORT', '5432')
