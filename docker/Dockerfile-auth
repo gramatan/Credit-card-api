@@ -46,6 +46,7 @@ COPY localhost.crt ./
 COPY ./alembic/ ./alembic/
 COPY alembic.ini ./
 COPY ./credit_card_balance/src/database/base.py ./credit_card_balance/src/database/base.py
+COPY create_db.py ./
 
 VOLUME ["/app/photo_storage/"]
 
