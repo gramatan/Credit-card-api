@@ -3,6 +3,27 @@ Week8. SHIFT-779. Создать начальные манифесты для с
 В папке [k8s](k8s) находятся манифесты для запуска приложения в kubernetes.
 Порядок действий описан в файле [CONTRIBUTING.md](CONTRIBUTING.md)
 
+Все объекты в k8s начинаются с префикса gran_
+
+[deployment_cc_auth.yaml](k8s%2Fdeployment_cc_auth.yaml) - gran-cc-auth - депйломент для микросервиса аутентификации и проксирования запросов.
+
+[deployment_cc_balance.yaml](k8s%2Fdeployment_cc_balance.yaml) - gran-cc-balance - деплоймент для сновного микросервиса сервиса проекта.
+
+[deployment_cc_verify.yaml](k8s%2Fdeployment_cc_verify.yaml) - gran-cc-verify - деплоймент для микросервиса распознавания изображений.
+
+[volume.yaml](k8s%2Fvolume.yaml) - gran-photo-storage-pvc - PVC для общего хранилища фотографий.
+
+[configmap.yaml](k8s%2Fconfigmap.yaml) - gran-cc-configmap - конфигмап для проекта.
+
+[secret.yaml](k8s%2Fsecret.yaml)  - gran-cc-secrets - секретики проекта.
+
+Сервисы:
+[service_cc_auth.yaml](k8s%2Fservice_cc_auth.yaml) - gran-cc-auth - сервис аутентификации и проксирования запросов.
+
+[service_cc_balance.yaml](k8s%2Fservice_cc_balance.yaml) - gran-cc-balance - основной сервис проекта.
+
+Для монструозного приложения верификации сервиса не предусмотрено.  Обращения к нему производятся не напрямую, а через кафка, поэтому единой точки входа не требуется. на текущем кластере с трудом поднимается один инстанс приложения ввиду требований по памяти и конкуренции, поэтому поднимать несколько инстансов не пробовал.
+
 ## Week7. SHIFT-691. Задание 2. Внедрить Postgres в сервисах.
 
 Для работы с БД используется SQLAlchemy ORM.

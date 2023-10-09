@@ -78,6 +78,8 @@ services:
       dockerfile: docker/Dockerfile-balance
     image: cc_balance:latest
     restart: always
+    ports:
+      - "24101:24101"
     depends_on:
       cc_kafka:
         condition: service_healthy
@@ -92,6 +94,8 @@ services:
       dockerfile: docker/Dockerfile-verify
     image: cc_verify:latest
     restart: always
+    ports:
+      - "24201:24201"
     volumes:
       - photo_storage:/app/photo_storage
     depends_on:
