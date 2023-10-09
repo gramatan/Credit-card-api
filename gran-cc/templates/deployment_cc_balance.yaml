@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gran-cc-balance
+  labels:
+    app: gran-cc-balance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gran-cc-balance
+  template:
+    metadata:
+      name: gran-cc-balance
+      labels:
+        app: gran-cc-balance
+    spec:
+      containers:
+        - name: gran-cc-balance
+          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_balance:latest
+          ports:
+            - containerPort: 24101
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 24101
+            initialDelaySeconds: 20
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 24101
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "1m"
+            limits:
+              memory: "100Mi"
+              cpu: "150m"
+          envFrom:
+            - configMapRef:
+                name: gran-cc-configmap
+            - secretRef:
+                name: gran-cc-secrets

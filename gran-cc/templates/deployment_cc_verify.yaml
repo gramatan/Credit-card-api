@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gran-cc-verify
+  labels:
+    app: gran-cc-verify
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gran-cc-verify
+  template:
+    metadata:
+      name: gran-cc-verify
+      labels:
+        app: gran-cc-verify
+    spec:
+      containers:
+        - name: gran-cc-verify
+          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_verify:latest
+          ports:
+            - containerPort: 24201
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 24201
+            initialDelaySeconds: 90
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 24201
+            initialDelaySeconds: 90
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+            limits:
+              memory: "2300Mi"
+              cpu: "1000m"
+          envFrom:
+            - configMapRef:
+                name: gran-cc-configmap
+            - secretRef:
+                name: gran-cc-secrets
+          volumeMounts:
+            - mountPath: /app/photo_storage
+              name: photo-storage
+      volumes:
+        - name: photo-storage
+          persistentVolumeClaim:
+            claimName: gran-photo-storage-pvc
