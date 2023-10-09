@@ -10,7 +10,7 @@ data:
   AUTH_APP_HOST: "gran-cc-auth"
   BALANCE_APP_HOST: "gran-cc-balance"
   VERIFICATION_HOST: "gran-cc-verify"
-  KAFKA_HOST: "shift-kafka.test.svc.cluster.local"
+  KAFKA_HOST: "kafka.test.svc.cluster.local"
   POSTGRES_HOST: "postgres.test.svc.cluster.local"
   POSTGRES_PORT: "5432"
   POSTGRES_DB_NAME: "shift_cc_db"

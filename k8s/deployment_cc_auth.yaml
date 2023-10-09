@@ -25,20 +25,20 @@ spec:
               path: /live
               port: 24001
             initialDelaySeconds: 20
-            periodSeconds: 3
+            periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /ready
               port: 24001
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            initialDelaySeconds: 20
+            periodSeconds: 5
           resources:
             requests:
               memory: "100Mi"
-              cpu: "100m"
+              cpu: "1m"
             limits:
               memory: "100Mi"
-              cpu: "250m"
+              cpu: "200m"
           envFrom:
             - configMapRef:
                 name: gran-cc-configmap

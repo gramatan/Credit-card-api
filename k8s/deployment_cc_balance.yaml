@@ -30,7 +30,7 @@ spec:
             httpGet:
               path: /ready
               port: 24101
-            initialDelaySeconds: 30
+            initialDelaySeconds: 20
             periodSeconds: 10
           resources:
             requests:

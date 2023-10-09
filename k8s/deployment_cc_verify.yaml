@@ -24,21 +24,21 @@ spec:
             httpGet:
               path: /live
               port: 24201
-            initialDelaySeconds: 20
-            periodSeconds: 3
+            initialDelaySeconds: 90
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /ready
               port: 24201
-            initialDelaySeconds: 30
+            initialDelaySeconds: 90
             periodSeconds: 10
           resources:
             requests:
               memory: "100Mi"
               cpu: "100m"
             limits:
-              memory: "100Mi"
-              cpu: "250m"
+              memory: "2300Mi"
+              cpu: "1000m"
           envFrom:
             - configMapRef:
                 name: gran-cc-configmap
