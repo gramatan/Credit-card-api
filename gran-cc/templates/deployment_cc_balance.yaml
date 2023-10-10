@@ -1,46 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gran-cc-balance
+  name: {{  .Values.config.balanceAppHost  }}
   labels:
-    app: gran-cc-balance
+    app: {{  .Values.config.balanceAppHost  }}
 spec:
-  replicas: 1
+  replicas: {{  .Values.balance.replicaCount  }}
   selector:
     matchLabels:
-      app: gran-cc-balance
+      app: {{  .Values.config.balanceAppHost  }}
   template:
     metadata:
-      name: gran-cc-balance
+      name: {{  .Values.config.balanceAppHost  }}
       labels:
-        app: gran-cc-balance
+        app: {{  .Values.config.balanceAppHost  }}
     spec:
       containers:
-        - name: gran-cc-balance
-          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_balance:latest
+        - name: {{  .Values.config.balanceAppHost  }}
+          image: {{ .Values.balance.image.repository }}:{{ .Values.balance.image.tag }}
           ports:
-            - containerPort: 24101
+            - containerPort: {{ int .Values.config.balanceAppPort }}
           livenessProbe:
             httpGet:
-              path: /live
-              port: 24101
-            initialDelaySeconds: 20
-            periodSeconds: 3
+              path: {{ .Values.balance.probes.liveness.path }}
+              port: {{ int .Values.config.balanceAppPort }}
+            initialDelaySeconds: {{ .Values.balance.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.balance.probes.liveness.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /ready
-              port: 24101
-            initialDelaySeconds: 20
-            periodSeconds: 10
+              path: {{ .Values.balance.probes.readiness.path }}
+              port: {{ int .Values.config.balanceAppPort }}
+            initialDelaySeconds: {{ .Values.balance.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.balance.probes.readiness.periodSeconds }}
           resources:
             requests:
-              memory: "100Mi"
-              cpu: "1m"
+              memory: {{ .Values.balance.resources.requests.memory }}
+              cpu: {{ .Values.balance.resources.requests.cpu }}
             limits:
-              memory: "100Mi"
-              cpu: "150m"
+              memory: {{ .Values.balance.resources.limits.memory }}
+              cpu: {{ .Values.balance.resources.limits.cpu }}
           envFrom:
             - configMapRef:
-                name: gran-cc-configmap
+                name: {{  .Values.config.name  }}
             - secretRef:
                 name: gran-cc-secrets

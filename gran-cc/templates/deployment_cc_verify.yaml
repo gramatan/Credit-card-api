@@ -1,47 +1,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gran-cc-verify
+  name: {{ .Values.config.verificationHost }}
   labels:
-    app: gran-cc-verify
+    app: {{ .Values.config.verificationHost }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.verify.replicaCount }}
   selector:
     matchLabels:
-      app: gran-cc-verify
+      app: {{ .Values.config.verificationHost }}
   template:
     metadata:
-      name: gran-cc-verify
+      name: {{ .Values.config.verificationHost }}
       labels:
-        app: gran-cc-verify
+        app: {{ .Values.config.verificationHost }}
     spec:
       containers:
-        - name: gran-cc-verify
-          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_verify:latest
+        - name: {{ .Values.config.verificationHost }}
+          image: {{ .Values.verify.image.repository }}:{{ .Values.verify.image.tag }}
           ports:
-            - containerPort: 24201
+            - containerPort: {{ int .Values.config.verificationPort }}
           livenessProbe:
             httpGet:
-              path: /live
-              port: 24201
-            initialDelaySeconds: 90
-            periodSeconds: 10
+              path: {{ .Values.verify.probes.liveness.path }}
+              port: {{ int .Values.config.verificationPort }}
+            initialDelaySeconds: {{ .Values.verify.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.verify.probes.liveness.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /ready
-              port: 24201
-            initialDelaySeconds: 90
-            periodSeconds: 10
+              path: {{ .Values.verify.probes.readiness.path }}
+              port: {{ int .Values.config.verificationPort }}
+            initialDelaySeconds: {{ .Values.verify.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.verify.probes.readiness.periodSeconds }}
           resources:
             requests:
-              memory: "100Mi"
-              cpu: "100m"
+              memory: {{ .Values.verify.resources.requests.memory }}
+              cpu: {{ .Values.verify.resources.requests.cpu }}
             limits:
-              memory: "2300Mi"
-              cpu: "1000m"
+              memory: {{ .Values.verify.resources.limits.memory }}
+              cpu: {{ .Values.verify.resources.limits.cpu }}
           envFrom:
             - configMapRef:
-                name: gran-cc-configmap
+                name: {{ .Values.config.name }}
             - secretRef:
                 name: gran-cc-secrets
           volumeMounts:
@@ -50,4 +50,4 @@ spec:
       volumes:
         - name: photo-storage
           persistentVolumeClaim:
-            claimName: gran-photo-storage-pvc
+            claimName: {{ .Values.pvc.name }}

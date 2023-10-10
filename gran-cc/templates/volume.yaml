@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: gran-photo-storage-pvc
+  name: {{  .Values.pvc.name  }}
 spec:
-  storageClassName: yc-network-ssd
+  storageClassName: {{  .Values.pvc.storageClassName  }}
   accessModes:
-    - ReadWriteOnce
+    - {{  .Values.pvc.accessMode  }}
   resources:
     requests:
-      storage: 64Mi
+      storage: {{  .Values.pvc.size  }}

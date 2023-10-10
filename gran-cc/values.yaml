@@ -80,3 +80,119 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+config:
+  # Имя ConfigMap
+  name: "gran-cc-configmap"
+  # Порт сервиса аутентификации
+  authAppPort: "24001"
+  # Порт сервиса баланса
+  balanceAppPort: "24101"
+  # Порт сервиса верификации
+  verificationPort: "24201"
+  # Порт Kafka
+  kafkaPort: "9092"
+  # Хост сервиса аутентификации
+  authAppHost: "gran-cc-auth"
+  # Хост сервиса баланса
+  balanceAppHost: "gran-cc-balance"
+  # Хост сервиса верификации
+  verificationHost: "gran-cc-verify"
+  # Хост Kafka
+  kafkaHost: "kafka.test.svc.cluster.local"
+  # Хост Postgres
+  postgresHost: "postgres.test.svc.cluster.local"
+  # Порт Postgres
+  postgresPort: "5432"
+  # Имя базы данных Postgres
+  postgresDbName: "shift_cc_db"
+  # Время жизни токена авторизации
+  tokenTTL: "30"
+  # Лимит пользователя при успехе верификации
+  verifiedBalance: "100000"
+  # Лимит пользователя при неуспехе верификации
+  unverifiedBalance: "20000"
+  # Поле в дикте для первого поля в таблице
+  firstUserField: "first_name"
+  # Поле в дикте для второго поля в таблице
+  secondUserField: "surname"
+
+# Параметры для PVC для хранения фотографий
+pvc:
+  # Имя PVC
+  name: gran-photo-storage-pvc
+  # Имя StorageClass
+  storageClassName: yc-network-ssd
+  # Режим доступа
+  accessMode: ReadWriteOnce
+  # Размер PVC
+  size: 64Mi
+
+auth:
+  replicaCount: 1
+  image:
+    repository: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_auth
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "1m"
+    limits:
+      memory: "100Mi"
+      cpu: "200m"
+  probes:
+    liveness:
+      path: /live
+      initialDelaySeconds: 20
+      periodSeconds: 5
+    readiness:
+      path: /ready
+      initialDelaySeconds: 20
+      periodSeconds: 5
+
+balance:
+  replicaCount: 1
+  image:
+    repository: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_balance
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "1m"
+    limits:
+      memory: "100Mi"
+      cpu: "150m"
+  probes:
+    liveness:
+      path: /live
+      initialDelaySeconds: 20
+      periodSeconds: 3
+    readiness:
+      path: /ready
+      initialDelaySeconds: 20
+      periodSeconds: 10
+
+verify:
+  replicaCount: 1
+  image:
+    repository: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_verify
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+    limits:
+      memory: "2300Mi"
+      cpu: "1000m"
+  probes:
+    liveness:
+      path: /live
+      initialDelaySeconds: 90
+      periodSeconds: 10
+    readiness:
+      path: /ready
+      initialDelaySeconds: 90
+      periodSeconds: 10

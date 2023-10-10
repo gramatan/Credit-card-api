@@ -1,47 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gran-cc-auth
+  name: {{  .Values.config.authAppHost  }}
   labels:
-    app: gran-cc-auth
+    app: {{  .Values.config.authAppHost  }}
 spec:
-  replicas: 1
+  replicas: {{  .Values.auth.replicaCount  }}
   selector:
     matchLabels:
-      app: gran-cc-auth
+      app: {{  .Values.config.authAppHost  }}
   template:
     metadata:
-      name: gran-cc-auth
+      name: {{  .Values.config.authAppHost  }}
       labels:
-        app: gran-cc-auth
+        app: {{  .Values.config.authAppHost  }}
     spec:
       containers:
-        - name: gran-cc-auth
-          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_auth:latest
+        - name: {{  .Values.config.authAppHost  }}
+          image: {{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}
+          imagePullPolicy: {{ .Values.auth.image.pullPolicy }}
           ports:
-            - containerPort: 24001
+            - containerPort: {{ int .Values.config.authAppPort }}
           livenessProbe:
             httpGet:
-              path: /live
-              port: 24001
-            initialDelaySeconds: 20
-            periodSeconds: 5
+              path: {{ .Values.auth.probes.liveness.path }}
+              port: {{ int .Values.config.authAppPort }}
+            initialDelaySeconds: {{ .Values.auth.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.auth.probes.liveness.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /ready
-              port: 24001
-            initialDelaySeconds: 20
-            periodSeconds: 5
+              path: {{ .Values.auth.probes.readiness.path }}
+              port: {{ int .Values.config.authAppPort }}
+            initialDelaySeconds: {{ .Values.auth.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.auth.probes.readiness.periodSeconds }}
           resources:
             requests:
-              memory: "100Mi"
-              cpu: "1m"
+              memory: {{ .Values.auth.resources.requests.memory }}
+              cpu: {{ .Values.auth.resources.requests.cpu }}
             limits:
-              memory: "100Mi"
-              cpu: "200m"
+              memory: {{ .Values.auth.resources.limits.memory }}
+              cpu: {{ .Values.auth.resources.limits.cpu }}
           envFrom:
             - configMapRef:
-                name: gran-cc-configmap
+                name: {{  .Values.config.name  }}
             - secretRef:
                 name: gran-cc-secrets
           volumeMounts:
@@ -50,4 +51,4 @@ spec:
       volumes:
         - name: photo-storage
           persistentVolumeClaim:
-            claimName: gran-photo-storage-pvc
+            claimName: {{  .Values.pvc.name  }}
