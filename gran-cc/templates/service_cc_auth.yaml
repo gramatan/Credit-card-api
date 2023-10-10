@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{  .Values.config.authAppHost  }}
+  name: {{ .Values.config.authAppHost }}
 spec:
   selector:
-    app: {{  .Values.config.authAppHost  }}
+    app: {{ .Values.config.authAppHost }}
   ports:
     - protocol: TCP
-      port: {{  .Values.config.authAppPort  }}
-      targetPort: {{  .Values.config.authAppPort  }}
+      port: {{ .Values.config.authAppPort }}
+      targetPort: {{ .Values.config.authAppPort }}

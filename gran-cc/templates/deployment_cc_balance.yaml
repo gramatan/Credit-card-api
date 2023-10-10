@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{  .Values.config.balanceAppHost  }}
+  name: {{ .Values.config.balanceAppHost }}
   labels:
-    app: {{  .Values.config.balanceAppHost  }}
+    app: {{ .Values.config.balanceAppHost }}
 spec:
-  replicas: {{  .Values.balance.replicaCount  }}
+  replicas: {{ .Values.balance.replicaCount }}
   selector:
     matchLabels:
-      app: {{  .Values.config.balanceAppHost  }}
+      app: {{ .Values.config.balanceAppHost }}
   template:
     metadata:
-      name: {{  .Values.config.balanceAppHost  }}
+      name: {{ .Values.config.balanceAppHost }}
       labels:
-        app: {{  .Values.config.balanceAppHost  }}
+        app: {{ .Values.config.balanceAppHost }}
     spec:
       containers:
-        - name: {{  .Values.config.balanceAppHost  }}
+        - name: {{ .Values.config.balanceAppHost }}
           image: {{ .Values.balance.image.repository }}:{{ .Values.balance.image.tag }}
           ports:
             - containerPort: {{ int .Values.config.balanceAppPort }}
@@ -41,6 +41,6 @@ spec:
               cpu: {{ .Values.balance.resources.limits.cpu }}
           envFrom:
             - configMapRef:
-                name: {{  .Values.config.name  }}
+                name: {{ .Values.config.name }}
             - secretRef:
                 name: gran-cc-secrets

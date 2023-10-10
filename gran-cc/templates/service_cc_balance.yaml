@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{  .Values.config.balanceAppHost  }}
+  name: {{ .Values.config.balanceAppHost }}
 spec:
   selector:
-    app: {{  .Values.config.balanceAppHost  }}
+    app: {{ .Values.config.balanceAppHost }}
   ports:
     - protocol: TCP
-      port: {{  .Values.config.balanceAppPort  }}
-      targetPort: {{  .Values.config.balanceAppPort  }}
+      port: {{ .Values.config.balanceAppPort }}
+      targetPort: {{ .Values.config.balanceAppPort }}
