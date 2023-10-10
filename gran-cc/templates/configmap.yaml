@@ -1,21 +1,21 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.config.name }}
+  name: {{ .Values.config.name | quote }}
 data:
-  AUTH_APP_PORT: {{ .Values.config.authAppPort }}
-  BALANCE_APP_PORT: {{ .Values.config.balanceAppPort }}
-  VERIFICATION_PORT: {{ .Values.config.verificationPort }}
-  KAFKA_PORT: {{ .Values.config.kafkaPort }}
-  AUTH_APP_HOST: {{ .Values.config.authAppHost }}
-  BALANCE_APP_HOST: {{ .Values.config.balanceAppHost }}
-  VERIFICATION_HOST: {{ .Values.config.verificationHost }}
-  KAFKA_HOST: {{ .Values.config.kafkaHost }}
-  POSTGRES_HOST: {{ .Values.config.postgresHost }}
-  POSTGRES_PORT: {{ .Values.config.postgresPort }}
-  POSTGRES_DB_NAME: {{ .Values.config.postgresDbName }}
-  TOKEN_TTL: {{ .Values.config.tokenTTL }}
-  VERIFIED_BALANCE: {{ .Values.config.verifiedBalance }}
-  UNVERIFIED_BALANCE: {{ .Values.config.unverifiedBalance }}
-  FIRST_USER_FIELD: {{.Values.config.firstUserField }}
-  SECOND_USER_FIELD: {{ .Values.config.secondUserField }}
+  AUTH_APP_PORT: {{ .Values.config.authAppPort | quote }}
+  BALANCE_APP_PORT: {{ .Values.config.balanceAppPort | quote }}
+  VERIFICATION_PORT: {{ .Values.config.verificationPort | quote }}
+  KAFKA_PORT: {{ .Values.config.kafkaPort | quote }}
+  AUTH_APP_HOST: {{ .Values.config.authAppHost | quote }}
+  BALANCE_APP_HOST: {{ .Values.config.balanceAppHost | quote }}
+  VERIFICATION_HOST: {{ .Values.config.verificationHost | quote }}
+  KAFKA_HOST: {{ .Values.config.kafkaHost | quote }}
+  POSTGRES_HOST: {{ .Values.config.postgresHost | quote }}
+  POSTGRES_PORT: {{ .Values.config.postgresPort | quote }}
+  POSTGRES_DB_NAME: {{ .Values.config.postgresDbName | quote }}
+  TOKEN_TTL: {{ .Values.config.tokenTTL | quote }}
+  VERIFIED_BALANCE: {{ .Values.config.verifiedBalance | quote }}
+  UNVERIFIED_BALANCE: {{ .Values.config.unverifiedBalance | quote }}
+  FIRST_USER_FIELD: {{ .Values.config.firstUserField | quote }}
+  SECOND_USER_FIELD: {{ .Values.config.secondUserField | quote }}
