@@ -11,6 +11,10 @@ spec:
       app: {{ .Values.config.authAppHost }}
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: {{ .Values.auth.metrics.scrape }}
+        prometheus.io/path: {{ .Values.auth.metrics.path }}
+        prometheus.io/port: {{ .Values.config.authAppPort }}
       name: {{ .Values.config.authAppHost }}
       labels:
         app: {{ .Values.config.authAppHost }}

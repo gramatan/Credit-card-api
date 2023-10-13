@@ -11,6 +11,10 @@ spec:
       app: gran-cc-auth
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "24001"
       name: gran-cc-auth
       labels:
         app: gran-cc-auth

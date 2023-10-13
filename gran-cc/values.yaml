@@ -150,6 +150,9 @@ auth:
       path: /ready
       initialDelaySeconds: 20
       periodSeconds: 5
+  metrics:
+    path: /metrics
+    scrape: "true"
 
 balance:
   replicaCount: 1

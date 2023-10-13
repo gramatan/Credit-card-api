@@ -19,16 +19,13 @@ services:
       - cc_main_net
 
   cc_kafka:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile-kafka
-    image: custom-kafka:latest
+    image: bitnami/kafka:latest
     restart: always
     healthcheck:
-      test: /healthcheck-kafka.sh
+      test: [ "CMD-SHELL", "/opt/bitnami/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092 || exit 1" ]
       interval: 30s
-      timeout: 5s
-      retries: 6
+      timeout: 10s
+      retries: 3
     depends_on:
       cc_zookeeper:
         condition: service_healthy
@@ -36,6 +33,7 @@ services:
       ALLOW_PLAINTEXT_LISTENER: 'yes'
       KAFKA_CFG_ZOOKEEPER_CONNECT: cc_zookeeper:2181
       KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://cc_kafka:9092
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
     networks:
       - cc_main_net
 

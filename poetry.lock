@@ -1988,6 +1988,19 @@ numpy = [
 ]
 
 [[package]]
+name = "opentracing"
+version = "2.4.0"
+description = "OpenTracing API for Python. See documentation at http://opentracing.io"
+optional = false
+python-versions = "*"
+files = [
+    {file = "opentracing-2.4.0.tar.gz", hash = "sha256:a173117e6ef580d55874734d1fa7ecb6f3655160b8b8974a2a1e98e5ec9c840d"},
+]
+
+[package.extras]
+tests = ["Sphinx", "doubles", "flake8", "flake8-quotes", "gevent", "mock", "pytest", "pytest-cov", "pytest-mock", "six (>=1.10.0,<2.0)", "sphinx_rtd_theme", "tornado"]
+
+[[package]]
 name = "opt-einsum"
 version = "3.3.0"
 description = "Optimizing numpys einsum function"
@@ -2239,6 +2252,20 @@ identify = ">=1.0.0"
 nodeenv = ">=0.11.1"
 pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
+
+[[package]]
+name = "prometheus-client"
+version = "0.17.1"
+description = "Python client for the Prometheus monitoring system."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "prometheus_client-0.17.1-py3-none-any.whl", hash = "sha256:e537f37160f6807b8202a6fc4764cdd19bac5480ddd3e0d463c3002b34462101"},
+    {file = "prometheus_client-0.17.1.tar.gz", hash = "sha256:21e674f39831ae3f8acde238afd9a27a37d0d2fb5a28ea094f0ce25d2cbf2091"},
+]
+
+[package.extras]
+twisted = ["twisted"]
 
 [[package]]
 name = "protobuf"
@@ -3580,4 +3607,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "463e96e8b2b1cff8bd4407505a8df81e06047f05c4c4379154e864b16686a6ae"
+content-hash = "d0d71dfec0604437da84c67bc2e202c7b96714baa0b6090d28baee37637c133a"

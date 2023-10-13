@@ -39,8 +39,7 @@ COPY ./config/ ./config/
 COPY ./credit_card_auth/ ./credit_card_auth/
 COPY ./photo_storage/ ./photo_storage/
 COPY main_auth.py ./
-COPY localhost.key ./
-COPY localhost.crt ./
+
 
 # alembic stuff
 COPY ./alembic/ ./alembic/

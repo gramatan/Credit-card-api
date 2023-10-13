@@ -2,7 +2,10 @@
 import asyncio
 
 from fastapi import FastAPI
+from prometheus_client import make_asgi_app
 from pydantic_settings import BaseSettings
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
 from config.config import AUTH_APP_PORT, PATH_PREFIX
 from config.kafka_setup import (
@@ -10,6 +13,7 @@ from config.kafka_setup import (
     start_producer,
     stop_producer,
 )
+from credit_card_auth.src.middlewares import metrics_middleware
 from credit_card_auth.src.routers import (
     balance_router,
     readiness,
@@ -56,6 +60,17 @@ app.include_router(
     tags=['transactions'],
 )
 app.include_router(readiness.router, tags=['readiness'])
+
+metrics_app = make_asgi_app()
+app.mount("/metrics", metrics_app)
+app.add_middleware(BaseHTTPMiddleware, dispatch=metrics_middleware)
+app.add_middleware(
+        CORSMiddleware,
+        allow_origins=['*'],
+        allow_credentials=True,
+        allow_methods=['*'],
+        allow_headers=['*'],
+    )
 
 if __name__ == '__main__':
     import uvicorn  # noqa: WPS433
