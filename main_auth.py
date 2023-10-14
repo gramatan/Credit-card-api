@@ -62,15 +62,15 @@ app.include_router(
 app.include_router(readiness.router, tags=['readiness'])
 
 metrics_app = make_asgi_app()
-app.mount("/metrics", metrics_app)
+app.mount('/metrics', metrics_app)
 app.add_middleware(BaseHTTPMiddleware, dispatch=metrics_middleware)
 app.add_middleware(
-        CORSMiddleware,
-        allow_origins=['*'],
-        allow_credentials=True,
-        allow_methods=['*'],
-        allow_headers=['*'],
-    )
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 if __name__ == '__main__':
     import uvicorn  # noqa: WPS433
