@@ -3,6 +3,7 @@ from decimal import Decimal
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, status
+from opentracing import global_tracer, Format
 
 from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
 from credit_card_auth.src.schemas.transactions_schemas import (
@@ -33,20 +34,25 @@ async def withdrawal(
     Returns:
         TransactionRequest: Новый баланс.
     """
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            f'http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/withdrawal',
-            params={
-                'card_number': card_number,
-                'amount': amount,   # type: ignore
-            },
-        )
+    with global_tracer().start_span('read_balance_story') as span:
+        headers = {}
+        global_tracer().inject(span, Format.HTTP_HEADERS, headers)
 
-    if response.status_code != status.HTTP_200_OK:
-        raise HTTPException(
-            status_code=response.status_code,
-            detail=response.text,
-        )
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f'http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/withdrawal',
+                params={
+                    'card_number': card_number,
+                    'amount': amount,   # type: ignore
+                },
+                headers=headers
+            )
+
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=response.text,
+            )
 
     return response.json()
 
@@ -71,19 +77,24 @@ async def deposit(
     Returns:
         TransactionRequest: Новый баланс.
     """
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            f'http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/deposit',
-            params={
-                'card_number': card_number,
-                'amount': amount,   # type: ignore
-            },
-        )
+    with global_tracer().start_span('read_balance_story') as span:
+        headers = {}
+        global_tracer().inject(span, Format.HTTP_HEADERS, headers)
 
-    if response.status_code != status.HTTP_200_OK:
-        raise HTTPException(
-            status_code=response.status_code,
-            detail=response.text,
-        )
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f'http://{BALANCE_APP_HOST}:{BALANCE_APP_PORT}/api/deposit',
+                params={
+                    'card_number': card_number,
+                    'amount': amount,   # type: ignore
+                },
+                headers=headers,
+            )
+
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=response.text,
+            )
 
     return response.json()

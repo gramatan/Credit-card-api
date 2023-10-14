@@ -18,6 +18,7 @@ spec:
       containers:
         - name: {{ .Values.config.balanceAppHost }}
           image: {{ .Values.balance.image.repository }}:{{ .Values.balance.image.tag }}
+          imagePullPolicy: {{ .Values.auth.image.pullPolicy }}
           ports:
             - containerPort: {{ int .Values.config.balanceAppPort }}
           livenessProbe:
