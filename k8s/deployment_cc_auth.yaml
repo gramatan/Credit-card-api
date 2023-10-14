@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: gran-cc-auth
-          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_auth:latest
+          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_auth:4
           ports:
             - containerPort: 24001
           livenessProbe:

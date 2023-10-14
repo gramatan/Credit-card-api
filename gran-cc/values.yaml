@@ -136,7 +136,7 @@ auth:
   # Образ
   image:
     repository: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_auth
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: "4"
   # Ресурсы кубернетеса
   resources:
@@ -165,7 +165,7 @@ balance:
   replicaCount: 1
   image:
     repository: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_balance
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: "4"
   resources:
     requests:

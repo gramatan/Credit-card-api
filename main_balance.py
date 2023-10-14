@@ -43,7 +43,7 @@ async def lifespan(app: FastAPI):
                 'param': 1,
             },
             'local_agent': {
-                'reporting_host': 'http://jaeger-agent.monitoring.svc.cluster.local',   # noqa: E501
+                'reporting_host': 'jaeger-agent.monitoring.svc.cluster.local',   # noqa: E501
                 'reporting_port': 6831,
             },
             'logging': True,

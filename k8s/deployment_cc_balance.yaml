@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: gran-cc-balance
-          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_balance:latest
+          image: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_balance:4
           ports:
             - containerPort: 24101
           livenessProbe:
