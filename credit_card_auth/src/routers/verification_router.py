@@ -34,16 +34,9 @@ async def verify(   # noqa: WPS210
         VerificationRequest: Результат верификации.
     """
     verification_service = VerificationService()
-    verification_result = await verification_service.verify(
+    return await verification_service.verify(
         card_number,
         request,
         selfie,
         document,
     )
-
-    from credit_card_auth.src.middlewares import verification_results_counter
-    verification_results_counter.labels(
-        result=str(verification_result.verified),
-    ).inc()
-
-    return verification_result

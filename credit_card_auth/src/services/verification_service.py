@@ -33,6 +33,7 @@ class VerificationService:
         Returns:
             VerificationRequest: Результат верификации.
         """
+
         selfie_path, document_path = await self._save_uploaded_files(
             card_number,
             selfie,
@@ -48,6 +49,8 @@ class VerificationService:
             request,
             message_data['request_id'],
         )
+
+        await self._save_metrics(response)
 
         return VerificationRequest(verified=response)
 
@@ -125,3 +128,15 @@ class VerificationService:
         queue = asyncio.Queue()  # type: ignore
         pending_requests[request_id] = queue
         return await asyncio.wait_for(queue.get(), timeout=RESPONSE_TIMEOUT)
+
+    async def _save_metrics(self, response: bool):
+        """
+        Сохраняем метрики.
+
+        Args:
+            response (bool): Результат верификации.
+        """
+        from credit_card_auth.src.middlewares import verification_results_counter
+        verification_results_counter.labels(
+            result=str(response),
+        ).inc()
