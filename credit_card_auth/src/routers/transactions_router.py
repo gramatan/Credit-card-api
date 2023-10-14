@@ -35,7 +35,7 @@ async def withdrawal(
         TransactionRequest: Новый баланс.
     """
     with global_tracer().start_span('read_balance_story') as span:
-        headers = {}
+        headers = {}    # type: ignore
         global_tracer().inject(span, Format.HTTP_HEADERS, headers)
 
         async with httpx.AsyncClient() as client:
@@ -78,7 +78,7 @@ async def deposit(
         TransactionRequest: Новый баланс.
     """
     with global_tracer().start_span('read_balance_story') as span:
-        headers = {}
+        headers = {}    # type: ignore
         global_tracer().inject(span, Format.HTTP_HEADERS, headers)
 
         async with httpx.AsyncClient() as client:

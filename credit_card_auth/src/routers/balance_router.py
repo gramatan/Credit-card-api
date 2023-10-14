@@ -32,7 +32,7 @@ async def read_balance(
         UserBalanceRequest: Баланс.
     """
     with global_tracer().start_span('read_balance') as span:
-        headers = {}
+        headers = {}    # type: ignore
         global_tracer().inject(span, Format.HTTP_HEADERS, headers)
 
         async with httpx.AsyncClient() as client:
@@ -76,7 +76,7 @@ async def read_balance_history(
         list[BalanceLogModel]: История баланса.
     """
     with global_tracer().start_span('read_balance_story') as span:
-        headers = {}
+        headers = {}    # type: ignore
         global_tracer().inject(span, Format.HTTP_HEADERS, headers)
 
         async with httpx.AsyncClient() as client:
