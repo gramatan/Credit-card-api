@@ -39,7 +39,7 @@ POSTGRES_DB_PASS = os.environ.get('POSTGRES_DB_PASS', 'shift_cc_pass')
 POSTGRES_DB_NAME = os.environ.get('POSTGRES_DB_NAME', 'shift_cc_db')
 
 PATH_PREFIX = '/api'
-RESPONSE_TIMEOUT = 30
+RESPONSE_TIMEOUT = int(os.environ.get('RESPONSE_TIMEOUT', 10))
 PRE_INSTALLED_CARD_NUMBER = '123'
 PRE_INSTALLED_CARD_DATA = {'name': 'test'}
 

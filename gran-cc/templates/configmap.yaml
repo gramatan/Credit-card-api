@@ -19,3 +19,4 @@ data:
   UNVERIFIED_BALANCE: {{ .Values.config.unverifiedBalance | quote }}
   FIRST_USER_FIELD: {{ .Values.config.firstUserField | quote }}
   SECOND_USER_FIELD: {{ .Values.config.secondUserField | quote }}
+  RESPONSE_TIMEOUT: {{ .Values.config.verificationTimeout | quote }}

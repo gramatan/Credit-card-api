@@ -116,6 +116,8 @@ config:
   firstUserField: "first_name"
   # Поле в дикте для второго поля в таблице
   secondUserField: "surname"
+  # таймаут для верификации
+  verificationTimeout: "10"
 
 # Параметры для PVC для хранения фотографий
 pvc:
@@ -189,7 +191,7 @@ verify:
       cpu: "100m"
     limits:
       memory: "2300Mi"
-      cpu: "1000m"
+      cpu: "2000m"
   probes:
     liveness:
       path: /live
