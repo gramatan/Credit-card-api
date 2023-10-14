@@ -21,6 +21,12 @@ request_latency_histogram = Histogram(
     ['operation', 'http_status_code', 'error'],
 )
 
+verification_results_counter = Counter(
+    'gran_verification_results_total',
+    'Count verification results',
+    ['result'],
+)
+
 
 async def metrics_middleware(request: Request, call_next):
     """
@@ -45,4 +51,5 @@ async def metrics_middleware(request: Request, call_next):
     ).observe(
         time.monotonic() - start_time,
     )
+
     return response
