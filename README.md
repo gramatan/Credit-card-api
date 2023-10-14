@@ -4,6 +4,8 @@ Week9. SHIFT-856. Метрики.
 Технические метрики в мидлваре: [middlewares.py](credit_card_auth%2Fsrc%2Fmiddlewares.py)
 Бизнесовая метрика с результатами верификации: [verification_service.py](credit_card_auth%2Fsrc%2Fservices%2Fverification_service.py)
 
+Тест проверяющий наличие метрик: [test_mettrics.py](credit_card_auth%2Ftests%2Fintegration%2Ftest_mettrics.py)
+
 Week8. SHIFT-782. Helm релиз.
 
 Добавлена папка [gran-cc](gran-cc) содержащая шаблоны для helm релиза.

@@ -33,7 +33,6 @@ class VerificationService:
         Returns:
             VerificationRequest: Результат верификации.
         """
-
         selfie_path, document_path = await self._save_uploaded_files(
             card_number,
             selfie,
@@ -136,7 +135,9 @@ class VerificationService:
         Args:
             response (bool): Результат верификации.
         """
-        from credit_card_auth.src.middlewares import verification_results_counter
+        from credit_card_auth.src.middlewares import (
+            verification_results_counter,
+        )
         verification_results_counter.labels(
             result=str(response),
         ).inc()
