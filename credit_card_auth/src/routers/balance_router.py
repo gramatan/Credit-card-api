@@ -3,7 +3,7 @@ from datetime import datetime
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, status
-from opentracing import global_tracer, Format
+from opentracing import Format, global_tracer
 
 from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
 from credit_card_auth.src.schemas.log_schemas import BalanceLogModel
@@ -41,7 +41,7 @@ async def read_balance(
                 params={
                     'card_number': card_number,
                 },
-                headers=headers
+                headers=headers,
             )
 
         if response.status_code != status.HTTP_200_OK:

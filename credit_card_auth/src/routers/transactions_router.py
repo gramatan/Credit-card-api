@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, status
-from opentracing import global_tracer, Format
+from opentracing import Format, global_tracer
 
 from config.config import BALANCE_APP_HOST, BALANCE_APP_PORT
 from credit_card_auth.src.schemas.transactions_schemas import (
@@ -45,7 +45,7 @@ async def withdrawal(
                     'card_number': card_number,
                     'amount': amount,   # type: ignore
                 },
-                headers=headers
+                headers=headers,
             )
 
         if response.status_code != status.HTTP_200_OK:
