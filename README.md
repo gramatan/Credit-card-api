@@ -1,7 +1,7 @@
 Week9. SHIFT-856. Метрики.
 
-Добавлены метрики для сервиса auth.
-Технические метрики в мидлваре: [middlewares.py](credit_card_auth%2Fsrc%2Fmiddlewares.py)
+Добавлены метрики для сервиса auth и balance.
+Технические метрики(prometheus & Jaeger) в мидлваре: [middlewares.py](credit_card_auth%2Fsrc%2Fmiddlewares.py)
 Бизнесовая метрика с результатами верификации: [verification_service.py](credit_card_auth%2Fsrc%2Fservices%2Fverification_service.py)
 
 Тест проверяющий наличие метрик: [test_mettrics.py](credit_card_auth%2Ftests%2Fintegration%2Ftest_mettrics.py)

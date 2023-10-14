@@ -131,11 +131,14 @@ pvc:
   size: 64Mi
 
 auth:
+  # Количество реплик
   replicaCount: 1
+  # Образ
   image:
     repository: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_auth
     pullPolicy: IfNotPresent
-    tag: "3"
+    tag: "4"
+  # Ресурсы кубернетеса
   resources:
     requests:
       memory: "100Mi"
@@ -143,6 +146,7 @@ auth:
     limits:
       memory: "100Mi"
       cpu: "200m"
+  # Хэлсчеки
   probes:
     liveness:
       path: /live
@@ -152,6 +156,7 @@ auth:
       path: /ready
       initialDelaySeconds: 20
       periodSeconds: 5
+  # Метрики
   metrics:
     path: /metrics
     scrape: "true"
@@ -161,7 +166,7 @@ balance:
   image:
     repository: registry.gitlab.com/shift-python/y2023/homeworks/gramatchikov-a/credit_card/cc_balance
     pullPolicy: IfNotPresent
-    tag: "3"
+    tag: "4"
   resources:
     requests:
       memory: "100Mi"
