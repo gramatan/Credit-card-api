@@ -29,7 +29,7 @@ Tests:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "week2_task1"
       changes:
         - "**/*.py"
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "week2_task1"
+    - if: $CI_PIPELINE_SOURCE == "push"
       changes:
         - "**/*.py"
 #      when: manual
@@ -40,7 +40,7 @@ Linters:
     - apt-get update && apt-get install -y curl
     - curl -sSL https://install.python-poetry.org | python3 -
     - export PATH="/root/.local/bin:$PATH"
-    - poetry install --without ml
+    - poetry install
   script:
     - poetry run flake8
     - poetry run mypy .
@@ -48,5 +48,5 @@ Linters:
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "week2_task1"
       changes:
         - "**/*.py"
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "week2_task1"
+    - if: $CI_PIPELINE_SOURCE == "push"
       when: manual
